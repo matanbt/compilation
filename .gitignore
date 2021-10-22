@@ -1,3 +1,11 @@
+# IDEs
+.idea
+compilation-project.iml
+
+# misc files
+notes.txt
+
+# Automatically generated (java) gitignore by Github
 # Compiled class file
 *.class
 
