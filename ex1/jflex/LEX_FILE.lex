@@ -70,10 +70,17 @@ import java_cup.runtime.*;
 /***********************/
 /* MACRO DECALARATIONS */
 /***********************/
+
+
+CharInComments = [\(\)\[\]\{\}\?!\+-\*\/\.;]
 LineTerminator	= \r|\n|\r\n
-WhiteSpace		= {LineTerminator} | [ \t\f]
-INTEGER			= 0 | [1-9][0-9]*
-ID				= [a-z]+
+WhiteSpace = {LineTerminator} | [ \t\f]
+Letters = [a-zA-Z]
+Keywords = class|nil|array|while|extends|return|new|if
+Identifiers = {Letters}+(Letters|[0-9])*
+Comments = \/\/{CharInComments}*|\/\*{CharInComments}*\*\/
+Integers = 0|[1-9][0-9]*
+Strings = "{Letters}*"
 
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
