@@ -6,6 +6,7 @@
 /* USER CODE */
 /*************/
 import java_cup.runtime.*;
+import java.lang.Math;
 
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
@@ -53,8 +54,23 @@ import java_cup.runtime.*;
 	/*********************************************************************************/
 	/* Create a new java_cup.runtime.Symbol with information about the current token */
 	/*********************************************************************************/
-	private Symbol symbol(int type)               {return new Symbol(type, yyline, yycolumn);}
-	private Symbol symbol(int type, Object value) {return new Symbol(type, yyline, yycolumn, value);}
+
+	private Symbol symbol(int type)
+	{ // creates a general symbol (e.g. PLUS)
+	    return new Symbol(type, yyline, yycolumn);
+    }
+	private Symbol symbol(int type, Object value)
+	{ // Creates a general symbol with value (e.g. ID, String)
+	    if(type == TokenNames.INT)
+	    { // special treatment for integer
+	        int lower_bound = 0, upper_bound = Math.pow(2, 15) - 1;
+            if(value < lower_bound || value > upper_bound)
+            {
+                return new Symbol(TokenNames.ERROR_BIG_INTEGER, yyline, yycolumn, value);
+            }
+	    }
+	    return new Symbol(type, yyline, yycolumn, value);
+	}
 
 	/*******************************************/
 	/* Enable line number extraction from main */
@@ -71,16 +87,25 @@ import java_cup.runtime.*;
 /* MACRO DECALARATIONS */
 /***********************/
 
-
-CharInComments = [\(\)\[\]\{\}\?!\+-\*\/\.;]
+/* Base Macros */
 LineTerminator	= \r|\n|\r\n
 WhiteSpace = {LineTerminator} | [ \t\f]
 Letters = [a-zA-Z]
+Digits = [0-9]
+
+/* Symbols Macros */
+Identifiers = {Letters}(Letters|Digits)*
 Keywords = class|nil|array|while|extends|return|new|if
-Identifiers = {Letters}+(Letters|[0-9])*
-Comments = \/\/{CharInComments}*|\/\*{CharInComments}*\*\/
 Integers = 0|[1-9][0-9]*
 Strings = "{Letters}*"
+
+/* Comments Macros */
+// TODO - make sure CharInComments is correct (I added SOME missing stuff)
+CharInComments = [\(\)\[\]\{\}\?!\+-\*\/\.;]|Letters|Digits|[ \t\f]
+// TODO - make sure OneLineComment & MultiLineComments are correct (I split for ease of read)
+OneLineComment = \/\/{CharInComments}*
+MultiLineComments = \/\/{CharInComments}*|\/\*{CharInComments}*\*\/
+
 
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
@@ -100,6 +125,7 @@ Strings = "{Letters}*"
 
 <YYINITIAL> {
 
+// TODO - note that ALL sings in TokenNames should be added here (+,{,?,...)
 "+"					{ return symbol(TokenNames.PLUS);}
 "-"					{ return symbol(TokenNames.MINUS);}
 "PPP"				{ return symbol(TokenNames.TIMES);}
