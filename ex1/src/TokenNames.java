@@ -1,5 +1,6 @@
 public interface TokenNames {
-  // terminals
+
+  // Terminals Symbols
   public static final int EOF = 0;
   public static final int LPAREN    = 1;
   public static final int RPAREN    = 2;
@@ -26,8 +27,6 @@ public interface TokenNames {
   public static final int WHILE   = 23;
   public static final int IF   = 24;
   public static final int NEW   = 25;
-  public static final int NUMBER   = -1; // todo delete me
-
 
   // Symbols with value
   public static final int INT   = 26;
@@ -35,7 +34,27 @@ public interface TokenNames {
   public static final int ID   = 28;
 
   // Symbols for ERRORs
-  // Our convention is - [Token-type-number > ERROR] IFF [A lexical error occurred]
+  // Our convention is - [Token-type-number >= ERROR] IFF [a lexical error occurred]
   public static final int ERROR  = 29;
   public static final int ERROR_BIG_INTEGER  = 30;
+
+
+  // Array with all the (string-)names of the symbols
+  // NOTE: this array should be synced with every change of the above vars.
+  String[] tokens = {"EOF", "LPAREN", "RPAREN", "LBRACK", "RBRACK", "LBRACE", "RBRACE",
+                     "NIL", "PLUS", "MINUS", "TIMES", "DIVIDE", "COMMA", "DOT",
+                     "SEMICOLON", "ASSIGN", "EQ", "LT", "GT", "ARRAY", "CLASS",
+                     "EXTENDS", "RETURN", "WHILE", "IF", "NEW",
+                     "INT", "STRING", "ID", "ERROR", "ERROR"};
+
+
+  public static String getTokenName(int type)
+  { // given a token-type, returns the string of its name (for output purposes)
+    if (type < 0 || type > tokens.length)
+    {
+      return "ERROR";
+    }
+    return tokens[type];
+  }
+
 }
