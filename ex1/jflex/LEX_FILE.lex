@@ -55,21 +55,21 @@ import java.lang.Math;
 	/* Create a new java_cup.runtime.Symbol with information about the current token */
 	/*********************************************************************************/
 
-	private Symbol symbol(int type)
+	private Symbol symbol(TokenNames token_name)
 	{ // creates a general symbol (e.g. PLUS)
-	    return new Symbol(type, yyline, yycolumn);
+	    return new Symbol(token_name.getOrdinal(), yyline, yycolumn);
     }
-	private Symbol symbol(int type, Object value)
+	private Symbol symbol(TokenNames token_name, Object value)
 	{ // Creates a general symbol with value (e.g. ID, String)
-	    if(type == TokenNames.INT)
+	    if(token_name == TokenNames.INT)
 	    { // special treatment for integer
 	        int lower_bound = 0, upper_bound = Math.pow(2, 15) - 1;
             if(value < lower_bound || value > upper_bound)
             {
-                return new Symbol(TokenNames.ERROR_BIG_INTEGER, yyline, yycolumn, value);
+                return new Symbol(TokenNames.ERROR.getOrdinal(), yyline, yycolumn, value);
             }
 	    }
-	    return new Symbol(type, yyline, yycolumn, value);
+	    return new Symbol(token_name.getOrdinal(), yyline, yycolumn, value);
 	}
 
 	/*******************************************/

@@ -39,7 +39,7 @@ public class Main
 			/********************************/
 			/* [5] Main reading tokens loop */
 			/********************************/
-			while (s.sym != TokenNames.EOF)
+			while (s.sym != TokenNames.EOF.getOrdinal())
 			{
 				/************************/
 				/* [6] Print to console */
