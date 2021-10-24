@@ -1,10 +1,38 @@
 import java.io.*;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import java_cup.runtime.Symbol;
    
 public class Main
 {
+	static public String build_output_msg(Symbol s, int line, int pos)
+	{
+		assert TokenNames.getTokenName(s.sym) != null;
+		StringBuilder sb = new StringBuilder(TokenNames.getTokenName(s.sym));
+
+		if ((s.sym == TokenNames.INT) || (s.sym == TokenNames.ID))
+		{
+			sb.append('(');
+			sb.append(s.value);
+			sb.append(')');
+		}
+		else if (s.sym == TokenNames.STRING)
+		{
+			sb.append("(\"");
+			sb.append(s.value);
+			sb.append("\")");
+		}
+
+		sb.append('[');
+		sb.append(line);
+		sb.append(',');
+		sb.append(pos);
+		sb.append("]\n");
+
+		return sb.toString();
+	}
+
 	static public void main(String argv[])
 	{
 		Lexer l;
@@ -13,6 +41,8 @@ public class Main
 		PrintWriter file_writer;
 		String inputFilename = argv[0];
 		String outputFilename = argv[1];
+		ArrayList<String> output = new ArrayList<>();
+		boolean error = false;
 		
 		try
 		{
@@ -55,26 +85,26 @@ public class Main
 				/*********************/
 				/* [7] Print to file */
 				/*********************/
-				file_writer.print(TokenNames.getTokenName(s.sym));
-				if ((s.sym == TokenNames.INT) || (s.sym == TokenNames.ID))
+				if (s.sym == TokenNames.ERROR)
 				{
-					file_writer.printf("(%s)", s.value);
+					file_writer.print("ERROR");
+					error = true;
+					break;
 				}
-				else if (s.sym == TokenNames.STRING)
-				{
-					file_writer.printf("(\"%s\")", s.value);
-				}
-				file_writer.print("[");
-				file_writer.print(l.getLine());
-				file_writer.print(",");
-				file_writer.print(l.getTokenStartPosition());
-				file_writer.print("]");
-				file_writer.print("\n");
-				
+				output.add(build_output_msg(s, l.getLine(), l.getTokenStartPosition()));
+
 				/***********************/
 				/* [8] Read next token */
 				/***********************/
 				s = l.next_token();
+			}
+
+			if (!error)
+			{
+				for (String st: output)
+				{
+					file_writer.print(st);
+				}
 			}
 			
 			/******************************/
