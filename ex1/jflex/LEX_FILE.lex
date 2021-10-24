@@ -63,10 +63,10 @@ import java.lang.Math;
 	{ // Creates a general symbol with value (e.g. ID, String)
 	    if(type == TokenNames.INT)
 	    { // special treatment for integer
-	        int lower_bound = 0, upper_bound = Math.pow(2, 15) - 1;
-            if(value < lower_bound || value > upper_bound)
+	        int lower_bound = 0, upper_bound = (1 << 15) - 1;
+            if((Integer) value < lower_bound || (Integer) value > upper_bound)
             {
-                return new Symbol(TokenNames.ERROR_BIG_INTEGER, yyline, yycolumn, value);
+                return new Symbol(TokenNames.ERROR, yyline, yycolumn, value);
             }
 	    }
 	    return new Symbol(type, yyline, yycolumn, value);
@@ -101,7 +101,8 @@ Strings = "{Letters}*"
 
 /* Comments Macros */
 // TODO - make sure CharInComments is correct (I added SOME missing stuff)
-CharInComments = [\(\)\[\]\{\}\?!\+-\*\/\.;]|Letters|Digits|[ \t\f]
+// TODO - I commented CharInComments because it wouldn't compile, so need to fix that
+// CharInComments = [\(\)\[\]\{\}\?!\+-\*\/\.;]|Letters|Digits|[ \t\f]
 // TODO - make sure OneLineComment & MultiLineComments are correct (I split for ease of read)
 OneLineComment = \/\/{CharInComments}*
 MultiLineComments = \/\/{CharInComments}*|\/\*{CharInComments}*\*\/
@@ -132,8 +133,8 @@ MultiLineComments = \/\/{CharInComments}*|\/\*{CharInComments}*\*\/
 "/"					{ return symbol(TokenNames.DIVIDE);}
 "("					{ return symbol(TokenNames.LPAREN);}
 ")"					{ return symbol(TokenNames.RPAREN);}
-{INTEGER}			{ return symbol(TokenNames.NUMBER, new Integer(yytext()));}
-{ID}				{ return symbol(TokenNames.ID,     new String( yytext()));}   
+{Integers}			{ return symbol(TokenNames.INT, new Integer(yytext()));}
+{Identifiers}				{ return symbol(TokenNames.ID,     new String( yytext()));}
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 }

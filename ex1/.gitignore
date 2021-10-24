@@ -4,3 +4,6 @@ external_jars
 bin
 LEXER
 src/Lexer.java
+
+# output files
+output/OutputTokens.txt

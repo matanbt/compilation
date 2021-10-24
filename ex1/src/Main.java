@@ -55,9 +55,20 @@ public class Main
 				/*********************/
 				/* [7] Print to file */
 				/*********************/
+				file_writer.print(TokenNames.getTokenName(s.sym));
+				if ((s.sym == TokenNames.INT) || (s.sym == TokenNames.ID))
+				{
+					file_writer.printf("(%s)", s.value);
+				}
+				else if (s.sym == TokenNames.STRING)
+				{
+					file_writer.printf("(\"%s\")", s.value);
+				}
+				file_writer.print("[");
 				file_writer.print(l.getLine());
-				file_writer.print(": ");
-				file_writer.print(s.value);
+				file_writer.print(",");
+				file_writer.print(l.getTokenStartPosition());
+				file_writer.print("]");
 				file_writer.print("\n");
 				
 				/***********************/
