@@ -94,18 +94,15 @@ Letters = [a-zA-Z]
 Digits = [0-9]
 
 /* Symbols Macros */
-Identifiers = {Letters}(Letters|Digits)*
-Keywords = class|nil|array|while|extends|return|new|if
+Identifiers = {Letters}({Letters}|{Digits})*
 Integers = 0|[1-9][0-9]*
 Strings = "{Letters}*"
 
 /* Comments Macros */
-// TODO - make sure CharInComments is correct (I added SOME missing stuff)
-CharInComments = [\(\)\[\]\{\}\?!\+-\*\/\.;]|Letters|Digits|[ \t\f]
-// TODO - make sure OneLineComment & MultiLineComments are correct (I split for ease of read)
-OneLineComment = \/\/{CharInComments}*
-MultiLineComments = \/\/{CharInComments}*|\/\*{CharInComments}*\*\/
-
+CharInOneLineComments = [\(\)\[\]\{\}\?!\+-\*\/\.;]|{Letters}|{Digits}|[ \t\f]  # TODO - verify that [ \t\f] doesn't include new line
+OneLineComment = \/\/{CharInOneLineComments}*
+MultiLineComments = \/\*({CharInOneLineComments}|{LineTerminator})*\*\/
+Comments = {OneLineComment}|{MultiLineComments}
 
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
@@ -125,15 +122,41 @@ MultiLineComments = \/\/{CharInComments}*|\/\*{CharInComments}*\*\/
 
 <YYINITIAL> {
 
-// TODO - note that ALL sings in TokenNames should be added here (+,{,?,...)
-"+"					{ return symbol(TokenNames.PLUS);}
-"-"					{ return symbol(TokenNames.MINUS);}
-"PPP"				{ return symbol(TokenNames.TIMES);}
-"/"					{ return symbol(TokenNames.DIVIDE);}
+// Keywords should apear BEFORE Identifiers
+
+/* Keywords */
+"class"				{ return symbol(TokenNames.CLASS);}
+"nil"				{ return symbol(TokenNames.NIL);}
+"array"				{ return symbol(TokenNames.ARRAY);}
+"while"				{ return symbol(TokenNames.WHILE);}
+"extends"			{ return symbol(TokenNames.EXTENDS);}
+"return"			{ return symbol(TokenNames.RETURN);}
+"new"				{ return symbol(TokenNames.NEW);}
+"if"				{ return symbol(TokenNames.IF);}
+
 "("					{ return symbol(TokenNames.LPAREN);}
 ")"					{ return symbol(TokenNames.RPAREN);}
-{INTEGER}			{ return symbol(TokenNames.NUMBER, new Integer(yytext()));}
-{ID}				{ return symbol(TokenNames.ID,     new String( yytext()));}   
+"["					{ return symbol(TokenNames.LBRACK);}
+"]"					{ return symbol(TokenNames.RBRACK);}
+"{"					{ return symbol(TokenNames.LBRACE);}
+"}"					{ return symbol(TokenNames.RBRACE);}
+"+"					{ return symbol(TokenNames.PLUS);}
+"-"					{ return symbol(TokenNames.MINUS);}
+"*"					{ return symbol(TokenNames.TIMES);}
+"/"					{ return symbol(TokenNames.DIVIDE);}
+","					{ return symbol(TokenNames.COMMA);}
+"."					{ return symbol(TokenNames.DOT);}
+";"					{ return symbol(TokenNames.SEMICOLON);}
+":="				{ return symbol(TokenNames.ASSIGN);}
+"="					{ return symbol(TokenNames.EQ);}
+"<"					{ return symbol(TokenNames.LT);}
+">"					{ return symbol(TokenNames.GT);}
+
+
+{Identifiers}		{ return symbol(TokenNames.ID, new String(yytext()));}  
+{Integers}			{ return symbol(TokenNames.INT, new Integer(yytext()));}
+{Strings}			{ return symbol(TokenNames.STRING, new String(yytext()));}  
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
+{Comments}			{ /* just skip what was found, do nothing */ }
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 }
