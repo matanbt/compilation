@@ -3,13 +3,17 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import java_cup.runtime.Symbol;
-   
+
 public class Main
 {
-	static public String build_output_msg(Symbol s, int line, int pos)
+	static private String build_output_msg(Symbol s, int line, int pos)
 	{
-		assert TokenNames.getTokenName(s.sym) != null;
-		StringBuilder sb = new StringBuilder(TokenNames.getTokenName(s.sym));
+		String token_name = TokenNames.getTokenName(s.sym);
+		if (token_name == null)
+		{
+			throw new IllegalStateException("Tried to access invalid token index: " + s.sym);
+		}
+		StringBuilder sb = new StringBuilder(token_name);
 
 		if ((s.sym == TokenNames.INT) || (s.sym == TokenNames.ID))
 		{
@@ -43,7 +47,7 @@ public class Main
 		String outputFilename = argv[1];
 		ArrayList<String> output = new ArrayList<>();
 		boolean error = false;
-		
+
 		try
 		{
 			/********************************/
@@ -55,7 +59,7 @@ public class Main
 			/* [2] Initialize a file writer */
 			/********************************/
 			file_writer = new PrintWriter(outputFilename);
-			
+
 			/******************************/
 			/* [3] Initialize a new lexer */
 			/******************************/
@@ -81,13 +85,13 @@ public class Main
 				System.out.print("]:");
 				System.out.print(s.value);
 				System.out.print("\n");
-				
+
 				/*********************/
 				/* [7] Print to file */
 				/*********************/
 				if (s.sym == TokenNames.ERROR)
 				{
-					file_writer.print("ERROR");
+					file_writer.print("ERROR\n");
 					error = true;
 					break;
 				}
@@ -106,7 +110,7 @@ public class Main
 					file_writer.print(st);
 				}
 			}
-			
+
 			/******************************/
 			/* [9] Close lexer input file */
 			/******************************/
@@ -117,7 +121,7 @@ public class Main
 			/**************************/
 			file_writer.close();
     	}
-			     
+
 		catch (Exception e)
 		{
 			e.printStackTrace();
