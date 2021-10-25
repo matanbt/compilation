@@ -1,9 +1,0 @@
-external_jars
-
-# created by "make"
-bin
-LEXER
-src/Lexer.java
-
-# output files
-output/OutputTokens.txt
