@@ -15,17 +15,11 @@ public class Main
 		}
 		StringBuilder sb = new StringBuilder(token_name);
 
-		if ((s.sym == TokenNames.INT) || (s.sym == TokenNames.ID))
+		if ((s.sym == TokenNames.INT) || (s.sym == TokenNames.ID) || (s.sym == TokenNames.STRING))
 		{
 			sb.append('(');
 			sb.append(s.value);
 			sb.append(')');
-		}
-		else if (s.sym == TokenNames.STRING)
-		{
-			sb.append("(\"");
-			sb.append(s.value);
-			sb.append("\")");
 		}
 
 		sb.append('[');

@@ -97,7 +97,7 @@ Digits = [0-9]
 /* Symbols Macros */
 Identifiers = {Letters}({Letters}|{Digits})*
 Integers = 0|[1-9][0-9]*
-Strings = "{Letters}*"
+Strings = \"{Letters}*\"
 
 /* Comments Macros */
 CharInOneLineComments = [\(\)\[\]\{\}\?!\+\-\*\/\.;]|{Letters}|{Digits}|[ \t\f]
