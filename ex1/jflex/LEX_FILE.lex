@@ -63,10 +63,10 @@ import java.lang.Math;
 	{ // Creates a general symbol with value (e.g. ID, String)
 	    if(token_name == TokenNames.INT)
 	    { // special treatment for integer
-	        int lower_bound = 0, upper_bound = Math.pow(2, 15) - 1;
-            if(value < lower_bound || value > upper_bound)
+	        int lower_bound = 0, upper_bound = (1 << 15) - 1;
+            if((Integer) value < lower_bound || (Integer) value > upper_bound)
             {
-                return new Symbol(TokenNames.ERROR.getOrdinal(), yyline, yycolumn, value);
+                return new Symbol(TokenNames.ERROR, yyline, yycolumn, value);
             }
 	    }
 	    return new Symbol(token_name.getOrdinal(), yyline, yycolumn, value);
@@ -107,6 +107,7 @@ UnclosedRightComment = \/\*  #TODO
 CommentWithUnvaildChars  # TODO
 #TODO- /**/comment finish at first */ 
 
+
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
 /******************************/
@@ -128,16 +129,17 @@ CommentWithUnvaildChars  # TODO
 // Keywords should apear BEFORE Identifiers
 
 /* Keywords */
-"class"				{ return symbol(TokenNames.CLASS);}
+"class"			{ return symbol(TokenNames.CLASS);}
 "nil"				{ return symbol(TokenNames.NIL);}
-"array"				{ return symbol(TokenNames.ARRAY);}
-"while"				{ return symbol(TokenNames.WHILE);}
+"array"			{ return symbol(TokenNames.ARRAY);}
+"while"			{ return symbol(TokenNames.WHILE);}
 "int"				{ return symbol(TokenNames.TYPE_INT);}
-"extends"			{ return symbol(TokenNames.EXTENDS);}
-"return"			{ return symbol(TokenNames.RETURN);}
+"extends"		{ return symbol(TokenNames.EXTENDS);}
+"return"		{ return symbol(TokenNames.RETURN);}
 "new"				{ return symbol(TokenNames.NEW);}
 "if"				{ return symbol(TokenNames.IF);}
-"string"			{ return symbol(TokenNames.TYPE_STRING);}
+"string"		{ return symbol(TokenNames.TYPE_STRING);}
+
 
 "("					{ return symbol(TokenNames.LPAREN);}
 ")"					{ return symbol(TokenNames.RPAREN);}
