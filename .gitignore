@@ -29,3 +29,19 @@ notes.txt
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+
+### Our additions ###
+# JARs
+ex1/external_jars
+
+# created by "make"
+ex1/bin
+ex1/LEXER
+ex1/src/Lexer.java
+
+# output files
+ex1/output/OutputTokens.txt
+
+# IDEA files
+compilation.iml
