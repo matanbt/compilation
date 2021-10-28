@@ -6,7 +6,6 @@
 /* USER CODE */
 /*************/
 import java_cup.runtime.*;
-import java.lang.Math;
 
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
@@ -55,13 +54,14 @@ import java.lang.Math;
 	/* Create a new java_cup.runtime.Symbol with information about the current token */
 	/*********************************************************************************/
 
-	private Symbol symbol(TokenNames token_name)
+	private Symbol symbol(int type)
 	{ // creates a general symbol (e.g. PLUS)
-	    return new Symbol(token_name.getOrdinal(), yyline, yycolumn);
+	    return new Symbol(type, yyline, yycolumn);
     }
-	private Symbol symbol(TokenNames token_name, Object value)
+
+	private Symbol symbol(int type, Object value)
 	{ // Creates a general symbol with value (e.g. ID, String)
-	    if(token_name == TokenNames.INT)
+	    if(type == TokenNames.INT)
 	    { // special treatment for integer
 	        int lower_bound = 0, upper_bound = (1 << 15) - 1;
             if((Integer) value < lower_bound || (Integer) value > upper_bound)
@@ -69,7 +69,7 @@ import java.lang.Math;
                 return new Symbol(TokenNames.ERROR, yyline, yycolumn, value);
             }
 	    }
-	    return new Symbol(token_name.getOrdinal(), yyline, yycolumn, value);
+	    return new Symbol(type, yyline, yycolumn, value);
 	}
 
 	/*******************************************/
@@ -88,7 +88,8 @@ import java.lang.Math;
 /***********************/
 
 /* Base Macros */
-LineTerminator	= \r|\n|\r\n  # TODO is \r a LineTerminator
+/* TODO is \r a LineTerminator*/
+LineTerminator	= \r|\n|\r\n
 WhiteSpace = {LineTerminator} | [ \t\f]
 Letters = [a-zA-Z]
 Digits = [0-9]
@@ -99,13 +100,16 @@ Integers = 0|[1-9][0-9]*
 Strings = "{Letters}*"
 
 /* Comments Macros */
-CharInOneLineComments = [\(\)\[\]\{\}\?!\+-\*\/\.;]|{Letters}|{Digits}|[ \t\f]  
+CharInOneLineComments = [\(\)\[\]\{\}\?!\+\-\*\/\.;]|{Letters}|{Digits}|[ \t\f]
 OneLineComment = \/\/{CharInOneLineComments}*
 MultiLineComments = \/\*({CharInOneLineComments}|{LineTerminator})*\*\/
 Comments = {OneLineComment}|{MultiLineComments}
-UnclosedRightComment = \/\*  #TODO
-CommentWithUnvaildChars  # TODO
-#TODO- /**/comment finish at first */ 
+/* TODO */
+UnclosedRightComment = \/\*
+/* TODO */
+CommentWithUnvaildChars = ""
+
+/* TODO- multi-line-comment finish at first */
 
 
 /******************************/

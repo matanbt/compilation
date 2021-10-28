@@ -28,13 +28,17 @@ public interface TokenNames {
     public static final int IF = 24;
     public static final int NEW = 25;
 
+    // Types
+    public static final int TYPE_INT = 26;
+    public static final int TYPE_STRING = 27;
+
     // Symbols with value
-    public static final int INT = 26;
-    public static final int STRING = 27;
-    public static final int ID = 28;
+    public static final int INT = 28;
+    public static final int STRING = 29;
+    public static final int ID = 30;
 
     // Symbol for ERRORs
-    public static final int ERROR = 29;
+    public static final int ERROR = 31;
 
 
     // Array with all the (string-)names of the symbols
@@ -66,6 +70,8 @@ public interface TokenNames {
             "WHILE",
             "IF",
             "NEW",
+            "int",
+            "string",
             "INT",
             "STRING",
             "ID",
