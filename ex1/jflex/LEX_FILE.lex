@@ -88,7 +88,7 @@ import java.lang.Math;
 /***********************/
 
 /* Base Macros */
-LineTerminator	= \r|\n|\r\n
+LineTerminator	= \r|\n|\r\n  # TODO is \r a LineTerminator
 WhiteSpace = {LineTerminator} | [ \t\f]
 Letters = [a-zA-Z]
 Digits = [0-9]
@@ -99,10 +99,13 @@ Integers = 0|[1-9][0-9]*
 Strings = "{Letters}*"
 
 /* Comments Macros */
-CharInOneLineComments = [\(\)\[\]\{\}\?!\+-\*\/\.;]|{Letters}|{Digits}|[ \t\f]  # TODO - verify that [ \t\f] doesn't include new line
+CharInOneLineComments = [\(\)\[\]\{\}\?!\+-\*\/\.;]|{Letters}|{Digits}|[ \t\f]  
 OneLineComment = \/\/{CharInOneLineComments}*
 MultiLineComments = \/\*({CharInOneLineComments}|{LineTerminator})*\*\/
 Comments = {OneLineComment}|{MultiLineComments}
+UnclosedRightComment = \/\*  #TODO
+CommentWithUnvaildChars  # TODO
+#TODO- /**/comment finish at first */ 
 
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
@@ -129,10 +132,12 @@ Comments = {OneLineComment}|{MultiLineComments}
 "nil"				{ return symbol(TokenNames.NIL);}
 "array"				{ return symbol(TokenNames.ARRAY);}
 "while"				{ return symbol(TokenNames.WHILE);}
+"int"				{ return symbol(TokenNames.TYPE_INT);}
 "extends"			{ return symbol(TokenNames.EXTENDS);}
 "return"			{ return symbol(TokenNames.RETURN);}
 "new"				{ return symbol(TokenNames.NEW);}
 "if"				{ return symbol(TokenNames.IF);}
+"string"			{ return symbol(TokenNames.TYPE_STRING);}
 
 "("					{ return symbol(TokenNames.LPAREN);}
 ")"					{ return symbol(TokenNames.RPAREN);}
