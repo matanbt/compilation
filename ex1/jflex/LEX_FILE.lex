@@ -55,13 +55,13 @@ import java.lang.Math;
 	/* Create a new java_cup.runtime.Symbol with information about the current token */
 	/*********************************************************************************/
 
-	private Symbol symbol(int type)
+	private Symbol symbol(TokenNames token_name)
 	{ // creates a general symbol (e.g. PLUS)
-	    return new Symbol(type, yyline, yycolumn);
+	    return new Symbol(token_name.getOrdinal(), yyline, yycolumn);
     }
-	private Symbol symbol(int type, Object value)
+	private Symbol symbol(TokenNames token_name, Object value)
 	{ // Creates a general symbol with value (e.g. ID, String)
-	    if(type == TokenNames.INT)
+	    if(token_name == TokenNames.INT)
 	    { // special treatment for integer
 	        int lower_bound = 0, upper_bound = (1 << 15) - 1;
             if((Integer) value < lower_bound || (Integer) value > upper_bound)
@@ -69,7 +69,7 @@ import java.lang.Math;
                 return new Symbol(TokenNames.ERROR, yyline, yycolumn, value);
             }
 	    }
-	    return new Symbol(type, yyline, yycolumn, value);
+	    return new Symbol(token_name.getOrdinal(), yyline, yycolumn, value);
 	}
 
 	/*******************************************/
@@ -88,24 +88,24 @@ import java.lang.Math;
 /***********************/
 
 /* Base Macros */
-LineTerminator	= \r|\n|\r\n
+LineTerminator	= \r|\n|\r\n  # TODO is \r a LineTerminator
 WhiteSpace = {LineTerminator} | [ \t\f]
 Letters = [a-zA-Z]
 Digits = [0-9]
 
 /* Symbols Macros */
-Identifiers = {Letters}(Letters|Digits)*
-Keywords = class|nil|array|while|extends|return|new|if
+Identifiers = {Letters}({Letters}|{Digits})*
 Integers = 0|[1-9][0-9]*
 Strings = "{Letters}*"
 
 /* Comments Macros */
-// TODO - make sure CharInComments is correct (I added SOME missing stuff)
-// TODO - I commented CharInComments because it wouldn't compile, so need to fix that
-// CharInComments = [\(\)\[\]\{\}\?!\+-\*\/\.;]|Letters|Digits|[ \t\f]
-// TODO - make sure OneLineComment & MultiLineComments are correct (I split for ease of read)
-OneLineComment = \/\/{CharInComments}*
-MultiLineComments = \/\/{CharInComments}*|\/\*{CharInComments}*\*\/
+CharInOneLineComments = [\(\)\[\]\{\}\?!\+-\*\/\.;]|{Letters}|{Digits}|[ \t\f]  
+OneLineComment = \/\/{CharInOneLineComments}*
+MultiLineComments = \/\*({CharInOneLineComments}|{LineTerminator})*\*\/
+Comments = {OneLineComment}|{MultiLineComments}
+UnclosedRightComment = \/\*  #TODO
+CommentWithUnvaildChars  # TODO
+#TODO- /**/comment finish at first */ 
 
 
 /******************************/
@@ -126,15 +126,44 @@ MultiLineComments = \/\/{CharInComments}*|\/\*{CharInComments}*\*\/
 
 <YYINITIAL> {
 
-// TODO - note that ALL sings in TokenNames should be added here (+,{,?,...)
-"+"					{ return symbol(TokenNames.PLUS);}
-"-"					{ return symbol(TokenNames.MINUS);}
-"PPP"				{ return symbol(TokenNames.TIMES);}
-"/"					{ return symbol(TokenNames.DIVIDE);}
+// Keywords should apear BEFORE Identifiers
+
+/* Keywords */
+"class"			{ return symbol(TokenNames.CLASS);}
+"nil"				{ return symbol(TokenNames.NIL);}
+"array"			{ return symbol(TokenNames.ARRAY);}
+"while"			{ return symbol(TokenNames.WHILE);}
+"int"				{ return symbol(TokenNames.TYPE_INT);}
+"extends"		{ return symbol(TokenNames.EXTENDS);}
+"return"		{ return symbol(TokenNames.RETURN);}
+"new"				{ return symbol(TokenNames.NEW);}
+"if"				{ return symbol(TokenNames.IF);}
+"string"		{ return symbol(TokenNames.TYPE_STRING);}
+
+
 "("					{ return symbol(TokenNames.LPAREN);}
 ")"					{ return symbol(TokenNames.RPAREN);}
+"["					{ return symbol(TokenNames.LBRACK);}
+"]"					{ return symbol(TokenNames.RBRACK);}
+"{"					{ return symbol(TokenNames.LBRACE);}
+"}"					{ return symbol(TokenNames.RBRACE);}
+"+"					{ return symbol(TokenNames.PLUS);}
+"-"					{ return symbol(TokenNames.MINUS);}
+"*"					{ return symbol(TokenNames.TIMES);}
+"/"					{ return symbol(TokenNames.DIVIDE);}
+","					{ return symbol(TokenNames.COMMA);}
+"."					{ return symbol(TokenNames.DOT);}
+";"					{ return symbol(TokenNames.SEMICOLON);}
+":="				{ return symbol(TokenNames.ASSIGN);}
+"="					{ return symbol(TokenNames.EQ);}
+"<"					{ return symbol(TokenNames.LT);}
+">"					{ return symbol(TokenNames.GT);}
+
+
+{Identifiers}		{ return symbol(TokenNames.ID, new String(yytext()));}  
 {Integers}			{ return symbol(TokenNames.INT, new Integer(yytext()));}
-{Identifiers}				{ return symbol(TokenNames.ID,     new String( yytext()));}
+{Strings}			{ return symbol(TokenNames.STRING, new String(yytext()));}  
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
+{Comments}			{ /* just skip what was found, do nothing */ }
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 }
