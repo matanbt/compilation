@@ -100,16 +100,19 @@ Integers = 0|[1-9][0-9]*
 Strings = \"{Letters}*\"
 
 /* Comments Macros */
+
+/* One-Line Comment*/
 CharInOneLineComments = [\(\)\[\]\{\}\?!\+\-\*\/\.;]|{Letters}|{Digits}|[ \t\f]
 OneLineComment = \/\/{CharInOneLineComments}*
-MultiLineComments = \/\*({CharInOneLineComments}|{LineTerminator})*\*\/
-Comments = {OneLineComment}|{MultiLineComments}
-/* TODO */
-UnclosedRightComment = \/\*
-/* TODO */
-CommentWithUnvaildChars = ""
+InvalidOneLineComment = \/\/.*
 
-/* TODO- multi-line-comment finish at first */
+/* Multi-Line Comment */
+CharInMultiCommentWithoutAsteriskAndSlash = [\(\)\[\]\{\}\?!\+\-\.;]|{Letters}|{Digits}|{WhiteSpace}|{LineTerminator}
+CharInMultiCommentWithoutAsterisk = {CharInMultiCommentWithoutAsteriskAndSlash}|\/
+MultiLineComments = \/\*({CharInMultiCommentWithoutAsterisk})*\*+(({CharInMultiCommentWithoutAsteriskAndSlash})+({CharInMultiCommentWithoutAsterisk})*\*+)*\/
+InvalidMultiLineComment = \/\*.*
+
+Comments = {OneLineComment}|{MultiLineComments}
 
 
 /******************************/
@@ -133,16 +136,16 @@ CommentWithUnvaildChars = ""
 // Keywords should apear BEFORE Identifiers
 
 /* Keywords */
-"class"			{ return symbol(TokenNames.CLASS);}
-"nil"				{ return symbol(TokenNames.NIL);}
-"array"			{ return symbol(TokenNames.ARRAY);}
-"while"			{ return symbol(TokenNames.WHILE);}
-"int"				{ return symbol(TokenNames.TYPE_INT);}
-"extends"		{ return symbol(TokenNames.EXTENDS);}
-"return"		{ return symbol(TokenNames.RETURN);}
-"new"				{ return symbol(TokenNames.NEW);}
-"if"				{ return symbol(TokenNames.IF);}
-"string"		{ return symbol(TokenNames.TYPE_STRING);}
+"class"			    { return symbol(TokenNames.CLASS);}
+"nil"			    { return symbol(TokenNames.NIL);}
+"array"			    { return symbol(TokenNames.ARRAY);}
+"while"			    { return symbol(TokenNames.WHILE);}
+"int"			    { return symbol(TokenNames.TYPE_INT);}
+"extends"		    { return symbol(TokenNames.EXTENDS);}
+"return"	    	{ return symbol(TokenNames.RETURN);}
+"new"			    { return symbol(TokenNames.NEW);}
+"if"			    { return symbol(TokenNames.IF);}
+"string"		    { return symbol(TokenNames.TYPE_STRING);}
 
 
 "("					{ return symbol(TokenNames.LPAREN);}
@@ -169,5 +172,7 @@ CommentWithUnvaildChars = ""
 {Strings}			{ return symbol(TokenNames.STRING, new String(yytext()));}  
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
 {Comments}			{ /* just skip what was found, do nothing */ }
+{InvalidOneLineComment} { return symbol(TokenNames.ERROR);}
+{InvalidMultiLineComment} { return symbol(TokenNames.ERROR);}
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 }
