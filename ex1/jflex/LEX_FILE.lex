@@ -110,7 +110,7 @@ InvalidOneLineComment = \/\/.*
 CharInMultiCommentWithoutAsteriskAndSlash = [\(\)\[\]\{\}\?!\+\-\.;]|{Letters}|{Digits}|{WhiteSpace}|{LineTerminator}
 CharInMultiCommentWithoutAsterisk = {CharInMultiCommentWithoutAsteriskAndSlash}|\/
 MultiLineComments = \/\*({CharInMultiCommentWithoutAsterisk})*\*+(({CharInMultiCommentWithoutAsteriskAndSlash})+({CharInMultiCommentWithoutAsterisk})*\*+)*\/
-InvalidMultiLineComment = \/\*.*
+InvalidMultiLineComment = \/\*({CharInMultiCommentWithoutAsterisk})*(\*+({CharInMultiCommentWithoutAsteriskAndSlash})+({CharInMultiCommentWithoutAsterisk})*)*
 
 Comments = {OneLineComment}|{MultiLineComments}
 
