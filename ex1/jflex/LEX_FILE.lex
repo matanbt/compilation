@@ -99,17 +99,25 @@ Identifiers = {Letters}({Letters}|{Digits})*
 Integers = 0|[1-9][0-9]*
 Strings = \"{Letters}*\"
 
+
 /* Comments Macros */
+
 CharInOneLineComments = [\(\)\[\]\{\}\?!\+\-\*\/\.;]|{Letters}|{Digits}|[ \t\f]
 OneLineComment = \/\/{CharInOneLineComments}*
-MultiLineComments = \/\*({CharInOneLineComments}|{LineTerminator})*\*\/
-Comments = {OneLineComment}|{MultiLineComments}
-/* TODO */
-UnclosedRightComment = \/\*
-/* TODO */
-CommentWithUnvaildChars = ""
 
-/* TODO- multi-line-comment finish at first */
+
+CharInMultiCommentWithoutAsteriskAndSlash = [\(\)\[\]\{\}\?!\+\-\.;]|{Letters}|{Digits}|{WhiteSpace}
+
+ValidInMCommentsWoAsterisk = {CharInMultiCommentWithoutAsteriskAndSlash}|\/
+AsteriskWithSomethingAfterNotSlash = \*{CharInMultiCommentWithoutAsteriskAndSlash}|\*
+InsideMultiComment = ({ValidInMCommentsWoAsterisk}|{AsteriskWithSomethingAfterNotSlash})*\*?
+
+
+MultiLineComments = \/\*{InsideMultiComment}*\*\/
+
+Comments = {OneLineComment}|{MultiLineComments}
+
+ErrorComment = \/\*{InsideMultiComment}
 
 
 /******************************/
@@ -169,5 +177,6 @@ CommentWithUnvaildChars = ""
 {Strings}			{ return symbol(TokenNames.STRING, new String(yytext()));}  
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
 {Comments}			{ /* just skip what was found, do nothing */ }
+{ErrorComment}		{ return symbol(TokenNames.ERROR);}
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 }
