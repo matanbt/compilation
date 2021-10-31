@@ -103,7 +103,7 @@ Strings = \"{Letters}*\"
 
 /* One-Line Comment*/
 CharInOneLineComments = [\(\)\[\]\{\}\?!\+\-\*\/\.;]|{Letters}|{Digits}|[ \t\f]
-OneLineComment = \/\/{CharInOneLineComments}*
+OneLineComment = \/\/{CharInOneLineComments}*{LineTerminator}
 InvalidOneLineComment = \/\/.*
 
 /* Multi-Line Comment */
