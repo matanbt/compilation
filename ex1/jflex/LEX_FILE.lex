@@ -109,7 +109,7 @@ OneLineComment = \/\/{CharInOneLineComments}*
 CharInMultiCommentWithoutAsteriskAndSlash = [\(\)\[\]\{\}\?!\+\-\.;]|{Letters}|{Digits}|{WhiteSpace}
 
 ValidInMCommentsWoAsterisk = {CharInMultiCommentWithoutAsteriskAndSlash}|\/
-AsteriskWithSomethingAfterNotSlash = \*{CharInMultiCommentWithoutAsteriskAndSlash}|\*
+AsteriskWithSomethingAfterNotSlash = \*({CharInMultiCommentWithoutAsteriskAndSlash}|\*)
 InsideMultiComment = ({ValidInMCommentsWoAsterisk}|{AsteriskWithSomethingAfterNotSlash})*\*?
 
 
