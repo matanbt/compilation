@@ -88,7 +88,6 @@ import java_cup.runtime.*;
 /***********************/
 
 /* Base Macros */
-/* TODO is \r a LineTerminator*/
 LineTerminator	= \r|\n|\r\n
 WhiteSpace = {LineTerminator} | [ \t\f]
 Letters = [a-zA-Z]
@@ -97,14 +96,16 @@ Digits = [0-9]
 /* Symbols Macros */
 Identifiers = {Letters}({Letters}|{Digits})*
 Integers = 0|[1-9][0-9]*
+LeadingZeroIntegers = 0[1-9]+
 Strings = \"{Letters}*\"
+UnclosedStrings = \"{Letters}*
 
 /* Comments Macros */
 
 /* One-Line Comment*/
 CharInOneLineComments = [\(\)\[\]\{\}\?!\+\-\*\/\.;]|{Letters}|{Digits}|[ \t\f]
 OneLineComment = \/\/{CharInOneLineComments}*{LineTerminator}
-InvalidOneLineComment = \/\/.*
+InvalidOneLineComment = \/\/.*[^\(\)\[\]\{\}\?!\+\-\*\/\.;a-zA-Z0-9 \t\f]+.*{LineTerminator}
 
 /* Multi-Line Comment */
 CharInMultiCommentWithoutAsteriskAndSlash = [\(\)\[\]\{\}\?!\+\-\.;]|{Letters}|{Digits}|{WhiteSpace}|{LineTerminator}
@@ -169,10 +170,13 @@ Comments = {OneLineComment}|{MultiLineComments}
 
 {Identifiers}		{ return symbol(TokenNames.ID, new String(yytext()));}  
 {Integers}			{ return symbol(TokenNames.INT, new Integer(yytext()));}
-{Strings}			{ return symbol(TokenNames.STRING, new String(yytext()));}  
+{LeadingZeroIntegers}  { return symbol(TokenNames.ERROR); }
+{Strings}			{ return symbol(TokenNames.STRING, new String(yytext()));}
+{UnclosedStrings}   { return symbol(TokenNames.ERROR); }
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
-{Comments}			{ /* just skip what was found, do nothing */ }
+{Comments}			{ return symbol(TokenNames.MINUS); /* just skip what was found, do nothing */ }
 {InvalidOneLineComment} { return symbol(TokenNames.ERROR);}
 {InvalidMultiLineComment} { return symbol(TokenNames.ERROR);}
 <<EOF>>				{ return symbol(TokenNames.EOF);}
+.                   { return symbol(TokenNames.ERROR); }
 }
