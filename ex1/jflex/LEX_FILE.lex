@@ -109,7 +109,7 @@ UnclosedStrings = \"{Letters}*
 
 /* One-Line Comment*/
 CharInOneLineComments = [\(\)\[\]\{\}\?!\+\-\*\/\.;]|{Letters}|{Digits}|[ \t\f]
-OneLineComment = \/\/{CharInOneLineComments}*{LineTerminator}
+OneLineComment = \/\/({CharInOneLineComments})*{LineTerminator}
 InvalidOneLineComment = \/\/[^\r\n]*{LineTerminator}
 
 /* Multi-Line Comment */
