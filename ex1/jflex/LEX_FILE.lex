@@ -115,10 +115,9 @@ InvalidOneLineComment = \/\/[^\r\n]*{LineTerminator}
 /* Multi-Line Comment */
 CharInMultiCommentWithoutAsteriskAndSlash = [\(\)\[\]\{\}\?!\+\-\.;]|{Letters}|{Digits}|{WhiteSpace}
 CharInMultiCommentWithoutAsterisk = {CharInMultiCommentWithoutAsteriskAndSlash}|\/
-ValidInMCommentsWoAsterisk = {CharInMultiCommentWithoutAsteriskAndSlash}|\/
 AsteriskWithSomethingAfterNotSlash = \*({CharInMultiCommentWithoutAsteriskAndSlash}|\*)
 
-InsideMultiComment = ({ValidInMCommentsWoAsterisk}|{AsteriskWithSomethingAfterNotSlash})*\*?
+InsideMultiComment = ({CharInMultiCommentWithoutAsterisk}|{AsteriskWithSomethingAfterNotSlash})*\*?
 
 MultiLineComments = \/\*{InsideMultiComment}*\*\/
 
