@@ -64,6 +64,10 @@ import java_cup.runtime.*;
 	    if(type == TokenNames.INT)
 	    { // special treatment for integer
 	        int lower_bound = 0, upper_bound = (1 << 15) - 1;
+			if(((String) value).length() > 5)
+            {
+                return new Symbol(TokenNames.ERROR, yyline, yycolumn, value);
+            }
             if((Integer) value < lower_bound || (Integer) value > upper_bound)
             {
                 return new Symbol(TokenNames.ERROR, yyline, yycolumn, value);
@@ -105,10 +109,10 @@ UnclosedStrings = \"{Letters}*
 /* One-Line Comment*/
 CharInOneLineComments = [\(\)\[\]\{\}\?!\+\-\*\/\.;]|{Letters}|{Digits}|[ \t\f]
 OneLineComment = \/\/{CharInOneLineComments}*{LineTerminator}
-InvalidOneLineComment = \/\/.*[^\(\)\[\]\{\}\?!\+\-\*\/\.;a-zA-Z0-9 \t\f]+.*{LineTerminator}
+InvalidOneLineComment = \/\/[^\r\n]*{LineTerminator}
 
 /* Multi-Line Comment */
-CharInMultiCommentWithoutAsteriskAndSlash = [\(\)\[\]\{\}\?!\+\-\.;]|{Letters}|{Digits}|{WhiteSpace}|{LineTerminator}
+CharInMultiCommentWithoutAsteriskAndSlash = [\(\)\[\]\{\}\?!\+\-\.;]|{Letters}|{Digits}|{WhiteSpace}
 CharInMultiCommentWithoutAsterisk = {CharInMultiCommentWithoutAsteriskAndSlash}|\/
 MultiLineComments = \/\*({CharInMultiCommentWithoutAsterisk})*\*+(({CharInMultiCommentWithoutAsteriskAndSlash})+({CharInMultiCommentWithoutAsterisk})*\*+)*\/
 InvalidMultiLineComment = \/\*({CharInMultiCommentWithoutAsterisk})*(\*+({CharInMultiCommentWithoutAsteriskAndSlash})+({CharInMultiCommentWithoutAsterisk})*)*
