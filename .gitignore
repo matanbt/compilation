@@ -31,12 +31,12 @@ notes.txt
 hs_err_pid*
 
 
-### Our additions ###
-# JARs
-ex1/external_jars
+### Ex1 additions ###
 
 # created by "make"
-ex1/bin
+ex1/bin/Lexer.class
+ex1/bin/Main.class
+ex1/bin/TokenNames.class
 ex1/LEXER
 ex1/src/Lexer.java
 
