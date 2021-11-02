@@ -68,7 +68,7 @@ import java_cup.runtime.*;
             {
                 return new Symbol(TokenNames.ERROR, yyline, yycolumn, value);
             }
-			int num = new Integer(value);
+			int num = new Integer((String) value);
             if(num < lower_bound || num > upper_bound)
             {
                 return new Symbol(TokenNames.ERROR, yyline, yycolumn, value);
