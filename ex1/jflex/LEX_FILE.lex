@@ -174,7 +174,7 @@ Comments = {OneLineComment}|{MultiLineComments}
 {Strings}			{ return symbol(TokenNames.STRING, new String(yytext()));}
 {UnclosedStrings}   { return symbol(TokenNames.ERROR); }
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
-{Comments}			{ return symbol(TokenNames.MINUS); /* just skip what was found, do nothing */ }
+{Comments}			{ /* just skip what was found, do nothing */ }
 {InvalidOneLineComment} { return symbol(TokenNames.ERROR);}
 {InvalidMultiLineComment} { return symbol(TokenNames.ERROR);}
 <<EOF>>				{ return symbol(TokenNames.EOF);}
