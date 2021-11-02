@@ -19,7 +19,6 @@ notes.txt
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
