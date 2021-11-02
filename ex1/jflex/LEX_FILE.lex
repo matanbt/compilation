@@ -68,7 +68,8 @@ import java_cup.runtime.*;
             {
                 return new Symbol(TokenNames.ERROR, yyline, yycolumn, value);
             }
-            if((Integer) value < lower_bound || (Integer) value > upper_bound)
+			int num = new Integer(value);
+            if(num < lower_bound || num > upper_bound)
             {
                 return new Symbol(TokenNames.ERROR, yyline, yycolumn, value);
             }
@@ -173,7 +174,7 @@ Comments = {OneLineComment}|{MultiLineComments}
 
 
 {Identifiers}		{ return symbol(TokenNames.ID, new String(yytext()));}  
-{Integers}			{ return symbol(TokenNames.INT, new Integer(yytext()));}
+{Integers}			{ return symbol(TokenNames.INT, new String(yytext()));}
 {LeadingZeroIntegers}  { return symbol(TokenNames.ERROR); }
 {Strings}			{ return symbol(TokenNames.STRING, new String(yytext()));}
 {UnclosedStrings}   { return symbol(TokenNames.ERROR); }
