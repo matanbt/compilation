@@ -77,7 +77,7 @@ public class Main
 				System.out.print(",");
 				System.out.print(l.getTokenStartPosition());
 				System.out.print("]:");
-				System.out.print(s.value);
+				System.out.print(TokenNames.getTokenName(s.sym));
 				System.out.print("\n");
 
 				/*********************/

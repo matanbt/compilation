@@ -64,7 +64,12 @@ import java_cup.runtime.*;
 	    if(type == TokenNames.INT)
 	    { // special treatment for integer
 	        int lower_bound = 0, upper_bound = (1 << 15) - 1;
-            if((Integer) value < lower_bound || (Integer) value > upper_bound)
+			if(((String) value).length() > 5)
+            {
+                return new Symbol(TokenNames.ERROR, yyline, yycolumn, value);
+            }
+			int num = new Integer((String) value);
+            if(num < lower_bound || num > upper_bound)
             {
                 return new Symbol(TokenNames.ERROR, yyline, yycolumn, value);
             }
@@ -88,7 +93,6 @@ import java_cup.runtime.*;
 /***********************/
 
 /* Base Macros */
-/* TODO is \r a LineTerminator*/
 LineTerminator	= \r|\n|\r\n
 WhiteSpace = {LineTerminator} | [ \t\f]
 Letters = [a-zA-Z]
@@ -97,19 +101,25 @@ Digits = [0-9]
 /* Symbols Macros */
 Identifiers = {Letters}({Letters}|{Digits})*
 Integers = 0|[1-9][0-9]*
+LeadingZeroIntegers = 0[1-9]+
 Strings = \"{Letters}*\"
+UnclosedStrings = \"{Letters}*
 
 /* Comments Macros */
-CharInOneLineComments = [\(\)\[\]\{\}\?!\+\-\*\/\.;]|{Letters}|{Digits}|[ \t\f]
-OneLineComment = \/\/{CharInOneLineComments}*
-MultiLineComments = \/\*({CharInOneLineComments}|{LineTerminator})*\*\/
-Comments = {OneLineComment}|{MultiLineComments}
-/* TODO */
-UnclosedRightComment = \/\*
-/* TODO */
-CommentWithUnvaildChars = ""
 
-/* TODO- multi-line-comment finish at first */
+/* One-Line Comment*/
+CharInOneLineComments = [\(\)\[\]\{\}\?!\+\-\*\/\.;]|{Letters}|{Digits}|[ \t\f]
+OneLineComment = \/\/({CharInOneLineComments})*{LineTerminator}
+InvalidOneLineComment = \/\/[^\r\n]*{LineTerminator}
+
+/* Multi-Line Comment */
+CharInMultiCommentWithoutAsteriskAndSlash = [\(\)\[\]\{\}\?!\+\-\.;]|{Letters}|{Digits}|{WhiteSpace}
+CharInMultiCommentWithoutAsterisk = {CharInMultiCommentWithoutAsteriskAndSlash}|\/
+MultiLineComments = \/\*({CharInMultiCommentWithoutAsterisk})*\*+(({CharInMultiCommentWithoutAsteriskAndSlash})+({CharInMultiCommentWithoutAsterisk})*\*+)*\/
+InvalidMultiLineComment = \/\*({CharInMultiCommentWithoutAsterisk})*(\*+({CharInMultiCommentWithoutAsteriskAndSlash})+({CharInMultiCommentWithoutAsterisk})*)*
+
+Comments = {OneLineComment}|{MultiLineComments}
+
 
 
 /******************************/
@@ -133,16 +143,16 @@ CommentWithUnvaildChars = ""
 // Keywords should apear BEFORE Identifiers
 
 /* Keywords */
-"class"			{ return symbol(TokenNames.CLASS);}
-"nil"				{ return symbol(TokenNames.NIL);}
-"array"			{ return symbol(TokenNames.ARRAY);}
-"while"			{ return symbol(TokenNames.WHILE);}
-"int"				{ return symbol(TokenNames.TYPE_INT);}
-"extends"		{ return symbol(TokenNames.EXTENDS);}
-"return"		{ return symbol(TokenNames.RETURN);}
-"new"				{ return symbol(TokenNames.NEW);}
-"if"				{ return symbol(TokenNames.IF);}
-"string"		{ return symbol(TokenNames.TYPE_STRING);}
+"class"			    { return symbol(TokenNames.CLASS);}
+"nil"			    { return symbol(TokenNames.NIL);}
+"array"			    { return symbol(TokenNames.ARRAY);}
+"while"			    { return symbol(TokenNames.WHILE);}
+"int"			    { return symbol(TokenNames.TYPE_INT);}
+"extends"		    { return symbol(TokenNames.EXTENDS);}
+"return"	    	{ return symbol(TokenNames.RETURN);}
+"new"			    { return symbol(TokenNames.NEW);}
+"if"			    { return symbol(TokenNames.IF);}
+"string"		    { return symbol(TokenNames.TYPE_STRING);}
 
 
 "("					{ return symbol(TokenNames.LPAREN);}
@@ -165,9 +175,14 @@ CommentWithUnvaildChars = ""
 
 
 {Identifiers}		{ return symbol(TokenNames.ID, new String(yytext()));}  
-{Integers}			{ return symbol(TokenNames.INT, new Integer(yytext()));}
-{Strings}			{ return symbol(TokenNames.STRING, new String(yytext()));}  
+{Integers}			{ return symbol(TokenNames.INT, new String(yytext()));}
+{LeadingZeroIntegers}  { return symbol(TokenNames.ERROR); }
+{Strings}			{ return symbol(TokenNames.STRING, new String(yytext()));}
+{UnclosedStrings}   { return symbol(TokenNames.ERROR); }
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
 {Comments}			{ /* just skip what was found, do nothing */ }
+{InvalidOneLineComment} { return symbol(TokenNames.ERROR);}
+{InvalidMultiLineComment} { return symbol(TokenNames.ERROR);}
 <<EOF>>				{ return symbol(TokenNames.EOF);}
+.                   { return symbol(TokenNames.ERROR); }
 }
