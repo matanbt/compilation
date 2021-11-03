@@ -70,15 +70,15 @@ public class Main
 			while (s.sym != TokenNames.EOF)
 			{
 				/************************/
-				/* [6] Print to console */
+				/* [6] Print to console [Commented Out] */
 				/************************/
-				System.out.print("[");
-				System.out.print(l.getLine());
-				System.out.print(",");
-				System.out.print(l.getTokenStartPosition());
-				System.out.print("]:");
-				System.out.print(TokenNames.getTokenName(s.sym));
-				System.out.print("\n");
+//				System.out.print("[");
+//				System.out.print(l.getLine());
+//				System.out.print(",");
+//				System.out.print(l.getTokenStartPosition());
+//				System.out.print("]:");
+//				System.out.print(TokenNames.getTokenName(s.sym));
+//				System.out.print("\n");
 
 				/*********************/
 				/* [7] Print to file */
