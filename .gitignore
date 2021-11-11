@@ -1,6 +1,6 @@
 # IDEs
 .idea
-compilation-project.iml
+*.iml
 
 # misc files
 notes.txt
@@ -44,3 +44,5 @@ ex1/output/OutputTokens.txt
 
 # IDEA files
 compilation.iml
+
+### Ex2 additions ###
