@@ -37,7 +37,7 @@ public class Main
 			/*******************************/
 			/* [4] Initialize a new parser */
 			/*******************************/
-			p = new Parser(l);
+			p = new Parser(l, file_writer);
 
 			/***********************************/
 			/* [5] 3 ... 2 ... 1 ... Parse !!! */
@@ -52,8 +52,9 @@ public class Main
 			/*************************/
 			/* [7] Close output file */
 			/*************************/
+			file_writer.print("OK");
 			file_writer.close();
-			
+
 			/*************************************/
 			/* [8] Finalize AST GRAPHIZ DOT file */
 			/*************************************/
@@ -62,6 +63,7 @@ public class Main
 			     
 		catch (Exception e)
 		{
+			// could be here only if there is logical bug
 			e.printStackTrace();
 		}
 	}
