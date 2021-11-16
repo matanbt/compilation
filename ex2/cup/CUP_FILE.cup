@@ -64,6 +64,7 @@ terminal RETURN;
 terminal NEW;
 terminal IF;
 terminal TYPE_STRING;
+terminal TYPE_VOID;
 
 /* chars */
 terminal LPAREN;
@@ -103,28 +104,77 @@ non terminal AST_STMT stmt;
 non terminal AST_STMT_LIST stmtList;
 non terminal funcDec; // AST_FUNC_DEC
 non terminal funcArgs; //AST_FUNC_ARGS_LIST
-non terminal newExp; //AST_EXP_NEW
-non terminal varDec; //AST_VAR_DEC
+non terminal expList; //AST_FUNC_ARGS_LIST
+non terminal program;
+non terminal type;
+non terminal decList;
+non terminal dec;
+non terminal varDec;
+non terminal newExp;
+non terminal binop;
+non terminal classDec;
+non terminal cFieldList;
+non terminal cField;
+non terminal arrayTypedef;
 
 
 /***********************/
 /* OPERATOR PRECEDENCE */
 /***********************/
-precedence left PLUS;
-precedence left MINUS;
-precedence left TIMES;
-precedence left DIVIDE;
+precedence left ASSIGN;
+precedence left EQ;
+precedence left LT, GT;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+precedence left LBRACK;
+precedence left LPAREN;
+precedence left DOT;
+
 
 /************************/
 /* START WITH: stmtList */
 /************************/
-start with stmtList;
+start with program;
 
 /********************/
 /* DERIVATION RULES */
 /********************/
 
-// one or more statements
+program     ::=     decList;
+
+type        ::=     TYPE_INT | TYPE_STRING | TYPE_VOID | ID;
+
+decList     ::=     dec:s   decList:l
+                    | dec:s
+                    ;
+
+dec         ::=     varDec:s
+                    | funcDec: s
+                    | classDec:s
+                    | arrayTypedef:s
+                    ;
+
+varDec      ::=     type:t ID:i SEMICOLON
+                    | type:t ID:i ASSIGN exp:e SEMICOLON
+                    | type:t ID:i ASSIGN newExp:e SEMICOLON
+                    ;
+/** arrayDef **/
+arrayTypedef    ::=     ARRAY ID EQ type LBRACK RBRACK SEMICOLON;
+
+/** classDec **/
+
+classDec    ::=     CLASS ID EXTENDS ID:name LBRACE cFieldList RBRACE      //{: RESULT = new AST_CLASSDEC(s,l,name);    :}
+                    |  CLASS ID LBRACE cFieldList RBRACE                //{: RESULT = new AST_CLASSDEC(s,l,name);    :}
+                    ;
+
+cFieldList	::=		cField	cFieldList		//{: RESULT = new AST_CFIELD_LIST(s,l);    :}
+					| cField				        //{: RESULT = new AST_CFIELD_LIST(s,null); :}
+					;
+
+cField    ::=       varDec
+                    | funcDec
+                    ;
+
 stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AST_STMT_LIST(s,l);    :}
 					| stmt:s				{: RESULT = new AST_STMT_LIST(s,null); :}
 					;
@@ -157,13 +207,35 @@ funcArgs   ::=   type ID COMMA funcArgs
                 | type ID
                 ;
 
-exp			::=		INT:i								{: RESULT = new AST_EXP_INT(i);          :}
-					| var:v								{: RESULT = new AST_EXP_VAR(v);          :}
-					| exp:e1 PLUS  exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 0);:}
-					| exp:e1 MINUS exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 1);:}
-					;
+
+exp         ::=     var:v								{: RESULT = new AST_EXP_VAR(v);               :}
+                    | LPAREN exp:e RPAREN               {: RESULT = e;                                :}
+                    | exp:e1 binop:op exp:e2               {: /*RESULT = new AST_EXP_BINOP(e1, e2, op);*/ :}
+                    | var:v DOT ID:i LPAREN expList:l RPAREN
+                    | var:v DOT ID:i LPAREN RPAREN
+                    | ID:i LPAREN expList:e RPAREN
+                    | ID:i LPAREN RPAREN
+                    | MINUS INT   {: /*RESULT = new AST_EXP_INT(-i);*/ :}
+                    | INT   {: /*RESULT = new AST_EXP_INT(i);*/ :}
+                    | NIL
+                    | STRING
+                    ;
+
+newExp      ::=     NEW ID:i
+                    | NEW ID:i LBRACK exp:e RBRACK
+                    ;
 
 // one or more exp
-expList	::=		exp:e COMMNA expList:l		{: RESULT = new AST_STMT_LIST(s,l);    :}
-                | exp:e				{: RESULT = new AST_STMT_LIST(s,null); :}
+expList	::=		exp:e COMMA expList:l
+                | exp:e
                 ;
+
+
+binop       ::=     PLUS
+                    | MINUS
+                    | TIMES
+                    | DIVIDE
+                    | LT
+                    | GT
+                    | EQ
+                    ;

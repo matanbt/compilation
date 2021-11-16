@@ -153,6 +153,7 @@ Comments = {OneLineComment}|{MultiLineComments}
 "new"			    { return symbol(TokenNames.NEW);}
 "if"			    { return symbol(TokenNames.IF);}
 "string"		    { return symbol(TokenNames.TYPE_STRING);}
+"void"		        { return symbol(TokenNames.TYPE_VOID);}
 
 
 "("					{ return symbol(TokenNames.LPAREN);}
