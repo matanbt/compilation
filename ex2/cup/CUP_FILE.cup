@@ -32,6 +32,7 @@ scan with
 {:
 	Symbol s;
 	s = lexer.next_token();
+	// TODO check if ERROR and act accordingly
 	//System.out.print(s.sym);
 	System.out.print("[");
 	System.out.print(lexer.getLine());
@@ -52,28 +53,46 @@ scan with
 /*************/
 /* TERMINALS */
 /*************/
-terminal IF;
-terminal EQ;
-terminal DOT;
-terminal PLUS;
-terminal MINUS;
-terminal TIMES;
+/* Keywords */
+terminal CLASS;
+terminal NIL;
+terminal ARRAY;
 terminal WHILE;
-terminal DIVIDE;
+terminal TYPE_INT;
+terminal EXTENDS;
+terminal RETURN;
+terminal NEW;
+terminal IF;
+terminal TYPE_STRING;
+
+/* chars */
 terminal LPAREN;
 terminal RPAREN;
 terminal LBRACK;
 terminal RBRACK;
 terminal LBRACE;
 terminal RBRACE;
+terminal PLUS;
+terminal MINUS;
+terminal TIMES;
+terminal DIVIDE;
+terminal COMMA;
+terminal DOT;
 terminal SEMICOLON;
 terminal ASSIGN;
+terminal EQ;
+terminal LT;
+terminal GT;
+
+/* Error - special terminal for lexical error */
+terminal ERROR;
 
 /*************/
 /* TERMINALS */
 /*************/
 terminal Integer INT;
 terminal String ID;
+terminal String STRING;
 
 /*****************/
 /* NON TERMINALS */
