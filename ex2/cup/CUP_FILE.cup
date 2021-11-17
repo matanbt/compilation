@@ -102,6 +102,9 @@ non terminal AST_EXP exp;
 non terminal AST_VAR var;
 non terminal AST_STMT stmt;
 non terminal AST_STMT_LIST stmtList;
+non terminal funcDec; // AST_FUNC_DEC
+non terminal funcArgs; //AST_FUNC_ARGS_LIST
+non terminal expList; //AST_FUNC_ARGS_LIST
 non terminal program;
 non terminal type;
 non terminal decList;
@@ -146,6 +149,7 @@ decList     ::=     dec:s   decList:l
                     ;
 
 dec         ::=     varDec:s
+                    | funcDec: s
                     | classDec:s
                     | arrayTypedef:s
                     ;
@@ -176,23 +180,43 @@ stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AST_STMT_LIST(s,l);    :}
 					;
 
 var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name);       :}
-					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName); :} 
-					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e);     :} 
+					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName); :}
+					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e);     :}
 					;
-					
-stmt		::=		var:v ASSIGN exp:e SEMICOLON								{: RESULT = new AST_STMT_ASSIGN(v,e); :}
+
+stmt		::=		varDec
+                    | var:v ASSIGN exp:e SEMICOLON								{: RESULT = new AST_STMT_ASSIGN(v,e); :}
+                    | var:v ASSIGN newExp:e SEMICOLON
+                    | RETURN SEMICOLON
+                    | RETURN exp SEMICOLON
 					| IF    LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_IF(   cond,body); :}
 					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_WHILE(cond,body); :}
+					| ID LPAREN RPAREN SEMICOLON
+					| ID LPAREN expList RPAREN SEMICOLON
+					| var DOT ID LPAREN LBRACE SEMICOLON
+					| var DOT ID LPAREN expList RPAREN SEMICOLON
 					;
+
+// ----- Function Declaration -----
+funcDec    ::=    type:type ID:fname LPAREN RPAREN LBRACE stmtList:body RBRACE           {: RESULT = new AST_STMT_LIST(null,null); :} // type+" "+ fname+ "() {...}"
+                | type:type ID:fname LPAREN funcArgs RPAREN LBRACE stmtList:body RBRACE  {: RESULT = new AST_STMT_LIST(null, null); :} //type+" "+ fname+ "(..args...) {...}"
+                ;
+
+// Function arguments (one or more)
+funcArgs   ::=   type ID COMMA funcArgs
+                | type ID
+                ;
+
 
 exp         ::=     var:v								{: RESULT = new AST_EXP_VAR(v);               :}
                     | LPAREN exp:e RPAREN               {: RESULT = e;                                :}
-                    | exp:e1 binop:op exp:e2               {: RESULT = new AST_EXP_BINOP(e1, e2, op); :}
+                    | exp:e1 binop:op exp:e2               {: /*RESULT = new AST_EXP_BINOP(e1, e2, op);*/ :}
                     | var:v DOT ID:i LPAREN expList:l RPAREN
                     | var:v DOT ID:i LPAREN RPAREN
                     | ID:i LPAREN expList:e RPAREN
                     | ID:i LPAREN RPAREN
-                    | MINUS INT:i   {: RESULT = new AST_EXP_INT(-i); :}
+                    | MINUS INT   {: /*RESULT = new AST_EXP_INT(-i);*/ :}
+                    | INT   {: /*RESULT = new AST_EXP_INT(i);*/ :}
                     | NIL
                     | STRING
                     ;
@@ -200,6 +224,12 @@ exp         ::=     var:v								{: RESULT = new AST_EXP_VAR(v);               :
 newExp      ::=     NEW ID:i
                     | NEW ID:i LBRACK exp:e RBRACK
                     ;
+
+// one or more exp
+expList	::=		exp:e COMMA expList:l
+                | exp:e
+                ;
+
 
 binop       ::=     PLUS
                     | MINUS
