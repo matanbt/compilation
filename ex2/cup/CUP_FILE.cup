@@ -112,10 +112,10 @@ non terminal dec;
 non terminal varDec;
 non terminal AST_NEW_EXP newExp;
 non terminal String binop;
-non terminal classDec;
-non terminal cFieldList;
-non terminal cField;
-non terminal arrayTypedef;
+non terminal AST_CLASSDEC classDec;
+non terminal AST_CFIELD_LIST cFieldList;
+non terminal AST_CFIELD cField;
+non terminal AST_ARRAY_TYPE_DEF arrayTypedef;
 
 
 /***********************/
@@ -163,22 +163,21 @@ varDec      ::=     type:t ID:i SEMICOLON
                     | type:t ID:i ASSIGN exp:e SEMICOLON
                     | type:t ID:i ASSIGN newExp:e SEMICOLON
                     ;
+/** arrayDef **/
+arrayTypedef    ::=     ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON   {: RESULT = new AST_ARRAY_TYPE_DEF(t, i);    :};
 
-//---------------- array Type-Def ----------------
-arrayTypedef    ::=     ARRAY ID EQ type LBRACK RBRACK SEMICOLON;
+/** classDec **/
 
-
-//---------------- class Decleration ----------------
-classDec    ::=     CLASS ID EXTENDS ID:name LBRACE cFieldList RBRACE      //{: RESULT = new AST_CLASSDEC(s,l,name);    :}
-                    |  CLASS ID LBRACE cFieldList RBRACE                //{: RESULT = new AST_CLASSDEC(s,l,name);    :}
+classDec    ::=     CLASS ID EXTENDS ID:name LBRACE cFieldList:l RBRACE      {: RESULT = new AST_CLASSDEC(l,name);    :}
+                    |  CLASS ID LBRACE cFieldList:l RBRACE                   {: RESULT = new AST_CLASSDEC(l,null);    :}
                     ;
 
-cFieldList	::=		cField	cFieldList		//{: RESULT = new AST_CFIELD_LIST(s,l);    :}
-					| cField				        //{: RESULT = new AST_CFIELD_LIST(s,null); :}
+cFieldList	::=		cField:s	cFieldList:l		        {: RESULT = new AST_CFIELD_LIST(s,l);    :}
+					| cField:s				                {: RESULT = new AST_CFIELD_LIST(s,null); :}
 					;
 
-cField    ::=       varDec
-                    | funcDec
+cField    ::=       varDec:varDec                                   {: RESULT = new AST_CFIELD_VAR(varDec);    :}
+                    | funcDec:funcDec                               {: RESULT = new AST_CFIELD_FUNC(funcDec);    :}
                     ;
 
 
