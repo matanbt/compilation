@@ -91,7 +91,7 @@ terminal ERROR;
 /*************/
 /* TERMINALS with value */
 /*************/
-terminal Integer INT;
+terminal String INT;
 terminal String ID;
 terminal String STRING;
 
@@ -222,8 +222,8 @@ exp         ::=     var:v								        {: RESULT = new AST_EXP_VAR(v); :}
                     | var:v DOT ID:i LPAREN RPAREN              {: RESULT = new AST_EXP_CALL(v, i); :}
                     | ID:i LPAREN expList:l RPAREN              {: RESULT = new AST_EXP_CALL(i, l); :}
                     | ID:i LPAREN RPAREN                        {: RESULT = new AST_EXP_CALL(i); :}
-                    | MINUS INT:i                               {: RESULT = new AST_EXP_INT(-i); :}
-                    | INT:i                                     {: RESULT = new AST_EXP_INT(i); :}
+                    | MINUS INT:i                               {: RESULT = new AST_EXP_INT(-Integer.parseInt(i)); :}
+                    | INT:i                                     {: RESULT = new AST_EXP_INT(Integer.parseInt(i)); :}
                     | NIL                                       {: RESULT = new AST_EXP_NIL(); :}
                     | STRING:s                                  {: RESULT = new AST_EXP_STRING(s); :}
                     ;
