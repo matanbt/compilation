@@ -51,5 +51,8 @@ public class AST_STMT_CALL extends AST_STMT
 			SerialNumber,
 			" CALL \n"+idName);
 
+		if (v != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, v.SerialNumber);
+		if (eList != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, eList.SerialNumber);
+
 	}
 }
