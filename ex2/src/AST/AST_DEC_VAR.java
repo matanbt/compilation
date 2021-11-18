@@ -1,6 +1,6 @@
 package AST;
 
-public class AST_DEC_VAR extends AST_NODE
+public class AST_DEC_VAR extends AST_Node
 {
     public AST_TYPE type;
     public String name;
@@ -65,7 +65,7 @@ public class AST_DEC_VAR extends AST_NODE
         /*************************************/
         /* AST NODE TYPE = AST DEC VAR */
         /*************************************/
-        System.out.print("AST NODE DEC VAR ( %s )\n", name);
+        System.out.format("AST NODE DEC VAR ( %s )\n", name);
 
         /****************************************/
         /* RECURSIVELY PRINT type + exp/new_exp ... */

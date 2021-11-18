@@ -62,7 +62,7 @@ public class AST_EXP_CALL extends AST_EXP
         /*************************************/
         /* AST NODE TYPE = AST EXP CALL */
         /*************************************/
-        System.out.print("AST NODE EXP CALL ( %s )\n", func);
+        System.out.format("AST NODE EXP CALL ( %s )\n", func);
 
         /****************************************/
         /* RECURSIVELY PRINT caller + args ... */

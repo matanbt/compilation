@@ -211,9 +211,9 @@ funcArgs   ::=   type ID COMMA funcArgs
 exp         ::=     var:v								        {: RESULT = new AST_EXP_VAR(v); :}
                     | LPAREN exp:e RPAREN                       {: RESULT = e; :}
                     | exp:e1 binop:op exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, op); :}
-                    | var:v DOT ID:i LPAREN expList:l RPAREN    {: RESULT = new AST_EXP_CALL(v, i, e); :}
+                    | var:v DOT ID:i LPAREN expList:l RPAREN    {: RESULT = new AST_EXP_CALL(v, i, l); :}
                     | var:v DOT ID:i LPAREN RPAREN              {: RESULT = new AST_EXP_CALL(v, i); :}
-                    | ID:i LPAREN expList:e RPAREN              {: RESULT = new AST_EXP_CALL(i, e); :}
+                    | ID:i LPAREN expList:l RPAREN              {: RESULT = new AST_EXP_CALL(i, l); :}
                     | ID:i LPAREN RPAREN                        {: RESULT = new AST_EXP_CALL(i); :}
                     | MINUS INT:i                               {: RESULT = new AST_EXP_INT(-i); :}
                     | INT:i                                     {: RESULT = new AST_EXP_INT(i); :}
