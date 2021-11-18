@@ -33,7 +33,9 @@ public class AST_DEC_FUNC_ARG extends AST_Node
         /**********************************/
         /* AST NODE TYPE = AST SIMPLE VAR */
         /**********************************/
-        System.out.format("AST NODE FUNCTION ARGUMENT ( %s )\n",argName);
+        System.out.format("AST NODE FUNCTION ARGUMENT ( %s )\n", argName);
+
+        if (argType != null) argType.PrintMe();
 
         /*********************************/
         /* Print to AST GRAPHIZ DOT file */

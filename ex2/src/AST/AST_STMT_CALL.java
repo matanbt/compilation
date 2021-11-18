@@ -44,15 +44,18 @@ public class AST_STMT_CALL extends AST_STMT
 	{
 		System.out.print("AST NODE CALL "+idName+" STMT\n");
 
+		if (v != null) v.PrintMe();
+		if (eList != null) eList.PrintMe();
+
+
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			" CALL \n"+idName);
+			"CALL("+ idName +")\n");
 
 		if (v != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, v.SerialNumber);
 		if (eList != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, eList.SerialNumber);
-
 	}
 }
