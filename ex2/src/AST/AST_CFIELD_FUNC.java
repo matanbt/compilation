@@ -5,12 +5,12 @@ public class AST_CFIELD_FUNC extends AST_CFIELD
 	/***********************/
 	/*  CField ::= funcDec */
 	/***********************/
-	public AST_FUNC func;
+	public AST_DEC_FUNC func;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_CFIELD_FUNC(AST_FUNC func)
+	public AST_CFIELD_FUNC(AST_DEC_FUNC func)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */

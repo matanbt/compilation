@@ -176,8 +176,8 @@ cFieldList	::=		cField:s	cFieldList:l		        {: RESULT = new AST_CFIELD_LIST(s
 					| cField:s				                {: RESULT = new AST_CFIELD_LIST(s,null); :}
 					;
 
-cField    ::=       varDec:varDec                                   {: RESULT = new AST_CFIELD_VAR(varDec);    :}
-                    | funcDec:funcDec                               {: RESULT = new AST_CFIELD_FUNC(funcDec);    :}
+cField    ::=       varDec:varDec                                   {: RESULT = new AST_CFIELD_VAR(varDec);   :}
+                    | funcDec:funcDec                               {: RESULT = new AST_CFIELD_FUNC(funcDec); :}
                     ;
 
 
