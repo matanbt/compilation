@@ -20,7 +20,7 @@ public class AST_EXP_INT extends AST_EXP
 		System.out.format("====================== exp -> INT( %d )\n", value);
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.value = value;
 	}

@@ -109,7 +109,7 @@ non terminal program;
 non terminal type;
 non terminal decList;
 non terminal dec;
-non terminal varDec;
+non terminal AST_DEC_VAR varDec;
 non terminal newExp;
 non terminal binop;
 non terminal classDec;
@@ -154,9 +154,9 @@ dec         ::=     varDec:s
                     | arrayTypedef:s
                     ;
 
-varDec      ::=     type:t ID:i SEMICOLON
-                    | type:t ID:i ASSIGN exp:e SEMICOLON
-                    | type:t ID:i ASSIGN newExp:e SEMICOLON
+varDec      ::=     type:t ID:i SEMICOLON                       {: RESULT = new AST_DEC_VAR(t, i); :}
+                    | type:t ID:i ASSIGN exp:e SEMICOLON        {: RESULT = new AST_DEC_VAR(t, i, e); :}
+                    | type:t ID:i ASSIGN newExp:ne SEMICOLON    {: RESULT = new AST_DEC_VAR(t, i, ne); :}
                     ;
 /** arrayDef **/
 arrayTypedef    ::=     ARRAY ID EQ type LBRACK RBRACK SEMICOLON;
@@ -208,17 +208,17 @@ funcArgs   ::=   type ID COMMA funcArgs
                 ;
 
 
-exp         ::=     var:v								{: RESULT = new AST_EXP_VAR(v);               :}
-                    | LPAREN exp:e RPAREN               {: RESULT = e;                                :}
-                    | exp:e1 binop:op exp:e2               {: /*RESULT = new AST_EXP_BINOP(e1, e2, op);*/ :}
-                    | var:v DOT ID:i LPAREN expList:l RPAREN
-                    | var:v DOT ID:i LPAREN RPAREN
-                    | ID:i LPAREN expList:e RPAREN
-                    | ID:i LPAREN RPAREN
-                    | MINUS INT   {: /*RESULT = new AST_EXP_INT(-i);*/ :}
-                    | INT   {: /*RESULT = new AST_EXP_INT(i);*/ :}
-                    | NIL
-                    | STRING
+exp         ::=     var:v								        {: RESULT = new AST_EXP_VAR(v); :}
+                    | LPAREN exp:e RPAREN                       {: RESULT = e; :}
+                    | exp:e1 binop:op exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, op); :}
+                    | var:v DOT ID:i LPAREN expList:l RPAREN    {: RESULT = new AST_EXP_CALL(v, i, e); :}
+                    | var:v DOT ID:i LPAREN RPAREN              {: RESULT = new AST_EXP_CALL(v, i); :}
+                    | ID:i LPAREN expList:e RPAREN              {: RESULT = new AST_EXP_CALL(i, e); :}
+                    | ID:i LPAREN RPAREN                        {: RESULT = new AST_EXP_CALL(i); :}
+                    | MINUS INT:i                               {: RESULT = new AST_EXP_INT(-i); :}
+                    | INT:i                                     {: RESULT = new AST_EXP_INT(i); :}
+                    | NIL                                       {: RESULT = new AST_EXP_NIL(); :}
+                    | STRING:s                                  {: RESULT = new AST_EXP_STRING(s); :}
                     ;
 
 newExp      ::=     NEW ID:i
