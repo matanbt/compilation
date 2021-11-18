@@ -1,6 +1,6 @@
 package AST;
 
-public class AST_TYPE extends AST_NODE
+public class AST_TYPE extends AST_Node
 {
 	public String type_name; // type can be from: {'void', 'int', 'string'}, OR could be a cutomized type
 	

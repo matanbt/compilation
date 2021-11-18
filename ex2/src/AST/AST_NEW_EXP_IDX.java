@@ -1,16 +1,15 @@
 package AST;
 
-public class AST_FUNC extends AST_NODE // TODO - extend DEC(lare)
+// indexable new-expression
+public class AST_NEW_EXP_IDX extends AST_NEW_EXP // TODO - extend DEC(lare)
 {
-	public AST_TYPE rtnType;
-	public String funcName;
-	public AST_STMT_LIST body;
-	public AST_ARG_LIST argList; // could be null
+	public String idName;
+	public AST_EXP expression; // not null
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_FUNC(AST_TYPE rtnType, String funcName, AST_ARG_LIST argList, AST_STMT_LIST body)
+	public AST_NEW_EXP_IDX(String idName, AST_EXP expression)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -20,13 +19,10 @@ public class AST_FUNC extends AST_NODE // TODO - extend DEC(lare)
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.format("====================== dec -> function declaration %s %s\n", rtnType, funcName);
+		System.out.format("====================== newExp -> NEW %s [exp]", idName);
 
-
-		this.rtnType = rtnType;
-		this.funcName = funcName;
-		this.argList = argList;
-		this.body = body;
+		this.idName = idName;
+		this.expression = expression;
 	}
 
 	/*********************************************************/
@@ -34,23 +30,20 @@ public class AST_FUNC extends AST_NODE // TODO - extend DEC(lare)
 	/*********************************************************/
 	public void PrintMe()
 	{
-		System.out.print("AST NODE FUNCTION-DECLARATION\n");
+		System.out.format("AST NODE newExp ID( %s )\n", idName);
 
-
-		if (rtnType != null) rtnType.PrintMe();
-		if (argList != null) argList.PrintMe();
+		if (expression != null) expression.PrintMe();
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 				SerialNumber,
-				"FUNC: " + funcName);
+				"new " + idName);
 
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,rtnType.SerialNumber);
-		if (argList != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,argList.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,expression.SerialNumber);
 	}
 }

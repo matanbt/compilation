@@ -1,12 +1,12 @@
 package AST;
 
-public class AST_FUNC_ARG_LIST extends AST_Node
+public class AST_DEC_FUNC_ARG_LIST extends AST_Node
 {
-	public AST_FUNC_ARG head; // could NOT be null
-	public AST_FUNC_ARG_LIST next; // could be null (means end of the list)
+	public AST_DEC_FUNC_ARG head; // could NOT be null
+	public AST_DEC_FUNC_ARG_LIST next; // could be null (means end of the list)
 
 
-	public AST_FUNC_ARG_LIST(AST_FUNC_ARG head,AST_FUNC_ARG_LIST next)
+	public AST_DEC_FUNC_ARG_LIST(AST_DEC_FUNC_ARG head, AST_DEC_FUNC_ARG_LIST next)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -32,7 +32,7 @@ public class AST_FUNC_ARG_LIST extends AST_Node
 		System.out.print("AST NODE FUNC-ARGS LIST\n");
 
 		if (head != null) head.PrintMe();
-		if (next != null) tail.PrintMe();
+		if (next != null) next.PrintMe();
 
 		/**********************************/
 		/* PRINT to AST GRAPHVIZ DOT file */

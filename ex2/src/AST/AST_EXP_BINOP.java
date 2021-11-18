@@ -9,7 +9,7 @@ public class AST_EXP_BINOP extends AST_EXP
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_BINOP(AST_EXP left,AST_EXP right,public op)
+	public AST_EXP_BINOP(AST_EXP left,AST_EXP right,String op)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */

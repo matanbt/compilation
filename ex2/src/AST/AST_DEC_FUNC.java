@@ -1,14 +1,16 @@
 package AST;
 
-public class AST_STMT_WHILE extends AST_STMT
+public class AST_DEC_FUNC extends AST_Node // TODO - extend DEC(lare)
 {
-	public AST_EXP cond;
+	public AST_TYPE rtnType;
+	public String funcName;
 	public AST_STMT_LIST body;
+	public AST_DEC_FUNC_ARG_LIST argList; // could be null
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_WHILE(AST_EXP cond, AST_STMT_LIST body)
+	public AST_DEC_FUNC(AST_TYPE rtnType, String funcName, AST_DEC_FUNC_ARG_LIST argList, AST_STMT_LIST body)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -18,42 +20,43 @@ public class AST_STMT_WHILE extends AST_STMT
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== stmt -> WHILE ( cond ) { body } \n");
+		System.out.format("====================== dec -> function declaration %s %s\n", rtnType, funcName);
 
-		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
-		/*******************************/
-		this.cond = cond;
+
+		this.rtnType = rtnType;
+		this.funcName = funcName;
+		this.argList = argList;
 		this.body = body;
 	}
+
+	public AST_DEC_FUNC(AST_TYPE rtnType, String funcName, AST_STMT_LIST body)
+	{
+		this(rtnType, funcName, null, body);
+	}
+
 
 	/*********************************************************/
 	/* The printing message for an assign statement AST node */
 	/*********************************************************/
 	public void PrintMe()
 	{
-		/********************************************/
-		/* AST NODE TYPE = AST ASSIGNMENT STATEMENT */
-		/********************************************/
-		System.out.print("AST NODE IF STMT\n");
+		System.out.print("AST NODE FUNCTION-DECLARATION\n");
 
-		/***********************************/
-		/* RECURSIVELY PRINT VAR + EXP ... */
-		/***********************************/
-		if (cond != null) cond.PrintMe();
-		if (body != null) body.PrintMe();
+
+		if (rtnType != null) rtnType.PrintMe();
+		if (argList != null) argList.PrintMe();
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 				SerialNumber,
-				"WHILE");
+				"FUNC: " + funcName);
 
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (cond != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, cond.SerialNumber);
-		if (body != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, body.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,rtnType.SerialNumber);
+		if (argList != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,argList.SerialNumber);
 	}
 }
