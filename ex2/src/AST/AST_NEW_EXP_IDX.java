@@ -1,27 +1,22 @@
 package AST;
 
 // indexable new-expression
-public class AST_NEW_EXP_IDX extends AST_NEW_EXP // TODO - extend DEC(lare)
+public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 {
-	public String idName;
+	public AST_TYPE nType;
 	public AST_EXP expression; // not null
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_NEW_EXP_IDX(String idName, AST_EXP expression)
+	public AST_NEW_EXP_IDX(AST_TYPE nType, AST_EXP expression)
 	{
-		/******************************/
-		/* SET A UNIQUE SERIAL NUMBER */
-		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
-		/***************************************/
-		/* PRINT CORRESPONDING DERIVATION RULE */
-		/***************************************/
-		System.out.format("====================== newExp -> NEW %s [exp]", idName);
 
-		this.idName = idName;
+		System.out.format("====================== newExp -> NEW type [exp]");
+
+		this.nType = nType;
 		this.expression = expression;
 	}
 
@@ -30,8 +25,9 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP // TODO - extend DEC(lare)
 	/*********************************************************/
 	public void PrintMe()
 	{
-		System.out.format("AST NODE newExp ID( %s )\n", idName);
+		System.out.format("AST NODE newExp Indexed\n");
 
+		if (nType != null) nType.PrintMe();
 		if (expression != null) expression.PrintMe();
 
 		/***************************************/
@@ -39,11 +35,12 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP // TODO - extend DEC(lare)
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 				SerialNumber,
-				"new " + idName);
+				"newExp-IDX");
 
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,expression.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, nType.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, expression.SerialNumber);
 	}
 }

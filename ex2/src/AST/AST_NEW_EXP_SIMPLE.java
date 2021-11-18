@@ -1,13 +1,13 @@
 package AST;
 
-public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP // TODO - extend DEC(lare)
+public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 {
-	public String idName;
+	public AST_TYPE nType;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_NEW_EXP_SIMPLE(String idName)
+	public AST_NEW_EXP_SIMPLE(AST_TYPE nType)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -17,11 +17,11 @@ public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP // TODO - extend DEC(lare)
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.format("====================== newExp -> NEW %s", idName);
+		System.out.format("====================== newExp -> NEW type");
 
 
 
-		this.idName = idName;
+		this.nType = nType;
 	}
 
 	/*********************************************************/
@@ -29,14 +29,21 @@ public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP // TODO - extend DEC(lare)
 	/*********************************************************/
 	public void PrintMe()
 	{
-		System.out.format("AST NODE SIMPLE-newExp %s \n", idName);
+		System.out.format("AST NODE SIMPLE-newExp");
 
+		if (nType != null) nType.PrintMe();
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 				SerialNumber,
-				"NEW-SIMPLE \n new " + idName);
+				"newExp-SIMPLE");
+
+		/***************************************/
+		/* PRINT Node to AST GRAPHVIZ DOT file */
+		/***************************************/
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, nType.SerialNumber);
+
 	}
 }
