@@ -22,7 +22,8 @@ public class AST_EXP_STRING extends AST_EXP
         /*******************************/
         /* COPY INPUT DATA MEMBERS ... */
         /*******************************/
-        this.value = value;
+        /* We need to convert the String from \"value\" to value */
+        this.value = value.substring(1, value.length() - 1);
     }
 
     /************************************************/
