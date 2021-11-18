@@ -169,8 +169,8 @@ arrayTypedef    ::=     ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON   {: RESULT
 
 /** classDec **/
 
-classDec    ::=     CLASS ID EXTENDS ID:name LBRACE cFieldList:l RBRACE      {: RESULT = new AST_DEC_CLASS(l,name);    :}
-                    |  CLASS ID LBRACE cFieldList:l RBRACE                   {: RESULT = new AST_DEC_CLASS(l,null);    :}
+classDec    ::=     CLASS ID:className EXTENDS ID:superName LBRACE cFieldList:l RBRACE      {: RESULT = new AST_DEC_CLASS(l,className,superName);    :}
+                    |  CLASS ID:className LBRACE cFieldList:l RBRACE                   {: RESULT = new AST_DEC_CLASS(l,className,null);    :}
                     ;
 
 cFieldList	::=		cField:s	cFieldList:l		        {: RESULT = new AST_CFIELD_LIST(s,l);    :}

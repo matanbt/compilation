@@ -3,12 +3,13 @@ package AST;
 public class AST_DEC_CLASS extends AST_DEC
 {
 	public AST_CFIELD_LIST lst;
+	public String className;
 	public String superClassName;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_DEC_CLASS(AST_CFIELD_LIST lst, String superClassName)
+	public AST_DEC_CLASS(AST_CFIELD_LIST lst, String className, String superClassName)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -27,6 +28,7 @@ public class AST_DEC_CLASS extends AST_DEC
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
 		this.lst = lst;
+		this.className = className;
 		this.superClassName = superClassName;
 	}
 
@@ -52,11 +54,11 @@ public class AST_DEC_CLASS extends AST_DEC
 		if (superClassName != null)
             AST_GRAPHVIZ.getInstance().logNode(
                 SerialNumber,
-                String.format("CLASSDEC\nextends %s",superClassName));
+                String.format("DEC CLASS(%s)\nextends(%s)",className, superClassName));
         else
             AST_GRAPHVIZ.getInstance().logNode(
                 SerialNumber,
-                String.format("CLASSDEC"));
+                String.format("DEC CLASS(%s)", className));
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
