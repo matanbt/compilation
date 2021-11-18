@@ -3,15 +3,18 @@
 /*************/
 import java_cup.runtime.*;
 import AST.*;
+import java.io.PrintWriter;
 
 parser code 
 {:
 	public Lexer lexer;
+	public PrintWriter file_writer;
 
-	public Parser(Lexer lexer)
+	public Parser(Lexer lexer, PrintWriter file_writer)
 	{
 		super(lexer);
 		this.lexer = lexer;
+		this.file_writer = file_writer;
 	}
 	public void report_error(String message, Object info)
 	{
@@ -20,7 +23,10 @@ parser code
 		System.out.print(lexer.getLine());
 		System.out.print(":");
 		System.out.print(lexer.getCharPos());
-		System.out.print("] ");		
+		System.out.print("] ");
+
+        file_writer.print("ERROR(" + lexer.getLine() + ")");
+        file_writer.close();
 		System.exit(0);
 	}
 :}
@@ -40,6 +46,14 @@ scan with
 	System.out.print(lexer.getCharPos());
 	System.out.print("] ");
 	System.out.print(TokenNames.terminalNames[s.sym]);
+
+	if (TokenNames.ERROR == s.sym)
+    {
+    	file_writer.print("ERROR(" + lexer.getLine() + ")");
+    	file_writer.close();
+    	System.exit(0);
+    }
+
 	if (s.value != null)
 	{
 		System.out.print("( ");
