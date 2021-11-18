@@ -40,10 +40,11 @@ public class AST_DEC_FUNC extends AST_DEC
 	/*********************************************************/
 	public void PrintMe()
 	{
-		System.out.print("AST NODE FUNCTION-DECLARATION\n");
+		System.out.format("AST NODE FUNCTION-DECLARATION (%s) \n", funcName);
 
 
 		if (rtnType != null) rtnType.PrintMe();
+		if (body != null)    body.PrintMe();
 		if (argList != null) argList.PrintMe();
 
 		/***************************************/
@@ -51,12 +52,13 @@ public class AST_DEC_FUNC extends AST_DEC
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 				SerialNumber,
-				"FUNC: " + funcName);
+				"DEC-FUNC(" + funcName + ")");
 
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,rtnType.SerialNumber);
-		if (argList != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,argList.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, rtnType.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, body.SerialNumber);
+		if (argList != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, argList.SerialNumber);
 	}
 }
