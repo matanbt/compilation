@@ -1,6 +1,6 @@
 package AST;
 
-public class AST_DEC_VAR extends AST_Node
+public class AST_DEC_VAR extends AST_DEC
 {
     public AST_TYPE type;
     public String name;
@@ -79,7 +79,7 @@ public class AST_DEC_VAR extends AST_Node
         /***************************************/
         AST_GRAPHVIZ.getInstance().logNode(
                 SerialNumber,
-                String.format("DEC(%s)", name));
+                String.format("VAR-DEC(%s)", name));
 
         /****************************************/
         /* PRINT Edges to AST GRAPHVIZ DOT file */

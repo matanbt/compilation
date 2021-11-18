@@ -1,6 +1,6 @@
 package AST;
 
-public class AST_CLASSDEC extends AST_Node
+public class AST_DEC_CLASS extends AST_DEC
 {
 	public AST_CFIELD_LIST lst;
 	public String superClassName;
@@ -8,7 +8,7 @@ public class AST_CLASSDEC extends AST_Node
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_CLASSDEC(AST_CFIELD_LIST lst,String superClassName)
+	public AST_DEC_CLASS(AST_CFIELD_LIST lst, String superClassName)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */

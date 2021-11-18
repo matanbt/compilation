@@ -1,6 +1,6 @@
 package AST;
 
-public class AST_DEC_FUNC extends AST_Node // TODO - extend DEC(lare)
+public class AST_DEC_FUNC extends AST_DEC
 {
 	public AST_TYPE rtnType;
 	public String funcName;

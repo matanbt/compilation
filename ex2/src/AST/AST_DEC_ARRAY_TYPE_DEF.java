@@ -1,6 +1,6 @@
 package AST;
 
-public class AST_ARRAY_TYPE_DEF extends AST_Node
+public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 {
 	public AST_TYPE type;
 	public String id;
@@ -8,7 +8,7 @@ public class AST_ARRAY_TYPE_DEF extends AST_Node
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_ARRAY_TYPE_DEF(AST_TYPE type,String id)
+	public AST_DEC_ARRAY_TYPE_DEF(AST_TYPE type, String id)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
