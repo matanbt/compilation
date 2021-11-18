@@ -38,7 +38,7 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 		System.out.print("AST AST_ARRAY_TYPE_DEF NODE\n");
 
 		/**********************************************/
-		/* RECURSIVELY PRINT VAR, then FIELD NAME ... */
+		/* RECURSIVELY PRINT type, then ID NAME ... */
 		/**********************************************/
 		if (type != null) type.PrintMe();
 		System.out.format("ID NAME( %s )\n",id);
@@ -48,7 +48,7 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			String.format("AST_ARRAY_TYPE_DEF\n...->%s",id));
+			String.format("DEF ARRAY TYPE(%s)",id));
 
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
