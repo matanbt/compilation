@@ -16,7 +16,8 @@ test_files = [
     "TEST_07_Bubble_Sort_Error",
     "TEST_08_Merge_Lists_Error",
     "TEST_09_Matrices_Error",
-    "TEST_10_Classes_Error"
+    "TEST_10_Classes_Error",
+    "shir_ok_killer_test"
      ]
 
 def run_parser_on_input_files():
