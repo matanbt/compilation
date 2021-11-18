@@ -112,10 +112,10 @@ non terminal dec;
 non terminal varDec;
 non terminal newExp;
 non terminal binop;
-non terminal classDec;
-non terminal cFieldList;
-non terminal cField;
-non terminal arrayTypedef;
+non terminal AST_CLASSDEC classDec;
+non terminal AST_CFIELD_LIST cFieldList;
+non terminal AST_CFIELD cField;
+non terminal AST_ARRAY_TYPE_DEF arrayTypedef;
 
 
 /***********************/
@@ -159,11 +159,11 @@ varDec      ::=     type:t ID:i SEMICOLON
                     | type:t ID:i ASSIGN newExp:e SEMICOLON
                     ;
 /** arrayDef **/
-arrayTypedef    ::=     ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON   {: RESULT = new AST_ARRAY_TYPE_DEF(i, t);    :};
+arrayTypedef    ::=     ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON   {: RESULT = new AST_ARRAY_TYPE_DEF(t, i);    :};
 
 /** classDec **/
 
-classDec    ::=     CLASS ID EXTENDS ID:name LBRACE cFieldList:l RBRACE      {: RESULT = new AST_CLASSDEC(l,name);    :}  // TODO add declerations
+classDec    ::=     CLASS ID EXTENDS ID:name LBRACE cFieldList:l RBRACE      {: RESULT = new AST_CLASSDEC(l,name);    :}
                     |  CLASS ID LBRACE cFieldList:l RBRACE                     {: RESULT = new AST_CLASSDEC(l,null);    :}
                     ;
 
