@@ -135,13 +135,13 @@ non terminal AST_DEC_ARRAY_TYPE_DEF arrayTypedef;
 /***********************/
 /* OPERATOR PRECEDENCE */
 /***********************/
-precedence left ASSIGN;
+precedence nonassoc ASSIGN;
 precedence left EQ;
 precedence left LT, GT;
 precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE;
-precedence left LBRACK;
-precedence left LPAREN;
+precedence nonassoc LBRACK;
+precedence nonassoc LPAREN;
 precedence left DOT;
 
 
@@ -191,7 +191,7 @@ cFieldList	::=		cField:s	cFieldList:l		        {: RESULT = new AST_CFIELD_LIST(s
 					| cField:s				                {: RESULT = new AST_CFIELD_LIST(s,null); :}
 					;
 
-cField    ::=       varDec:varDec                                   {: RESULT = new AST_CFIELD(varDec);   :}
+cField    ::=       varDec:varDec                                   {: RESULT = new AST_CFIELD(varDec);  :}
                     | funcDec:funcDec                               {: RESULT = new AST_CFIELD(funcDec); :}
                     ;
 
@@ -232,13 +232,25 @@ funcArgs   ::=   type:argType ID:argName COMMA funcArgs:lst    {: RESULT = new A
 
 exp         ::=     var:v								        {: RESULT = new AST_EXP_VAR(v); :}
                     | LPAREN exp:e RPAREN                       {: RESULT = e; :}
-                    | exp:e1 binop:op exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, op); :}
+
+                    // Binary operations (each operator should be stated explicitly for precedence to work):
+                    | exp:e1 PLUS exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "+"); :}
+                    | exp:e1 MINUS exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "-"); :}
+                    | exp:e1 TIMES exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "*"); :}
+                    | exp:e1 DIVIDE exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "/"); :}
+                    | exp:e1 LT exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "<"); :}
+                    | exp:e1 GT exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, ">"); :}
+                    | exp:e1 EQ exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "="); :}
+
+                    // Expression call
                     | var:v DOT ID:i LPAREN expList:l RPAREN    {: RESULT = new AST_EXP_CALL(v, i, l); :}
                     | var:v DOT ID:i LPAREN RPAREN              {: RESULT = new AST_EXP_CALL(v, i); :}
                     | ID:i LPAREN expList:l RPAREN              {: RESULT = new AST_EXP_CALL(i, l); :}
                     | ID:i LPAREN RPAREN                        {: RESULT = new AST_EXP_CALL(i); :}
+
+                    // Terminal expressions
                     | MINUS INT:i                               {: RESULT = new AST_EXP_INT(-Integer.parseInt(i)); :}
-                    | INT:i                                     {: RESULT = new AST_EXP_INT(Integer.parseInt(i)); :}
+                    | INT:i                                     {: RESULT = new AST_EXP_INT( Integer.parseInt(i)); :}
                     | NIL                                       {: RESULT = new AST_EXP_NIL(); :}
                     | STRING:s                                  {: RESULT = new AST_EXP_STRING(s); :}
                     ;
@@ -252,12 +264,3 @@ expList	::=		exp:e COMMA expList:lst {: RESULT = new AST_EXP_LIST(e, lst); :}
                 | exp:e                 {: RESULT = new AST_EXP_LIST(e, null); :}
                 ;
 
-// ---------------- Binary Operations ----------------
-binop       ::=     PLUS          {: RESULT = "+"; :} // we'll parse each operator as its string (TODO - we can also create a new class AST_OPERATOR, i think it's redundant)
-                    | MINUS       {: RESULT = "-"; :}
-                    | TIMES       {: RESULT = "*"; :}
-                    | DIVIDE      {: RESULT = "/"; :}
-                    | LT          {: RESULT = "<"; :}
-                    | GT          {: RESULT = ">"; :}
-                    | EQ          {: RESULT = "="; :}
-                    ;
