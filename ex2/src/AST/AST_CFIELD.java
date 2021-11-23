@@ -1,14 +1,16 @@
 package AST;
 
-public class AST_STMT_WHILE extends AST_STMT
+public class AST_CFIELD extends AST_Node
 {
-	public AST_EXP cond;
-	public AST_STMT_LIST body;
+	/********************************/
+	/*  CField ::= funcDec | varDec */
+	/********************************/
+	public AST_DEC dec;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_WHILE(AST_EXP cond, AST_STMT_LIST body)
+	public AST_CFIELD(AST_DEC dec)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -18,42 +20,39 @@ public class AST_STMT_WHILE extends AST_STMT
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== stmt -> WHILE ( cond ) { body } \n");
+		System.out.print("====================== cField -> Dec\n");
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.cond = cond;
-		this.body = body;
+		this.dec = dec;
 	}
 
 	/*********************************************************/
-	/* The printing message for an assign statement AST node */
+	/* The printing message for an CFIELD FUNC AST node */
 	/*********************************************************/
 	public void PrintMe()
 	{
 		/********************************************/
-		/* AST NODE TYPE = AST ASSIGNMENT STATEMENT */
+		/* AST NODE TYPE = AST CFIELD FUNC */
 		/********************************************/
-		System.out.print("AST NODE IF STMT\n");
+		System.out.print("AST NODE CFIELD\n");
 
 		/***********************************/
-		/* RECURSIVELY PRINT VAR + EXP ... */
+		/* RECURSIVELY PRINT FUNC */
 		/***********************************/
-		if (cond != null) cond.PrintMe();
-		if (body != null) body.PrintMe();
+		if (dec != null) dec.PrintMe();
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-				SerialNumber,
-				"WHILE");
+			SerialNumber,
+			"CFIELD");
 
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (cond != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, cond.SerialNumber);
-		if (body != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, body.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,dec.SerialNumber);
 	}
 }

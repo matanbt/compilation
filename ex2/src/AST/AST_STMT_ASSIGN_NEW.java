@@ -1,14 +1,17 @@
 package AST;
 
-public class AST_STMT_WHILE extends AST_STMT
+public class AST_STMT_ASSIGN_NEW extends AST_STMT
 {
-	public AST_EXP cond;
-	public AST_STMT_LIST body;
+	/***************/
+	/*  var := exp */
+	/***************/
+	public AST_VAR var;
+	public AST_NEW_EXP new_exp;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_WHILE(AST_EXP cond, AST_STMT_LIST body)
+	public AST_STMT_ASSIGN_NEW(AST_VAR var, AST_NEW_EXP new_exp)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -18,13 +21,13 @@ public class AST_STMT_WHILE extends AST_STMT
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== stmt -> WHILE ( cond ) { body } \n");
+		System.out.print("====================== stmt -> var ASSIGN newExp SEMICOLON  \n");
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.cond = cond;
-		this.body = body;
+		this.var = var;
+		this.new_exp = new_exp;
 	}
 
 	/*********************************************************/
@@ -35,25 +38,25 @@ public class AST_STMT_WHILE extends AST_STMT
 		/********************************************/
 		/* AST NODE TYPE = AST ASSIGNMENT STATEMENT */
 		/********************************************/
-		System.out.print("AST NODE IF STMT\n");
+		System.out.print("AST NODE ASSIGN STMT\n");
 
 		/***********************************/
 		/* RECURSIVELY PRINT VAR + EXP ... */
 		/***********************************/
-		if (cond != null) cond.PrintMe();
-		if (body != null) body.PrintMe();
+		if (var != null) var.PrintMe();
+		if (new_exp != null) new_exp.PrintMe();
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-				SerialNumber,
-				"WHILE");
-
+			SerialNumber,
+			"ASSIGN\nleft := right\n");
+		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (cond != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, cond.SerialNumber);
-		if (body != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, body.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,new_exp.SerialNumber);
 	}
 }

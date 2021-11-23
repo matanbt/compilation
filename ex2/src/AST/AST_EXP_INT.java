@@ -2,12 +2,12 @@ package AST;
 
 public class AST_EXP_INT extends AST_EXP
 {
-	public int value;
+	public Integer value;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_INT(int value)
+	public AST_EXP_INT(Integer value)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -20,7 +20,7 @@ public class AST_EXP_INT extends AST_EXP
 		System.out.format("====================== exp -> INT( %d )\n", value);
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.value = value;
 	}
