@@ -2,49 +2,35 @@ package AST;
 
 public class AST_STMT_RETURN extends AST_STMT
 {
-	/****************/
-	/* DATA MEMBERS */
-	/****************/
-	public AST_EXP exp;
+	public AST_EXP exp; // could be null (e.g. void functions)
 
-	/*******************/
-	/*  CONSTRUCTOR(S) */
-	/*******************/
 	public AST_STMT_RETURN(AST_EXP exp)
 	{
-		/******************************/
-		/* SET A UNIQUE SERIAL NUMBER */
-		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
+
+		System.out.print("====================== stmt -> RETURN ");
+		if (exp != null) System.out.print(" exp ");
+		System.out.print("SEMICOLON\n");
 
 		this.exp = exp;
 	}
 
-	/************************************************************/
-	/* The printing message for a function declaration AST node */
-	/************************************************************/
+	// overloading contractors:
+	public AST_STMT_RETURN()
+	{
+		this(null);
+	}
+
+
 	public void PrintMe()
 	{
-		/*************************************/
-		/* AST NODE TYPE = AST SUBSCRIPT VAR */
-		/*************************************/
-		System.out.print("AST NODE STMT RETURN\n");
-
-		/*****************************/
-		/* RECURSIVELY PRINT exp ... */
-		/*****************************/
+		System.out.print("AST NODE RETURN STMT\n");
 		if (exp != null) exp.PrintMe();
 
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			"RETURN");
 
-		/****************************************/
-		/* PRINT Edges to AST GRAPHVIZ DOT file */
-		/****************************************/
-		if (exp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
+		if (exp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, exp.SerialNumber);
 	}
 }
