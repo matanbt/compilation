@@ -1,4 +1,5 @@
 package AST;
+import TYPES.*;
 
 public class AST_EXP_BINOP extends AST_EXP
 {
@@ -75,9 +76,17 @@ public class AST_EXP_BINOP extends AST_EXP
 
 		if ((t1 == TYPE_INT.getInstance()) && (t2 == TYPE_INT.getInstance()))
 		{
+			if (op.equals("/") && (right instanceof AST_EXP_INT) && (((AST_EXP_INT) right).value == 0)){  // zero division
+				System.exit(0);  // TODO- error handling
+				return null;
+			}
 			return TYPE_INT.getInstance();
 		}
-		System.exit(0);
+		if ((t1 == TYPE_STRING.getInstance()) && (t2 == TYPE_STRING.getInstance()) && (op.equals("+")))
+		{
+			return TYPE_STRING.getInstance();
+		}
+		System.exit(0);  // TODO- error handling
 		return null;
 	}
 
