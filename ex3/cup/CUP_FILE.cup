@@ -233,10 +233,10 @@ exp         ::=     var:v								        {: RESULT = new AST_EXP_VAR(v); :}
                     | LPAREN exp:e RPAREN                       {: RESULT = e; :}
 
                     // Binary operations (each operator should be stated explicitly for precedence to work):
-                    | exp:e1 PLUS exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "+"); :}
-                    | exp:e1 MINUS exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "-"); :}
-                    | exp:e1 TIMES exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "*"); :}
-                    | exp:e1 DIVIDE exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "/"); :}
+                    | exp:e1 PLUS exp:e2                  {: RESULT = new AST_EXP_BINOP(e1, e2, "+"); :}
+                    | exp:e1 MINUS exp:e2                 {: RESULT = new AST_EXP_BINOP(e1, e2, "-"); :}
+                    | exp:e1 TIMES exp:e2                 {: RESULT = new AST_EXP_BINOP(e1, e2, "*"); :}
+                    | exp:e1 DIVIDE exp:e2                {: RESULT = new AST_EXP_BINOP(e1, e2, "/"); :}
                     | exp:e1 LT exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "<"); :}
                     | exp:e1 GT exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, ">"); :}
                     | exp:e1 EQ exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "="); :}

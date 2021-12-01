@@ -3,7 +3,7 @@ package TYPES;
 public abstract class TYPE
 {
 	/******************************/
-	/*  Every type has a name ... */
+	/*  Every type has a name ... (e.g. 'int') */
 	/******************************/
 	public String name;
 
