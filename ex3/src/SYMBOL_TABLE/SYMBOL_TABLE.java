@@ -126,6 +126,23 @@ public class SYMBOL_TABLE
 	}
 
 	/*
+	 * Like 'find' BUT considering ONLY the current scope (could be global, if, etc)
+	 */
+	public TYPE findInCurrentScope(String name) {
+		SYMBOL_TABLE_ENTRY curr = this.top;
+
+		// iterates until a function-scope is found or until we find the name
+		while (!curr.name.equals("SCOPE-BOUNDARY"))
+		{
+			curr = curr.prevtop;
+			if (curr.name.equals(name)) {
+				return curr.type; // FOUND
+			}
+		}
+
+		return null; // NOT FOUND
+	}
+	/*
 	 * returns the class in which we are in its scope
 	 */
 	public AST_DEC_CLASS findScopeClass() {

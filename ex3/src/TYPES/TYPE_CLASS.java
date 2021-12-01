@@ -23,4 +23,8 @@ public class TYPE_CLASS extends TYPE
 		this.father = father;
 		this.data_members = data_members;
 	}
+
+	public boolean isSubClassOf(TYPE_CLASS potentialFather) {
+		return false; // TODO on class task: IMPLEMENT
+	}
 }
