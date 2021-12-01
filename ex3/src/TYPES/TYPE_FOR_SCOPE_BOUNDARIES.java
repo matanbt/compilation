@@ -13,8 +13,10 @@ public class TYPE_FOR_SCOPE_BOUNDARIES extends TYPE
 	public static String FUNC_SCOPE = "FUNCTION-SCOPE";
 	// a scope for class
 	public static String CLASS_SCOPE = "CLASS-SCOPE";
+	// a scope for class
+	public static String IF_WHILE_SCOPE = "IF-WHILE-SCOPE";
 	// in case there is another scope I missed
-	public static String OTHER_SCOPE = "CLASS-SCOPE";
+	public static String OTHER_SCOPE = "OTHER-SCOPE";
 
 
 	// the node representing to this scope (i.e. AST_DEC_FUNC, AST_DEC_CLASS)

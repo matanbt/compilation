@@ -2,6 +2,7 @@ package AST;
 
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
+import TYPES.TYPE_FOR_SCOPE_BOUNDARIES;
 import TYPES.TYPE_INT;
 
 public class AST_STMT_WHILE extends AST_STMT
@@ -68,7 +69,7 @@ public class AST_STMT_WHILE extends AST_STMT
 		/*************************/
 		/* [1] Begin Class Scope */
 		/*************************/
-		SYMBOL_TABLE.getInstance().beginScope();
+		SYMBOL_TABLE.getInstance().beginScope(TYPE_FOR_SCOPE_BOUNDARIES.IF_WHILE_SCOPE, this);
 
 		/***************************/
 		/* [2] Semant Data Members */
