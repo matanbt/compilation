@@ -1,5 +1,9 @@
 package AST;
 
+import SYMBOL_TABLE.SYMBOL_TABLE;
+import TYPES.TYPE;
+import TYPES.TYPE_INT;
+
 public class AST_STMT_WHILE extends AST_STMT
 {
 	public AST_EXP cond;
@@ -32,20 +36,11 @@ public class AST_STMT_WHILE extends AST_STMT
 	/*********************************************************/
 	public void PrintMe()
 	{
-		/********************************************/
-		/* AST NODE TYPE = AST ASSIGNMENT STATEMENT */
-		/********************************************/
-		System.out.print("AST NODE IF STMT\n");
+		System.out.print("AST NODE WHILE STMT\n");
 
-		/***********************************/
-		/* RECURSIVELY PRINT VAR + EXP ... */
-		/***********************************/
 		if (cond != null) cond.PrintMe();
 		if (body != null) body.PrintMe();
 
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 				SerialNumber,
 				"WHILE");
@@ -55,5 +50,39 @@ public class AST_STMT_WHILE extends AST_STMT
 		/****************************************/
 		if (cond != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, cond.SerialNumber);
 		if (body != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, body.SerialNumber);
+	}
+
+
+	public TYPE SemantMe()
+	{
+		/****************************/
+		/* [0] Semant the Condition + verifications*/
+		/****************************/
+		if (cond.SemantMe() != TYPE_INT.getInstance())
+		{
+			System.out.format(">> ERROR condition inside WHILE is not int\n");
+			// TODO deal with error
+			System.exit(0);
+		}
+
+		/*************************/
+		/* [1] Begin Class Scope */
+		/*************************/
+		SYMBOL_TABLE.getInstance().beginScope();
+
+		/***************************/
+		/* [2] Semant Data Members */
+		/***************************/
+		body.SemantMe();
+
+		/*****************/
+		/* [3] End Scope */
+		/*****************/
+		SYMBOL_TABLE.getInstance().endScope();
+
+		/*********************************************************/
+		/* [4] Return value is irrelevant for WHILE statements */
+		/*********************************************************/
+		return null;
 	}
 }

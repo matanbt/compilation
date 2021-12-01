@@ -1,11 +1,14 @@
 package AST;
 
+import TYPES.TYPE;
+import TYPES.TYPE_INT;
+
 public class AST_EXP_BINOP extends AST_EXP
 {
 	public String op;
 	public AST_EXP left;
 	public AST_EXP right;
-	
+
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
@@ -28,19 +31,19 @@ public class AST_EXP_BINOP extends AST_EXP
 		this.right = right;
 		this.op = op;
 	}
-	
+
 	/*************************************************/
 	/* The printing message for a binop exp AST node */
 	/*************************************************/
 	public void PrintMe()
 	{
 		String sOP="";
-		
+
 		/*********************************/
 		/* CONVERT OP to a printable sOP */
 		/*********************************/
 		sOP = this.op; // TODO if we'll change the type of "op", we should support conversion to string here
-		
+
 		/*************************************/
 		/* AST NODE TYPE = AST BINOP EXP */
 		/*************************************/
@@ -51,20 +54,21 @@ public class AST_EXP_BINOP extends AST_EXP
 		/**************************************/
 		if (left != null) left.PrintMe();
 		if (right != null) right.PrintMe();
-		
+
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			String.format("BINOP(%s)",sOP));
-		
+
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (left  != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,left.SerialNumber);
 		if (right != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,right.SerialNumber);
 	}
+
 	public TYPE SemantMe()
 	{
 		TYPE t1 = null;
