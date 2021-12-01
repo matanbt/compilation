@@ -182,22 +182,29 @@ arrayTypedef    ::=     ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON   {: RESULT
 
 /** classDec **/
 
-classDec    ::=     CLASS ID:className EXTENDS ID:superName LBRACE cFieldList:l RBRACE   {: RESULT = new AST_DEC_CLASS(l,className,superName);    :}
-                    |  CLASS ID:className LBRACE cFieldList:l RBRACE                     {: RESULT = new AST_DEC_CLASS(l,className,null);    :}
+classDec    ::=     CLASS ID:className EXTENDS ID:superName LBRACE cFieldList:l RBRACE   {: RESULT = new AST_DEC_CLASS(l, className, superName);    :}
+                    |  CLASS ID:className LBRACE cFieldList:l RBRACE                     {: RESULT = new AST_DEC_CLASS(l, className, null);    :}
                     ;
 
 cFieldList	::=		cField:s	cFieldList:l		        {: RESULT = new AST_CFIELD_LIST(s,l);    :}
 					| cField:s				                {: RESULT = new AST_CFIELD_LIST(s,null); :}
 					;
 
-cField    ::=       varDec:varDec                                   {: RESULT = new AST_CFIELD(varDec);  :}
-                    | funcDec:funcDec                               {: RESULT = new AST_CFIELD(funcDec); :}
+cField    ::=       cFieldVarDec:varDec                     {: RESULT = new AST_CFIELD(varDec);  :}
+                    | funcDec:funcDec                       {: RESULT = new AST_CFIELD(funcDec); :}
                     ;
 
+// Enforces the limitations of CField var-declaration synthatically // TODO review me (maybe it must be semantic?)
+cFieldVarDec ::=    type:t ID:id SEMICOLON                        {: RESULT = new AST_DEC_VAR(t, id); :}
+                    | type:t ID:id ASSIGN INT:i SEMICOLON         {: RESULT = new AST_DEC_VAR(t, id, new AST_EXP_INT( Integer.parseInt(i))); :}
+                    | type:t ID:id ASSIGN STRING:s SEMICOLON      {: RESULT = new AST_DEC_VAR(t, id, new AST_EXP_STRING(s)); :}
+                    | type:t ID:id ASSIGN NIL SEMICOLON           {: RESULT = new AST_DEC_VAR(t, id, new AST_EXP_NIL()); :}
+                    ;
 
+//---------------- var ----------------
 var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name);       :}
-					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName); :}
-					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e);     :}
+					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v, fieldName); :}
+					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v, e);     :}
 					;
 
 //---------------- statements list ----------------
