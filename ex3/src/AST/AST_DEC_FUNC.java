@@ -10,6 +10,9 @@ public class AST_DEC_FUNC extends AST_DEC
 	public AST_STMT_LIST body;
 	public AST_DEC_FUNC_ARG_LIST argList; // could be null
 
+	// caches the result of SemantMe, so it could be used on recursive calls from SemantMe
+	public TYPE_FUNCTION result_SemantMe;
+
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
@@ -29,6 +32,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		this.funcName = funcName;
 		this.argList = argList;
 		this.body = body;
+		this.result_SemantMe = null;
 	}
 
 	public AST_DEC_FUNC(AST_TYPE rtnType, String funcName, AST_STMT_LIST body)
@@ -67,40 +71,55 @@ public class AST_DEC_FUNC extends AST_DEC
 
 	public TYPE SemantMe()
 	{
-		TYPE t;
-		TYPE returnType = null;
-		TYPE_LIST type_list = null;
+		TYPE semantic_rtnType = null;
+		TYPE_LIST list_argtypes = null; // lists of the semantic types of arguments
 
 		/*******************/
 		/* [0] return type */
 		/*******************/
-		returnType = SYMBOL_TABLE.getInstance().find(returnType.name);
-		if (returnType == null)
+		semantic_rtnType = this.rtnType.SemantMe();
+
+		if (semantic_rtnType == null)
 		{
-			System.out.format(">> ERROR [%d:%d] non existing return type %s\n",6,6,returnType);
+			System.out.format(">> ERROR non existing return type %s\n", this.rtnType);
+			// TODO deal with error
+			System.exit(0);
 		}
 
 		/****************************/
 		/* [1] Begin Function Scope */
 		/****************************/
-		SYMBOL_TABLE.getInstance().beginScope();
+		SYMBOL_TABLE.getInstance().beginScope(TYPE_FOR_SCOPE_BOUNDARIES.FUNC_SCOPE, this);
 
 		/***************************/
-		/* [2] Semant Input Params */
+		/* [2] Semant Arguments */
 		/***************************/
-		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.tail)
+		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next)
 		{
-			t = SYMBOL_TABLE.getInstance().find(it.head.argType.type_name);
-			if (t == null)
+			// find the TYPE of each
+			AST_DEC_FUNC_ARG arg = it.head; // the arg of the iterator
+			TYPE semantic_argType = arg.SemantMe();
+			if (semantic_argType == null)
 			{
-				System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,it.head.type);
+				System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,arg.argType);
+				// TODO deal with error
+				System.exit(0);
 			}
 			else
 			{
-				type_list = new TYPE_LIST(t,type_list);
-				SYMBOL_TABLE.getInstance().enter(it.head.argType.type_name,t);
+				// each argument has a type that we'll want to verify when it'll be called
+				list_argtypes = new TYPE_LIST(semantic_argType, list_argtypes);
+				// each argument is also a local variable in the function scope
+				SYMBOL_TABLE.getInstance().enter(arg.argName, semantic_argType);
 			}
 		}
+
+		/***************************************************/
+		/* [5] Enter the Function Type to the Symbol Table
+		(!!!) needs to be before body.SemantMe because it can have a recursive call */
+		/***************************************************/
+		result_SemantMe = new TYPE_FUNCTION(semantic_rtnType, funcName, list_argtypes);
+		SYMBOL_TABLE.getInstance().enter(funcName, result_SemantMe);
 
 		/*******************/
 		/* [3] Semant Body */
@@ -112,15 +131,8 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*****************/
 		SYMBOL_TABLE.getInstance().endScope();
 
-		/***************************************************/
-		/* [5] Enter the Function Type to the Symbol Table */
-		/***************************************************/
-		SYMBOL_TABLE.getInstance().enter(funcName,new TYPE_FUNCTION(returnType,funcName,type_list));
 
-		/*********************************************************/
-		/* [6] Return value is irrelevant for class declarations */
-		/*********************************************************/
-		return null;
+		return result_SemantMe;
 	}
 
 }

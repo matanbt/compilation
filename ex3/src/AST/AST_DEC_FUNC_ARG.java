@@ -1,5 +1,8 @@
 package AST;
 
+import TYPES.TYPE;
+
+
 public class AST_DEC_FUNC_ARG extends AST_Node
 {
     public AST_TYPE argType;
@@ -48,5 +51,9 @@ public class AST_DEC_FUNC_ARG extends AST_Node
         /* PRINT Edges to AST GRAPHVIZ DOT file */
         /****************************************/
         AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, argType.SerialNumber);
+    }
+
+    public TYPE SemantMe() {
+        return argType.SemantMe();
     }
 }
