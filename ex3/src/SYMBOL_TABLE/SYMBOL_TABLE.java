@@ -11,6 +11,8 @@ import java.io.PrintWriter;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+import AST.AST_DEC_FUNC;
+import AST.AST_Node;
 import TYPES.*;
 
 /****************/
@@ -24,7 +26,7 @@ public class SYMBOL_TABLE
 	/* The actual symbol table data structure ... */
 	/**********************************************/
 	private SYMBOL_TABLE_ENTRY[] table = new SYMBOL_TABLE_ENTRY[hashArraySize];
-	private SYMBOL_TABLE_ENTRY top;
+	private SYMBOL_TABLE_ENTRY top = null;
 	private int top_index = 0;
 	
 	/**************************************************************/
@@ -32,6 +34,7 @@ public class SYMBOL_TABLE
 	/**************************************************************/
 	private int hash(String s)
 	{
+		// TODO hash based on first letter (meaning we'll have 'table' of length 26)
 		if (s.charAt(0) == 'l') {return 1;}
 		if (s.charAt(0) == 'm') {return 1;}
 		if (s.charAt(0) == 'r') {return 3;}
@@ -62,7 +65,7 @@ public class SYMBOL_TABLE
 		/**************************************************************************/
 		/* [3] Prepare a new symbol table entry with name, type, next and prevtop */
 		/**************************************************************************/
-		SYMBOL_TABLE_ENTRY e = new SYMBOL_TABLE_ENTRY(name,t,hashValue,next,top,top_index++);
+		SYMBOL_TABLE_ENTRY e = new SYMBOL_TABLE_ENTRY(name, t, hashValue, next, top, top_index++);
 		// Note: each entry back-pointer on the last entered entry (used when removing scope)
 		/**********************************************/
 		/* [4] Update the top of the symbol table ... */
@@ -82,6 +85,7 @@ public class SYMBOL_TABLE
 
 	/***********************************************/
 	/* Find the inner-most scope element with name */
+	/* if it DOESN'T find the given name, returns null - this case should be handled! */
 	/***********************************************/
 	public TYPE find(String name)
 	{
@@ -98,25 +102,82 @@ public class SYMBOL_TABLE
 		return null;
 	}
 
+	/*
+	 * Finds the function in which we're in its scope
+	 * (it's the latest and only function that was declared, because no nested-functions are allowed)
+	 * returns the desired AST_DEC_FUNC or null if fails.
+	 */
+	public AST_DEC_FUNC findScopeFunc()
+	{
+		// first make sure we're in the function-scope
+		SYMBOL_TABLE_ENTRY curr = this.top;
+
+		// iterates until a function-scope is found
+		while (!(curr.name.equals("SCOPE-BOUNDARY")
+				&& curr.type.name.equals(TYPE_FOR_SCOPE_BOUNDARIES.FUNC_SCOPE)))
+		{
+			curr = curr.prevtop;
+
+			if (curr == null) // not found
+				return null;
+		}
+
+		// curr.type must be instanceof TYPE_FOR_SCOPE_BOUNDARIES
+		return (AST_DEC_FUNC) ((TYPE_FOR_SCOPE_BOUNDARIES)(curr.type)).scopeContext;
+	}
+
+	/*
+	 * Returns whether we're in the global scope right now.
+	 */
+	public boolean isGlobalScope()
+	{
+		SYMBOL_TABLE_ENTRY curr = this.top;
+
+		// iterates until a scope is found
+		while (!curr.name.equals("SCOPE-BOUNDARY")) {
+			curr = curr.prevtop;
+
+			if (curr == null) // not possible
+				break;
+		}
+		return curr.type instanceof TYPE_FOR_SCOPE_BOUNDARIES &&
+				curr.type.name.equals(TYPE_FOR_SCOPE_BOUNDARIES.GLOB_SCOPE);
+
+	}
+
 	/***************************************************************************/
 	/* begin scope = Enter the <SCOPE-BOUNDARY> element to the data structure */
 	/***************************************************************************/
-	public void beginScope()
+	/* each scope can also have a context represented by the relevant AST_Node*/
+	/* scopeName is a static field in TYPE_FOR_SCOPE_BOUNDARIES */
+	public void beginScope(String scopeName, AST_Node contextScope)
 	{
 		/************************************************************************/
 		/* Though <SCOPE-BOUNDARY> entries are present inside the symbol table, */
 		/* they are not really types. In order to be ablt to debug print them,  */
 		/* a special TYPE_FOR_SCOPE_BOUNDARIES was developed for them. This     */
-		/* class only contain their type name which is the bottom sign: _|_     */
+		/* class only contain their type name which is the bottom sign: NONE     */
 		/************************************************************************/
 		enter(
 			"SCOPE-BOUNDARY",
-			new TYPE_FOR_SCOPE_BOUNDARIES("NONE"));
+			new TYPE_FOR_SCOPE_BOUNDARIES(scopeName, contextScope));
 
 		/*********************************************/
 		/* Print the symbol table after every change */
 		/*********************************************/
 		PrintMe();
+	}
+
+	// overloading of beginScope
+	public void beginScope()
+	{
+		beginScope(TYPE_FOR_SCOPE_BOUNDARIES.OTHER_SCOPE);
+	}
+
+	// overloading of beginScope
+	public void beginScope(String scopeName)
+	{
+		beginScope(scopeName, null);
 	}
 
 	/********************************************************************************/
@@ -131,14 +192,14 @@ public class SYMBOL_TABLE
 		while (!top.name.equals("SCOPE-BOUNDARY"))
 		{
 			table[top.index] = top.next;
-			top_index = top_index-1;
+			top_index = top_index - 1;
 			top = top.prevtop;
 		}
 		/**************************************/
 		/* Pop the SCOPE-BOUNDARY sign itself */		
 		/**************************************/
 		table[top.index] = top.next;
-		top_index = top_index-1;
+		top_index = top_index - 1;
 		top = top.prevtop;
 
 		/*********************************************/
@@ -233,7 +294,9 @@ public class SYMBOL_TABLE
 	/*****************************/
 	/* PREVENT INSTANTIATION ... */
 	/*****************************/
-	protected SYMBOL_TABLE() {}
+	protected SYMBOL_TABLE() {
+		// relies on default initialization
+	}
 
 	/******************************/
 	/* GET SINGLETON INSTANCE ... */
@@ -248,13 +311,17 @@ public class SYMBOL_TABLE
 			instance = new SYMBOL_TABLE();
 
 			/*****************************************/
+			/* Our language builtin identifiers of functions and params will be HERE! */
+			/*****************************************/
+			/*****************************************/
 			/* [1] Enter primitive types int, string */
 			/*****************************************/
+			instance.beginScope(TYPE_FOR_SCOPE_BOUNDARIES.BUILTIN_SCOPE);
 			instance.enter("int",   TYPE_INT.getInstance());
 			instance.enter("string",TYPE_STRING.getInstance());
 
 			/*************************************/
-			/* [2] How should we handle void ??? */
+			/* [2] How should we handle void ??? */ // TODO
 			/*************************************/
 
 			/***************************************/
@@ -268,8 +335,12 @@ public class SYMBOL_TABLE
 					new TYPE_LIST(
 						TYPE_INT.getInstance(),
 						null)));
+			// TODO - add the rest of the builtin stuff here
 			
 		}
+
+		instance.beginScope(TYPE_FOR_SCOPE_BOUNDARIES.GLOB_SCOPE);
+
 		return instance;
 	}
 }
