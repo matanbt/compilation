@@ -44,6 +44,9 @@ public class AST_STMT_RETURN extends AST_STMT
 		// gets the current scope-function
 		this.inFunc = SYMBOL_TABLE.getInstance().findScopeFunc();
 
+		// a return for 'inFunc' has been found
+		inFunc.isReturnExists = true;
+
 		TYPE expectedReturnType = inFunc.result_SemantMe.rtnType;
 		TYPE actualReturnType = exp != null ? exp.SemantMe(): TYPE_VOID.getInstance();
 

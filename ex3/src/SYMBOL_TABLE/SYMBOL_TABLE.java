@@ -11,6 +11,8 @@ import java.io.PrintWriter;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+import AST.AST_DEC;
+import AST.AST_DEC_CLASS;
 import AST.AST_DEC_FUNC;
 import AST.AST_Node;
 import TYPES.*;
@@ -101,6 +103,47 @@ public class SYMBOL_TABLE
 		
 		return null;
 	}
+	/**********************************************************************************************/
+	/* Performs find, BUT considering ONLY the scope of the current function */
+	/* VERY USEFUL for resolutions in Classes Methods (before checking class-fields) */
+	/* returns the TYPE of the var if found in the function, else null */
+	/**********************************************************************************************/
+	public TYPE findWhenInFunctionScope(String name) {
+
+		SYMBOL_TABLE_ENTRY curr = this.top;
+
+		// iterates until a function-scope is found or until we find the name
+		while (!(curr.name.equals("SCOPE-BOUNDARY")
+				&& curr.type.name.equals(TYPE_FOR_SCOPE_BOUNDARIES.FUNC_SCOPE)))
+		{
+			curr = curr.prevtop;
+			if (curr.name.equals(name)) {
+				return curr.type; // FOUND
+			}
+		}
+
+		return null; // NOT FOUND
+	}
+
+	/*
+	 * returns the class in which we are in its scope
+	 */
+	public AST_DEC_CLASS findScopeClass() {
+		SYMBOL_TABLE_ENTRY curr = this.top;
+
+		// iterates until a function-scope is found
+		while (!(curr.name.equals("SCOPE-BOUNDARY")
+				&& curr.type.name.equals(TYPE_FOR_SCOPE_BOUNDARIES.CLASS_SCOPE)))
+		{
+			curr = curr.prevtop;
+
+			if (curr == null) // not found
+				return null;
+		}
+
+		// curr.type must be instanceof TYPE_FOR_SCOPE_BOUNDARIES
+		return (AST_DEC_CLASS) ((TYPE_FOR_SCOPE_BOUNDARIES)(curr.type)).scopeContext;
+	}
 
 	/*
 	 * Finds the function in which we're in its scope
@@ -109,7 +152,6 @@ public class SYMBOL_TABLE
 	 */
 	public AST_DEC_FUNC findScopeFunc()
 	{
-		// first make sure we're in the function-scope
 		SYMBOL_TABLE_ENTRY curr = this.top;
 
 		// iterates until a function-scope is found

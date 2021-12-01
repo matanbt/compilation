@@ -10,8 +10,13 @@ public class AST_DEC_FUNC extends AST_DEC
 	public AST_STMT_LIST body;
 	public AST_DEC_FUNC_ARG_LIST argList; // could be null
 
+	// -------------------- Semantic Additions --------------------
 	// caches the result of SemantMe, so it could be used on recursive calls from SemantMe
 	public TYPE_FUNCTION result_SemantMe;
+	// non-null means method of 'belongToClass', and null means it's global function
+	public AST_DEC_CLASS belongToClass = null;
+	// verify there exist a return (if needed)
+	public boolean isReturnExists = false;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
@@ -86,6 +91,20 @@ public class AST_DEC_FUNC extends AST_DEC
 			System.exit(0);
 		}
 
+		this.belongToClass = SYMBOL_TABLE.getInstance().findScopeClass();
+
+		if(belongToClass == null) {
+			// we're in global context, so we make sure no same-name declaration
+			// TODO - this assumes travis will answer that EXAMPLE-1 = INVALID
+			if(SYMBOL_TABLE.getInstance().find(funcName) != null) {
+				System.out.format(">> ERROR identifier (%s) is previously declared, " +
+						"can't declare global-function\n",funcName);
+				// TODO deal with error
+				System.exit(0);
+			}
+		}
+		// else: it's a method, will be checked as a CFIELD
+
 		/****************************/
 		/* [1] Begin Function Scope */
 		/****************************/
@@ -126,6 +145,14 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*******************/
 		body.SemantMe();
 
+		// forces non-void-functions to contain at least one RETURN
+		if (!isReturnExists && (semantic_rtnType != TYPE_VOID.getInstance())) {
+			System.out.format(">> ERROR no return statement exists, when declared-return is (%s) " +
+					"for function (%s) ", rtnType.type_name, funcName);
+			// TODO deal with error
+			System.exit(0);
+		}
+
 		/*****************/
 		/* [4] End Scope */
 		/*****************/
@@ -133,6 +160,11 @@ public class AST_DEC_FUNC extends AST_DEC
 
 
 		return result_SemantMe;
+	}
+
+	public boolean isMethod() {
+		// NOTE: only relevant AFTER SemantMe
+		return belongToClass != null; // TODO SEMANT IT
 	}
 
 }
