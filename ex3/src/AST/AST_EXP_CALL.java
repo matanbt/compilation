@@ -107,12 +107,12 @@ public class AST_EXP_CALL extends AST_EXP
             // find func in the most close class scope
             TYPE caller_type = caller.SemantMe();  // TODO SemantMe for var nodes (in case of class instance- it will be TYPE_CLASS_OBJECT type)
 
-            if (! (caller_type instanceof TYPE_CLASS_OBJECT)){
+            if (! (caller_type instanceof TYPE_CLASS)){
                 System.exit(0);  // TODO- error handling
                 return null;
             }
 
-            TYPE_CLASS caller_class = ((TYPE_CLASS_OBJECT) caller_type).type_class;
+            TYPE_CLASS caller_class = (TYPE_CLASS) caller_type;
 
             // search for func in caller_class and it's super classes
             while (caller_class != null){

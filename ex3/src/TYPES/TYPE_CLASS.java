@@ -13,8 +13,7 @@ public class TYPE_CLASS extends TYPE
 	/* packed together with the class methods         */
 	/**************************************************/
 	public TYPE_LIST data_members;
-	public TYPE_CLASS_OBJECT type_for_instances_of_class;  // this will be the type of all this class's instances
-	
+
 	/****************/
 	/* CTROR(S) ... */
 	/****************/
@@ -23,6 +22,5 @@ public class TYPE_CLASS extends TYPE
 		this.name = name;
 		this.father = father;
 		this.data_members = data_members;
-		this.type_for_instances_of_class = new TYPE_CLASS_OBJECT(this);
 	}
 }
