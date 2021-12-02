@@ -1,5 +1,8 @@
 package AST;
 
+import SYMBOL_TABLE.SYMBOL_TABLE;
+import TYPES.*;
+
 public class AST_EXP_CALL extends AST_EXP
 {
     public AST_VAR caller;
@@ -90,5 +93,65 @@ public class AST_EXP_CALL extends AST_EXP
         /****************************************/
         if (caller != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, caller.SerialNumber);
         if (args != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, args.SerialNumber);
+    }
+
+    public TYPE SemantMe()
+    {
+        TYPE type_func = null;
+
+        if (caller == null){
+            type_func = SYMBOL_TABLE.getInstance().find(func);  // find func in the most close scope
+        }
+
+        else{
+            // find func in the most close class scope
+            TYPE caller_type = caller.SemantMe();  // TODO SemantMe for var nodes (in case of class instance- it will be TYPE_CLASS_OBJECT type)
+
+            if (! (caller_type instanceof TYPE_CLASS_OBJECT)){
+                System.exit(0);  // TODO- error handling
+                return null;
+            }
+
+            TYPE_CLASS caller_class = ((TYPE_CLASS_OBJECT) caller_type).type_class;
+
+            // search for func in caller_class and it's super classes
+            while (caller_class != null){
+                TYPE_LIST class_data_member_list = caller_class.data_members;
+                for(TYPE_LIST node = class_data_member_list; node != null; node = node.next){
+                    TYPE class_data_member = node.head;
+                    if ((class_data_member instanceof TYPE_FUNCTION) && ((TYPE_FUNCTION) class_data_member).name.equals(func)){
+                        type_func = class_data_member;
+                    }
+                }
+
+                // func is not in caller_class, search in it's super class
+                caller_class = caller_class.father;
+            }
+
+            if (type_func == null){
+                // search for func in the global scope
+                type_func = SYMBOL_TABLE.findInGlobalScope(func);  // TODO- add findInGlobalScope in SYMBOL_TABLE
+            }
+        }
+
+        if (! (type_func instanceof TYPE_FUNCTION)){
+            System.exit(0);  // TODO- error handling
+            return null;
+        }
+
+        // verify arguments' types
+        TYPE_LIST wanted_args = ((TYPE_FUNCTION) type_func).args;
+        TYPE_LIST type_node;
+        AST_EXP_LIST exp_node;
+        for(type_node = wanted_args, exp_node = args; type_node != null && exp_node != null;
+            type_node = type_node.next, exp_node = exp_node.next) {
+            TYPE wanted_arg = type_node.head;
+            AST_EXP exp = exp_node.head;
+            if (exp.SemantMe() != wanted_arg){
+                System.exit(0);  // TODO- error handling
+                return null;
+            }
+        }
+        return ((TYPE_FUNCTION) type_func).rtnType;
     }
 }
