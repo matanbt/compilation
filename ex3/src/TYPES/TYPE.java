@@ -17,11 +17,6 @@ public abstract class TYPE
 	/*************/
 	public boolean isArray(){ return false;}
 
-	public static boolean isClassInstance(TYPE t) {
-		return t != TYPE_INT.getInstance()
-				&& t != TYPE_STRING.getInstance()
-				&& !(t instanceof TYPE_ARRAY);
-	}
 
 	/*
 	 * validate assignment of types: left := right
@@ -30,12 +25,12 @@ public abstract class TYPE
 	public static void checkAssignment(TYPE left, TYPE right, String assigneeName) {
 		if (right == TYPE_NIL.getInstace()
 				&& (left == TYPE_INT.getInstance() || left == TYPE_STRING.getInstance())) {
-			System.out.format(">> ERROR cannot assign NIL to primitive types (int, string)\n", assigneeName);
+			System.out.format(">> ERROR cannot assign NIL to primitive types (int, string) (%s)\n", assigneeName);
 			// TODO deal with error
 			System.exit(0);
 		}
 		else if (right != TYPE_NIL.getInstace() && right != left) {
-			if (TYPE.isClassInstance(right) && TYPE.isClassInstance(left)) {
+			if (right.isClass() && left.isClass()) {
 				// in OOP we allow assignment of different types
 				if(!((TYPE_CLASS) right).isSubClassOf((TYPE_CLASS) left)) // TODO after TYPE_CLASS implementation
 				{
