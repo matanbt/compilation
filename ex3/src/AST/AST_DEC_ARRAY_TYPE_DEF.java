@@ -1,5 +1,8 @@
 package AST;
 
+import TYPES.*;
+import SYMBOL_TABLE.*;
+
 public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 {
 	public AST_TYPE type;
@@ -54,5 +57,42 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (type != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
+	}
+
+	public TYPE SemantMe()
+	{
+		SYMBOL_TABLE table = SYMBOL_TABLE.getInstance();
+
+		/* 1. Check we are in the global scope */
+		if (!table.isGlobalScope())
+		{
+			/* TODO: Errorize */
+			System.out.format(">> ERROR array typedef not in global scope\n");
+			System.exit(0);
+		}
+
+		/* 2. Check that the identifier name is valid (AKA not used) */
+		if (table.find(this.id) != null)
+		{
+			/* TODO: Errorize */
+			System.out.format(">> ERROR identifier already used\n");
+			System.exit(0);
+		}
+
+		/* 3. Check that the type is valid (AKA defined before) */
+		TYPE array_type = this.type.SemantMe();
+		if (array_type == null)
+		{
+			/* TODO: Errorize */
+			System.out.format(">> ERROR Invalid type for array\n");
+			System.exit(0);
+		}
+
+		/* 4. Update symbol table with this new type */
+		TYPE_ARRAY array = new TYPE_ARRAY(this.id, array_type);
+		table.enter(this.id, array);
+
+		/* 5. Return type of array */
+		return array;
 	}
 }
