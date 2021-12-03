@@ -120,12 +120,12 @@ public class AST_EXP_CALL extends AST_EXP
             // this is a function call by a class instance (caller)
             TYPE caller_type = caller.SemantMe();  // TODO SemantMe for var nodes (in case of class instance- it will be TYPE_CLASS_OBJECT type)
 
-            if (! (caller_type instanceof TYPE_CLASS)){
+            if (! (caller_type instanceof TYPE_CLASS_INSTANCE)){
                 System.exit(0);  // TODO- error handling
                 return null;
             }
 
-            type_func = ((TYPE_CLASS) caller_type).findInClassAndSuperClasses(func);
+            type_func = ((TYPE_CLASS_INSTANCE) caller_type).wasCreatedFromClass.findInClassAndSuperClasses(func);
         }
 
         if (! (type_func instanceof TYPE_FUNCTION)){
