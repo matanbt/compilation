@@ -121,9 +121,9 @@ public class AST_EXP_CALL extends AST_EXP
                     TYPE class_data_member = node.head;
                     if ((class_data_member instanceof TYPE_FUNCTION) && ((TYPE_FUNCTION) class_data_member).name.equals(func)){
                         type_func = class_data_member;
+                        break;
                     }
                 }
-
                 // func is not in caller_class, search in it's super class
                 caller_class = caller_class.father;
             }
