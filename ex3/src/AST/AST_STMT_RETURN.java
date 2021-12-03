@@ -6,7 +6,9 @@ import TYPES.*;
 public class AST_STMT_RETURN extends AST_STMT
 {
 	public AST_EXP exp;         // could be null (IFF void functions)
-	public AST_DEC_FUNC inFunc; // the function in which the return is in context
+
+	// ---- SEMANTIC FIELDS ----
+	public TYPE_FUNCTION inFunc; // the function in which the return is in context
 
 	public AST_STMT_RETURN(AST_EXP exp)
 	{
@@ -42,34 +44,30 @@ public class AST_STMT_RETURN extends AST_STMT
 	/* verifies the type we return is the same as in the function declaration */
 	public TYPE SemantMe() {
 		// gets the current scope-function
-		this.inFunc = SYMBOL_TABLE.getInstance().findScopeFunc();
+		this.inFunc = (TYPE_FUNCTION) SYMBOL_TABLE.getInstance().findScopeFunc().scopeContextType;
 
 		// a return for 'inFunc' has been found
 		inFunc.isReturnExists = true;
 
-		TYPE expectedReturnType = inFunc.result_SemantMe.rtnType;
+		TYPE expectedReturnType = inFunc.rtnType;
 		TYPE actualReturnType = exp != null ? exp.SemantMe(): TYPE_VOID.getInstance();
 
-		if(actualReturnType == TYPE_NIL.getInstance()) {
-			// "return null" - is not allowed for int, string, void
-			if(expectedReturnType == TYPE_INT.getInstance()
-					|| expectedReturnType == TYPE_STRING.getInstance()
-					|| expectedReturnType == TYPE_VOID.getInstance()) {
-
-				System.out.format(">> ERROR - return null is not allowed for primitive types");
+		// We can look at validating return type as assignment check...
+		// The only exception here is that we allow expectedReturnType (=assignee) to be void, which we'll take care separately
+		if(expectedReturnType == TYPE_VOID.getInstance()) {
+			if(actualReturnType != TYPE_VOID.getInstance())
+			{
+				System.out.format(">> ERROR actual return type (%s) is different than expected (%s)" +
+						", in function %s(..)", expectedReturnType.name, actualReturnType.name, inFunc.name);
 				// TODO deal with error
 				System.exit(0);
 			}
+			// here if our function is 'void' and our statement is "return;"
+			return null; // means success
 		}
 
-		if(expectedReturnType != actualReturnType){
-			// TODO make sure that we have a type factory, so this equal will work (i.e. I assume each type is an instance!)
-
-			System.out.format(">> ERROR actual return type (%s) is different than expected (%s)" +
-					", in function %s()", expectedReturnType.name, actualReturnType.name, inFunc.funcName);
-			// TODO deal with error
-			System.exit(0);
-		}
+		// perform regular assignment check for the rest of the cases (non-void functions)
+		TYPE.checkAssignment(expectedReturnType, actualReturnType, "Return Statement");
 
 		return null; // no TYPE for return statement
 
