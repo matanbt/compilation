@@ -77,6 +77,13 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 			// TODO ERROR HANDLING
 			System.exit(0);
 		}
+		if(!rightType.isNewable()) {
+			// TODO - this check should be (also, or maybe only) in AST_NEW_EXP
+			System.out.format(">> ERROR 'new' keyword cannot precede type (%s) \n", rightType.name);
+			// TODO ERROR HANDLING
+			System.exit(0);
+		}
+
 
 		/***************************************************/
 		/* [3] Check for the given value is from expected type */

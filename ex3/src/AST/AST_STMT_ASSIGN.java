@@ -61,6 +61,7 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
 	}
+
 	public TYPE SemantMe()
 	{
 		TYPE leftType, rightType;
@@ -70,12 +71,14 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		/****************************/
 		leftType = this.var.SemantMe();
 		rightType = this.exp.SemantMe();
+
 		if (leftType == null || rightType == null)
 		{ // shouldn't be here, should return an error way before
 			System.out.format(">> ERROR failed when typing var-assign-statement (SHOULDN'T GET HERE) \n");
 			// TODO ERROR HANDLING
 			System.exit(0);
 		}
+
 
 		/***************************************************/
 		/* [3] Check for the given value is from expected type */
