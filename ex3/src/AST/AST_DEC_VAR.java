@@ -11,7 +11,7 @@ public class AST_DEC_VAR extends AST_DEC
     public AST_NEW_EXP new_exp;
 
     // ---- Semantic Properties ---
-    public boolean isCField; // TODO - should be marked by CField
+    public boolean isCField = false; // TODO - should be marked by CField
 
     /******************/
     /* CONSTRUCTOR(S) */
@@ -108,6 +108,12 @@ public class AST_DEC_VAR extends AST_DEC
         if (semantic_type == null)
         {
             System.out.format(">> ERROR non existing type (%s)\n", this.type);
+            // TODO ERROR HANDLING
+            System.exit(0);
+        }
+        if (!semantic_type.canBeAssigned()) {
+            System.out.format(">> ERROR type (%s) cannot be used as a variable type\n", this.type);
+            // TODO ERROR HANDLING
             System.exit(0);
         }
 
@@ -120,7 +126,7 @@ public class AST_DEC_VAR extends AST_DEC
         // else means it's scope declaration (might be global)
         else if (SYMBOL_TABLE.getInstance().findInCurrentScope(name) != null)
         {
-            System.out.format(">> ERROR variable %s already exists in scope\n", name);
+            System.out.format(">> ERROR variable %s already exists inside the scope\n", name);
             // TODO deal with error
             System.exit(0);
         }
