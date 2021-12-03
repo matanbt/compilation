@@ -15,24 +15,19 @@ public class TYPE_FOR_SCOPE_BOUNDARIES extends TYPE
 	public static String CLASS_SCOPE = "CLASS-SCOPE";
 	// a scope for class
 	public static String IF_WHILE_SCOPE = "IF-WHILE-SCOPE";
-	// in case there is another scope I missed
-	public static String OTHER_SCOPE = "OTHER-SCOPE";
 
 
-	// the node representing to this scope (i.e. AST_DEC_FUNC, AST_DEC_CLASS)
-	public AST_Node scopeContext;
+	// the AST-node / Type representing to this scope (e.g. AST_DEC_FUNC / TYPE_FUNCTION)
+	public AST_Node scopeContextAST;
+	public TYPE scopeContextType; // could be null, e.g. WHILE Scopes
 
 	/****************/
 	/* CTROR(S) ... */
 	/****************/
-	public TYPE_FOR_SCOPE_BOUNDARIES(String name, AST_Node scopeContext)
+	public TYPE_FOR_SCOPE_BOUNDARIES(String name, AST_Node scopeContextAST, TYPE scopeContextType)
 	{
 		this.name = name;
-		this.scopeContext = scopeContext;
-	}
-
-	public TYPE_FOR_SCOPE_BOUNDARIES(String name)
-	{
-		this(name, null);
+		this.scopeContextAST = scopeContextAST;
+		this.scopeContextType = scopeContextType;
 	}
 }

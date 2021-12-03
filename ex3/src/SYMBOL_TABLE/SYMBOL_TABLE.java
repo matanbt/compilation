@@ -145,7 +145,7 @@ public class SYMBOL_TABLE
 	/*
 	 * returns the class in which we are in its scope
 	 */
-	public AST_DEC_CLASS findScopeClass() {
+	public TYPE_CLASS findScopeClass() {
 		SYMBOL_TABLE_ENTRY curr = this.top;
 
 		// iterates until a function-scope is found
@@ -159,15 +159,15 @@ public class SYMBOL_TABLE
 		}
 
 		// curr.type must be instanceof TYPE_FOR_SCOPE_BOUNDARIES
-		return (AST_DEC_CLASS) ((TYPE_FOR_SCOPE_BOUNDARIES)(curr.type)).scopeContext;
+		return (TYPE_CLASS) ((TYPE_FOR_SCOPE_BOUNDARIES)(curr.type)).scopeContextType;
 	}
 
 	/*
 	 * Finds the function in which we're in its scope
 	 * (it's the latest and only function that was declared, because no nested-functions are allowed)
-	 * returns the desired AST_DEC_FUNC or null if fails.
+	 * returns the desired TYPE_FOR_SCOPE or null if fails.
 	 */
-	public AST_DEC_FUNC findScopeFunc()
+	public TYPE_FOR_SCOPE_BOUNDARIES findScopeFunc()
 	{
 		SYMBOL_TABLE_ENTRY curr = this.top;
 
@@ -182,7 +182,7 @@ public class SYMBOL_TABLE
 		}
 
 		// curr.type must be instanceof TYPE_FOR_SCOPE_BOUNDARIES
-		return (AST_DEC_FUNC) ((TYPE_FOR_SCOPE_BOUNDARIES)(curr.type)).scopeContext;
+		return (TYPE_FOR_SCOPE_BOUNDARIES)(curr.type);
 	}
 
 	/*
@@ -209,7 +209,7 @@ public class SYMBOL_TABLE
 	/***************************************************************************/
 	/* each scope can also have a context represented by the relevant AST_Node*/
 	/* scopeName is a static field in TYPE_FOR_SCOPE_BOUNDARIES */
-	public void beginScope(String scopeName, AST_Node contextScope)
+	public void beginScope(String scopeName, AST_Node contextScopeAST, TYPE contextScopeType)
 	{
 		/************************************************************************/
 		/* Though <SCOPE-BOUNDARY> entries are present inside the symbol table, */
@@ -219,7 +219,7 @@ public class SYMBOL_TABLE
 		/************************************************************************/
 		enter(
 			"SCOPE-BOUNDARY",
-			new TYPE_FOR_SCOPE_BOUNDARIES(scopeName, contextScope));
+			new TYPE_FOR_SCOPE_BOUNDARIES(scopeName, contextScopeAST, contextScopeType));
 
 		/*********************************************/
 		/* Print the symbol table after every change */
@@ -227,16 +227,17 @@ public class SYMBOL_TABLE
 		PrintMe();
 	}
 
-	// overloading of beginScope
-	public void beginScope()
-	{
-		beginScope(TYPE_FOR_SCOPE_BOUNDARIES.OTHER_SCOPE);
-	}
 
 	// overloading of beginScope
 	public void beginScope(String scopeName)
+
 	{
-		beginScope(scopeName, null);
+		beginScope(scopeName, null, null);
+	}
+	// overloading of beginScope
+	public void beginScope(String scopeName, AST_Node contextScopeAST)
+	{
+		beginScope(scopeName, contextScopeAST, null);
 	}
 
 	/********************************************************************************/
@@ -376,12 +377,9 @@ public class SYMBOL_TABLE
 			/* [1] Enter primitive types int, string */
 			/*****************************************/
 			instance.beginScope(TYPE_FOR_SCOPE_BOUNDARIES.BUILTIN_SCOPE);
+			instance.enter("void",   TYPE_VOID.getInstance());
 			instance.enter("int",   TYPE_INT.getInstance());
 			instance.enter("string",TYPE_STRING.getInstance());
-
-			/*************************************/
-			/* [2] How should we handle void ??? */ // TODO
-			/*************************************/
 
 			/***************************************/
 			/* [3] Enter library function PrintInt */
