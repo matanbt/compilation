@@ -13,28 +13,53 @@ public abstract class TYPE
 	public boolean isClass(){ return false;}
 
 	/*************/
+	/* isInstanceOfSomeClass() */
+	/*************/
+	public boolean isInstanceOfSomeClass(){ return false;}
+
+	/*************/
 	/* isArray() */
 	/*************/
 	public boolean isArray(){ return false;}
 
+	/*************/
+	/* isFunction() */
+	/*************/
+	public boolean isFunction(){ return false;}
+
+	/*************/
+	/* can an expression of this type be preceded with 'new' keyword? */
+	/*************/
+	public boolean isNewable() {
+		return (isArray() || isInstanceOfSomeClass());
+	}
 
 	/*
 	 * validate assignment of types: left := right
 	 * Handles error in case of encountering one
+	 * ALSO general enough to support validation function return statement (keep it that way)
 	 */
 	public static void checkAssignment(TYPE left, TYPE right, String assigneeName) {
-		if (right == TYPE_NIL.getInstace()
-				&& (left == TYPE_INT.getInstance() || left == TYPE_STRING.getInstance())) {
-			System.out.format(">> ERROR cannot assign NIL to primitive types (int, string) (%s)\n", assigneeName);
+
+		if(!left.canBeAssigned()) {
+			// we note that canBeVarType holds for 'left' IFF it can be assigned with some value
+			System.out.format(">> ERROR type (%s) cannot be used as an assignee\n", left.name);
+			// TODO ERROR HANDLING
+			System.exit(0);
+		}
+
+		if (!left.canBeAssignedNil() && right == TYPE_NIL.getInstance()) {
+			System.out.format(">> ERROR cannot assign NIL to type (%s)\n", left.name);
 			// TODO deal with error
 			System.exit(0);
 		}
-		else if (right != TYPE_NIL.getInstace() && right != left) {
+
+		else if ((left != right) && (right != TYPE_NIL.getInstance())) {
 			if (right.isClass() && left.isClass()) {
 				// in OOP we allow assignment of different types
 				if(!((TYPE_CLASS) right).isSubClassOf((TYPE_CLASS) left)) // TODO after TYPE_CLASS implementation
 				{
-					System.out.format(">> ERROR in declaration of (%s) :  cannot assign to class (%s) is" +
+					System.out.format(">> ERROR in (%s) :  cannot assign to class (%s) is" +
 							" NOT super class of (%s)", assigneeName, left.name, right.name);
 					// TODO deal with error
 					System.exit(0);
@@ -42,11 +67,39 @@ public abstract class TYPE
 			}
 			else {
 				// OOP assignment failed means error
-				System.out.format(">> ERROR in declaration of (%s) : expected assigned type of (%s) " +
+				System.out.format(">> ERROR in (%s) : expected assigned type of (%s) " +
 						"but got (%s) \n", assigneeName, left.name, right.name);
 				// TODO deal with error
 				System.exit(0);
 			}
 		}
 	}
+
+
+	/**************************  Properties of TYPE  ************************************/
+	/* The logic behind the following 3 functions is that each type can be
+	used as a return-type and a variable-type, unless else is stated explicitly by the
+	one the functions below.  */
+	/**********************************************************************************/
+	/* Can this type used as a type returned from a function (i.e. in its signature)?
+	 * EXAMPLE: TYPE_NIL.getInstance().canBeRtnType() == false
+	 * DEFAULT: is true - must be overridden to change this fact
+	 */
+	public boolean canBeRtnType() { return true; }
+
+	/*************/
+	/* Can this type be assigned with value (i.e. in its declaration)?
+	 * This allows us to distinguish between identifiers that can be assigned
+	 * For example TYPE_VOID.getInstance().canBeRtnType() == false
+	 * NOTE: this check is equivalent to the question "can this type be declared for a variable?"
+	 *       for example - a function cannot be assigned, and cannot be variable
+	 * DEFAULT: is true - must be overridden to change this fact */
+	public boolean canBeAssigned() { return true; }
+
+	/*************/
+	/* Can this type be assigend with 'nil'?
+	   EXAMPLE: TYPE_INT.getInstance().canBeAssignedNil == false
+	   DEFAULT: is the same as 'canBeAssigned'
+	 */
+	public boolean canBeAssignedNil() { return canBeAssigned(); }
 }

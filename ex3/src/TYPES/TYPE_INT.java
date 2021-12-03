@@ -24,4 +24,10 @@ public class TYPE_INT extends TYPE
 		}
 		return instance;
 	}
+
+	// We forbid int i:= nil
+	public boolean canBeAssignedNil() {
+		return false;
+	}
+
 }

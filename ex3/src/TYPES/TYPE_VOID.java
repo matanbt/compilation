@@ -23,4 +23,14 @@ public class TYPE_VOID extends TYPE
 		}
 		return instance;
 	}
+
+	// we do not allow "void i := ..."
+	public boolean canBeAssigned() {
+		return false;
+	}
+
+	// we forbid void foo() { return nil; }
+	public boolean canBeAssignedNil() {
+		return false;
+	}
 }
