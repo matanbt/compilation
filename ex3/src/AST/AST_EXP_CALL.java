@@ -97,14 +97,27 @@ public class AST_EXP_CALL extends AST_EXP
 
     public TYPE SemantMe()
     {
-        TYPE type_func = null;
+        TYPE type_func;
 
         if (caller == null){
-            type_func = SYMBOL_TABLE.getInstance().find(func);  // find func in the most close scope
+            TYPE_CLASS type_class_of_scope = SYMBOL_TABLE.findScopeClass();  // TODO- change findScopeClass to return TYPE_CLASS (and not AST) or maybe do more general func- findScope
+            if (type_class_of_scope == null){
+                // this function call is not inside a class scope
+                type_func = SYMBOL_TABLE.getInstance().find(func);  // find func in the closest scope  TODO- change to type_func = SYMBOL_TABLE.findInGlobalScope(func);
+            }
+            else{
+                // this function call is inside a class scope
+                // search for func in the closest class scope
+                type_func = type_class_of_scope.findInClassAndSuperClasses(func);
+                if (type_func == null){
+                    // search for func in the global scope
+                    type_func = SYMBOL_TABLE.getInstance().find(func);  // TODO- change to type_func = SYMBOL_TABLE.findInGlobalScope(func);
+                }
+            }
         }
 
         else{
-            // find func in the most close class scope
+            // this is a function call by a class instance (caller)
             TYPE caller_type = caller.SemantMe();  // TODO SemantMe for var nodes (in case of class instance- it will be TYPE_CLASS_OBJECT type)
 
             if (! (caller_type instanceof TYPE_CLASS)){
@@ -112,26 +125,7 @@ public class AST_EXP_CALL extends AST_EXP
                 return null;
             }
 
-            TYPE_CLASS caller_class = (TYPE_CLASS) caller_type;
-
-            // search for func in caller_class and it's super classes
-            while (caller_class != null){
-                TYPE_LIST class_data_member_list = caller_class.data_members;
-                for(TYPE_LIST node = class_data_member_list; node != null; node = node.next){
-                    TYPE class_data_member = node.head;
-                    if ((class_data_member instanceof TYPE_FUNCTION) && ((TYPE_FUNCTION) class_data_member).name.equals(func)){
-                        type_func = class_data_member;
-                        break;
-                    }
-                }
-                // func is not in caller_class, search in it's super class
-                caller_class = caller_class.father;
-            }
-
-            if (type_func == null){
-                // search for func in the global scope
-                type_func = SYMBOL_TABLE.findInGlobalScope(func);  // TODO- add findInGlobalScope in SYMBOL_TABLE
-            }
+            type_func = ((TYPE_CLASS) caller_type).findInClassAndSuperClasses(func);
         }
 
         if (! (type_func instanceof TYPE_FUNCTION)){
@@ -151,6 +145,12 @@ public class AST_EXP_CALL extends AST_EXP
                 System.exit(0);  // TODO- error handling
                 return null;
             }
+        }
+
+        if (type_node != null || exp_node != null){
+            // arguments and expected arguments are not in the same length
+            System.exit(0);  // TODO- error handling
+            return null;
         }
         return ((TYPE_FUNCTION) type_func).rtnType;
     }
