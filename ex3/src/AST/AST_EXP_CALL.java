@@ -100,7 +100,7 @@ public class AST_EXP_CALL extends AST_EXP
         TYPE type_func;
 
         if (caller == null){
-            TYPE_CLASS type_class_of_scope = SYMBOL_TABLE.findScopeClass();  // TODO- change findScopeClass to return TYPE_CLASS (and not AST) or maybe do more general func- findScope
+            TYPE_CLASS type_class_of_scope = SYMBOL_TABLE.findScopeClass();  // TODO- change findScopeClass to return TYPE_CLASS (and not AST)
             if (type_class_of_scope == null){
                 // this function call is not inside a class scope
                 type_func = SYMBOL_TABLE.getInstance().find(func);  // find func in the closest scope  TODO- change to type_func = SYMBOL_TABLE.findInGlobalScope(func);
