@@ -70,6 +70,6 @@ public class AST_STMT_LIST extends AST_Node
 		if (head != null) head.SemantMe();
 		if (next != null) next.SemantMe();
 
-		return null; // there is not TYPE for sequence of statements.
+		return null; // there is no TYPE for sequence of statements.
 	}
 }
