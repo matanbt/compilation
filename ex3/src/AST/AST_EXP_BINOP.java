@@ -70,13 +70,13 @@ public class AST_EXP_BINOP extends AST_EXP
 	}
 	public TYPE SemantMe()
 	{
-		TYPE t1 = null;
-		TYPE t2 = null;
+		TYPE semantic_left = null;
+		TYPE semantic_right = null;
 
-		if (left  != null) t1 = left.SemantMe();
-		if (right != null) t2 = right.SemantMe();
+		if (left  != null) semantic_left = left.SemantMe();
+		if (right != null) semantic_right = right.SemantMe();
 
-		if ((t1 == TYPE_INT.getInstance()) && (t2 == TYPE_INT.getInstance()))
+		if ((semantic_left == TYPE_INT.getInstance()) && (semantic_right == TYPE_INT.getInstance()))
 		{
 			if (op.equals("/") && (right instanceof AST_EXP_INT) && (((AST_EXP_INT) right).value == 0)){  // zero division
 				System.exit(0);  // TODO- error handling
@@ -84,7 +84,7 @@ public class AST_EXP_BINOP extends AST_EXP
 			}
 			return TYPE_INT.getInstance();
 		}
-		if ((t1 == TYPE_STRING.getInstance()) && (t2 == TYPE_STRING.getInstance()) && (op.equals("+")))
+		if ((semantic_left == TYPE_STRING.getInstance()) && (semantic_right == TYPE_STRING.getInstance()) && (op.equals("+")))
 		{
 			return TYPE_STRING.getInstance();
 		}
