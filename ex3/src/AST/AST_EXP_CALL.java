@@ -144,12 +144,7 @@ public class AST_EXP_CALL extends AST_EXP
             type_node = type_node.next, exp_node = exp_node.next, i++) {
             TYPE expected_arg_type = type_node.head;
             TYPE arg_type = exp_node.head.SemantMe();
-            if (arg_type != expected_arg_type){
-                System.out.format(">> ERROR in function call: unmatching arguments' types:\n" +
-                        "argument #%d: expected type: (%s), but got: (%s)\n", i, expected_arg_type.name, arg_type.name);
-                System.exit(0);  // TODO- error handling
-                return null;
-            }
+            TYPE.checkAssignment(expected_arg_type, arg_type, String.format("function call- assigning argument #%d", i));
         }
 
         if (type_node != null || exp_node != null){
