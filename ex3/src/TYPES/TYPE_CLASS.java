@@ -15,7 +15,7 @@ public class TYPE_CLASS extends TYPE
 	public TYPE_LIST data_members;
 
 	// the type this L-class defines
-	public TYPE_CLASS_INSTANCE typeOfInstancesOfThisClass;
+	public TYPE_CLASS_INSTANCE classInstanceType;
 	
 	/****************/
 	/* CTROR(S) ... */
@@ -25,7 +25,7 @@ public class TYPE_CLASS extends TYPE
 		this.name = name;
 		this.father = father;
 		this.data_members = data_members;
-		this.typeOfInstancesOfThisClass = new TYPE_CLASS_INSTANCE(name, this);
+		this.classInstanceType = new TYPE_CLASS_INSTANCE(name, this);
 	}
 
 	public boolean isSubClassOf(TYPE_CLASS potentialFather) {
@@ -41,7 +41,7 @@ public class TYPE_CLASS extends TYPE
 
 
 	public TYPE_CLASS_INSTANCE getInstance() {
-		return this.typeOfInstancesOfThisClass;
+		return this.classInstanceType;
 	}
 
 	// we forbid assigning to class 'A := nil' when A is a class
@@ -54,10 +54,6 @@ public class TYPE_CLASS extends TYPE
 	}
 
 	public boolean canBeRtnType() {
-		return false; // maybe counter-intuitive, but rtnType should be 'this.typeOfInstancesOfThisClass'
-	}
-
-	public boolean isClass() {
-		return true;
+		return false; // maybe counter-intuitive, but rtnType should be 'this.classInstanceType'
 	}
 }

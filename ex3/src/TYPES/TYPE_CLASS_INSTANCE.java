@@ -32,9 +32,11 @@ public class TYPE_CLASS_INSTANCE extends TYPE {
         this.wasCreatedFromClass = wasCreatedFromClass;
     }
 
-    public boolean isClass () {
-        return false; // THIS IS NOT L-CLASS, but the type of instance of one
+    // note: a class can subclass itself
+    public boolean isSubClassOf(TYPE_CLASS_INSTANCE potentialFather) {
+        return false; // TODO on class task: IMPLEMENT
     }
+
 
 
     // Stating the defaults of the following explicitly:

@@ -167,7 +167,7 @@ public class SYMBOL_TABLE
 	 * (it's the latest and only function that was declared, because no nested-functions are allowed)
 	 * returns the desired TYPE_FOR_SCOPE or null if fails.
 	 */
-	public TYPE_FOR_SCOPE_BOUNDARIES findScopeFunc()
+	public TYPE_FUNCTION findScopeFunc()
 	{
 		SYMBOL_TABLE_ENTRY curr = this.top;
 
@@ -182,7 +182,7 @@ public class SYMBOL_TABLE
 		}
 
 		// curr.type must be instanceof TYPE_FOR_SCOPE_BOUNDARIES
-		return (TYPE_FOR_SCOPE_BOUNDARIES)(curr.type);
+		return (TYPE_FUNCTION)((TYPE_FOR_SCOPE_BOUNDARIES)(curr.type)).scopeContextType;
 	}
 
 	/*
@@ -393,10 +393,9 @@ public class SYMBOL_TABLE
 						TYPE_INT.getInstance(),
 						null)));
 			// TODO - add the rest of the builtin stuff here
-			
+
 		}
 
-		instance.beginScope(TYPE_FOR_SCOPE_BOUNDARIES.GLOB_SCOPE);
 
 		return instance;
 	}

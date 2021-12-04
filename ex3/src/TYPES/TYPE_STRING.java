@@ -30,4 +30,13 @@ public class TYPE_STRING extends TYPE
 		return false;
 	}
 
+	@Override
+	public boolean canBeAssigned() {
+		return true;
+	}
+
+	@Override
+	public boolean canBeRtnType() {
+		return true;
+	}
 }

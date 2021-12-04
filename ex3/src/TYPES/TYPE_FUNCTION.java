@@ -41,8 +41,4 @@ public class TYPE_FUNCTION extends TYPE
 	public boolean canBeAssignedNil() {
 		return false;
 	}
-
-	public boolean isFunction() {
-		return true;
-	}
 }

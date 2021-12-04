@@ -7,15 +7,22 @@ public abstract class TYPE
 	/******************************/
 	public String name;
 
+
+	/*************/
+	/* The following 5 methods SHOULD NOT be overridden
+	 (I mean they could, but it's redundant) */
+	// TODO make sure we obeyed this before merging to master
+	/*************/
 	/*************/
 	/* isClass() */
 	/*************/
-	public boolean isClass(){ return false;}
+	// THIS IS NOT L-CLASS, but the type of instance of one
+	public boolean isClass(){ return this instanceof TYPE_CLASS;}
 
 	/*************/
 	/* isInstanceOfSomeClass() */
 	/*************/
-	public boolean isInstanceOfSomeClass(){ return false;}
+	public boolean isInstanceOfSomeClass(){ return this instanceof TYPE_CLASS_INSTANCE;}
 
 	/*************/
 	/* isArray() */
@@ -25,13 +32,13 @@ public abstract class TYPE
 	/*************/
 	/* isFunction() */
 	/*************/
-	public boolean isFunction(){ return false;}
+	public boolean isFunction(){ return this instanceof TYPE_FUNCTION;}
 
 	/*************/
 	/* can an expression of this type be preceded with 'new' keyword? */
 	/*************/
 	public boolean isNewable() {
-		return (isArray() || isInstanceOfSomeClass());
+		return (isArray() || isClass());
 	}
 
 	/*
@@ -55,9 +62,9 @@ public abstract class TYPE
 		}
 
 		else if ((left != right) && (right != TYPE_NIL.getInstance())) {
-			if (right.isClass() && left.isClass()) {
+			if (right.isInstanceOfSomeClass() && left.isInstanceOfSomeClass()) {
 				// in OOP we allow assignment of different types
-				if(!((TYPE_CLASS) right).isSubClassOf((TYPE_CLASS) left)) // TODO after TYPE_CLASS implementation
+				if(!((TYPE_CLASS_INSTANCE) right).isSubClassOf((TYPE_CLASS_INSTANCE) left)) // TODO after TYPE_CLASS implementation
 				{
 					System.out.format(">> ERROR in (%s) :  cannot assign to class (%s) is" +
 							" NOT super class of (%s)", assigneeName, left.name, right.name);
@@ -78,8 +85,8 @@ public abstract class TYPE
 
 	/**************************  Properties of TYPE  ************************************/
 	/* The logic behind the following 3 functions is that each type can be
-	used as a return-type and a variable-type, unless else is stated explicitly by the
-	one the functions below.  */
+	used as a return-type and a variable-type, unless else is stated explicitly by
+	overriding functions below.  */
 	/**********************************************************************************/
 	/* Can this type used as a type returned from a function (i.e. in its signature)?
 	 * EXAMPLE: TYPE_NIL.getInstance().canBeRtnType() == false

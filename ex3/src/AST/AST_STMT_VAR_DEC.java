@@ -1,5 +1,7 @@
 package AST;
 
+import TYPES.TYPE;
+
 // basically a class to wrap varDec, when it is a statement (=inside func)
 public class AST_STMT_VAR_DEC extends AST_STMT
 {
@@ -54,5 +56,10 @@ public class AST_STMT_VAR_DEC extends AST_STMT
         /* PRINT Edges to AST GRAPHVIZ DOT file */
         /****************************************/
         AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, d.SerialNumber);
+    }
+
+    @Override
+    public TYPE SemantMe() {
+        return this.d.SemantMe();
     }
 }

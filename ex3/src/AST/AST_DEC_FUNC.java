@@ -11,8 +11,8 @@ public class AST_DEC_FUNC extends AST_DEC
 	public AST_DEC_FUNC_ARG_LIST argList; // could be null
 
 	// -------------------- Semantic Additions --------------------
-	// non-null means method of 'belongToClass', and null means it's global function
-	public TYPE_CLASS belongToClass = null;
+	// non-null means method of 'encompassingClass', and null means it's global function
+	public TYPE_CLASS encompassingClass = null;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
@@ -76,6 +76,11 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*******************/
 		TYPE semantic_rtnType = rtnType.SemantMe();
 
+		if(semantic_rtnType.isClass()) {
+			// our L-function will return an INSTANCE of this class
+			semantic_rtnType = ((TYPE_CLASS) (semantic_rtnType)).getInstance();
+		}
+
 		if(semantic_rtnType == null)
 		{
 			System.out.format(">> ERROR non existing return type (%s)\n", rtnType.type_name);
@@ -91,9 +96,9 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*******************/
 		/* Check that func name is valid */
 		/*******************/
-		this.belongToClass = SYMBOL_TABLE.getInstance().findScopeClass();
+		this.encompassingClass = SYMBOL_TABLE.getInstance().findScopeClass();
 
-		if(belongToClass == null) {
+		if(encompassingClass == null) {
 			// we're in global context, so we make sure no same-name declaration
 			if(SYMBOL_TABLE.getInstance().find(funcName) != null) {
 				System.out.format(">> ERROR identifier (%s) is previously declared, " +
@@ -144,7 +149,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		SYMBOL_TABLE.getInstance().beginScope(TYPE_FOR_SCOPE_BOUNDARIES.FUNC_SCOPE, this, result_SemantMe);
 
 		/***************************/
-		/* [2] Add Agruments as local Arguments */
+		/* [2] Add Arguments as local Arguments */
 		/***************************/
 		TYPE_LIST list_argTypes = result_SemantMe.args;
 		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next)
@@ -166,6 +171,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		body.SemantMe();
 
 		// forces non-void-functions to contain at least one RETURN
+		// Must be checked only after body.semantMe;
 		if (!result_SemantMe.isReturnExists && (result_SemantMe.rtnType != TYPE_VOID.getInstance())) {
 			System.out.format(">> ERROR no return statement exists, when declared-return is (%s) " +
 					"for function (%s) ", rtnType.type_name, funcName);
@@ -191,7 +197,7 @@ public class AST_DEC_FUNC extends AST_DEC
 
 	public boolean isMethod() {
 		// NOTE: only relevant AFTER SemantMe
-		return belongToClass != null; // TODO SEMANT IT
+		return encompassingClass != null; // TODO SEMANT IT
 	}
 
 }

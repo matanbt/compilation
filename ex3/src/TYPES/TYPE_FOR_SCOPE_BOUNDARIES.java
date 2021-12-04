@@ -2,6 +2,7 @@ package TYPES;
 
 import AST.AST_Node;
 
+// Special class for scopes
 public class TYPE_FOR_SCOPE_BOUNDARIES extends TYPE
 {
 	// ---- names of different scopes ----
@@ -18,7 +19,7 @@ public class TYPE_FOR_SCOPE_BOUNDARIES extends TYPE
 
 
 	// the AST-node / Type representing to this scope (e.g. AST_DEC_FUNC / TYPE_FUNCTION)
-	public AST_Node scopeContextAST;
+	public AST_Node scopeContextAST; // TODO consider my necessity
 	public TYPE scopeContextType; // could be null, e.g. WHILE Scopes
 
 	/****************/
@@ -29,5 +30,22 @@ public class TYPE_FOR_SCOPE_BOUNDARIES extends TYPE
 		this.name = name;
 		this.scopeContextAST = scopeContextAST;
 		this.scopeContextType = scopeContextType;
+	}
+
+	// put false on all the properties. We should never fetch them anyway.
+
+	@Override
+	public boolean canBeAssigned() {
+		return false;
+	}
+
+	@Override
+	public boolean canBeRtnType() {
+		return false;
+	}
+
+	@Override
+	public boolean canBeAssignedNil() {
+		return false;
 	}
 }

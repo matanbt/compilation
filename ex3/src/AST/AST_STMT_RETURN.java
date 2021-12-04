@@ -44,7 +44,7 @@ public class AST_STMT_RETURN extends AST_STMT
 	/* verifies the type we return is the same as in the function declaration */
 	public TYPE SemantMe() {
 		// gets the current scope-function
-		this.inFunc = (TYPE_FUNCTION) SYMBOL_TABLE.getInstance().findScopeFunc().scopeContextType;
+		this.inFunc = SYMBOL_TABLE.getInstance().findScopeFunc();
 
 		// a return for 'inFunc' has been found
 		inFunc.isReturnExists = true;

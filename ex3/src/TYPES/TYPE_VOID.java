@@ -33,4 +33,9 @@ public class TYPE_VOID extends TYPE
 	public boolean canBeAssignedNil() {
 		return false;
 	}
+
+	@Override
+	public boolean canBeRtnType() {
+		return true;
+	}
 }

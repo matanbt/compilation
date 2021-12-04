@@ -33,4 +33,9 @@ public class TYPE_NIL extends TYPE
     public boolean canBeAssigned() {
         return false;
     }
+
+    @Override
+    public boolean canBeAssignedNil() {
+        return false;
+    }
 }

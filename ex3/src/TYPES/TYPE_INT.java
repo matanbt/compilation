@@ -30,4 +30,12 @@ public class TYPE_INT extends TYPE
 		return false;
 	}
 
+	public boolean canBeRtnType() {
+		return true;
+	}
+
+	@Override
+	public boolean canBeAssigned() {
+		return true;
+	}
 }
