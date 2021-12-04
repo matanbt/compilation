@@ -89,7 +89,7 @@ public class AST_EXP_BINOP extends AST_EXP
 		{
 			return TYPE_STRING.getInstance();
 		}
-		System.out.println(">> ERROR binary operations between invalid/unmatching types");
+		System.out.format(">> ERROR binary operations between invalid/unmatching types: left = (%s), right = (%s)\n", semantic_left.name, semantic_right.name);
 		System.exit(0);  // TODO- error handling
 		return null;
 	}

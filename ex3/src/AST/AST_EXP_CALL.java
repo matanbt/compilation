@@ -130,7 +130,7 @@ public class AST_EXP_CALL extends AST_EXP
         }
 
         if (! type_func.isFunction()){
-            System.out.format(">> ERROR in function call- (%s) is not a function", func);
+            System.out.format(">> ERROR in function call- (%s) expected type = function, but got (%s)\n", func, type_func.name);
             System.exit(0);  // TODO- error handling
             return null;
         }
@@ -146,7 +146,7 @@ public class AST_EXP_CALL extends AST_EXP
             TYPE arg_type = exp_node.head.SemantMe();
             if (arg_type != expected_arg_type){
                 System.out.format(">> ERROR in function call: unmatching arguments' types:\n" +
-                        "argument #%d: expected type: (%s), but got: (%s)", i, expected_arg_type.name, arg_type.name);
+                        "argument #%d: expected type: (%s), but got: (%s)\n", i, expected_arg_type.name, arg_type.name);
                 System.exit(0);  // TODO- error handling
                 return null;
             }
