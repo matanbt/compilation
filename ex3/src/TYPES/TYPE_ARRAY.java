@@ -10,4 +10,8 @@ public class TYPE_ARRAY extends TYPE
         this.name = name;
         this.elementType = elementType;
     }
+
+    public boolean canBeRtnType() { return false; }
+
+    public boolean canBeAssigned() { return false; }
 }
