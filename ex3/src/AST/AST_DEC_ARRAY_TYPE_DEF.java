@@ -64,10 +64,11 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 		SYMBOL_TABLE table = SYMBOL_TABLE.getInstance();
 
 		/* 1. Check we are in the global scope */
+		/* TODO: Make sure this works when merging with everyone's branches */
 		if (!table.isGlobalScope())
 		{
 			/* TODO: Errorize */
-			System.out.format(">> ERROR array typedef not in global scope\n");
+			System.out.println(">> ERROR array typedef not in global scope");
 			System.exit(0);
 		}
 
@@ -75,16 +76,17 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 		if (table.find(this.id) != null)
 		{
 			/* TODO: Errorize */
-			System.out.format(">> ERROR identifier already used\n");
+			System.out.println(">> ERROR identifier already used");
 			System.exit(0);
 		}
 
 		/* 3. Check that the type is valid (AKA defined before) */
+		/* TODO: Make sure this works when merging with everyone's branches */
 		TYPE array_type = this.type.SemantMe();
 		if (array_type == null)
 		{
 			/* TODO: Errorize */
-			System.out.format(">> ERROR Invalid type for array\n");
+			System.out.println(">> ERROR Invalid type for array");
 			System.exit(0);
 		}
 
