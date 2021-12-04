@@ -100,7 +100,7 @@ public class AST_EXP_CALL extends AST_EXP
         TYPE type_func;
 
         if (caller == null){
-            TYPE_CLASS type_class_of_scope = SYMBOL_TABLE.findScopeClass();  // TODO- change findScopeClass to return TYPE_CLASS (and not AST)
+            TYPE_CLASS type_class_of_scope = SYMBOL_TABLE.findScopeClass();
             if (type_class_of_scope == null){
                 // this function call is not inside a class scope
                 type_func = SYMBOL_TABLE.getInstance().find(func);  // find func in the closest scope  TODO- change to type_func = SYMBOL_TABLE.findInGlobalScope(func);
@@ -120,7 +120,7 @@ public class AST_EXP_CALL extends AST_EXP
             // this is a function call by a class instance (caller)
             TYPE caller_type = caller.SemantMe();  // TODO SemantMe for var nodes (in case of class instance- it will be TYPE_CLASS_OBJECT type)
 
-            if (! (caller_type instanceof TYPE_CLASS_INSTANCE)){
+            if (! caller_type.isInstanceOfSomeClass()){
                 System.out.println(">> ERROR method call by non-instance variable");
                 System.exit(0);  // TODO- error handling
                 return null;
@@ -129,30 +129,31 @@ public class AST_EXP_CALL extends AST_EXP
             type_func = ((TYPE_CLASS_INSTANCE) caller_type).wasCreatedFromClass.findInClassAndSuperClasses(func);
         }
 
-        if (! (type_func instanceof TYPE_FUNCTION)){
+        if (! type_func.isFunction()){
             System.out.format(">> ERROR in function call- (%s) is not a function", func);
             System.exit(0);  // TODO- error handling
             return null;
         }
 
         // verify arguments' types
-        TYPE_LIST wanted_args = ((TYPE_FUNCTION) type_func).args;
+        TYPE_LIST expected_args = ((TYPE_FUNCTION) type_func).args;
         TYPE_LIST type_node;
         AST_EXP_LIST exp_node;
-        for(type_node = wanted_args, exp_node = args; type_node != null && exp_node != null;
-            type_node = type_node.next, exp_node = exp_node.next) {
-            TYPE wanted_arg = type_node.head;
-            AST_EXP exp = exp_node.head;
-            if (exp.SemantMe() != wanted_arg){
-                System.out.println(">> ERROR function call with unmatching arguments' types");
+        int i;
+        for(type_node = expected_args, exp_node = args, i = 1; type_node != null && exp_node != null;
+            type_node = type_node.next, exp_node = exp_node.next, i++) {
+            TYPE expected_arg_type = type_node.head;
+            TYPE arg_type = exp_node.head.SemantMe();
+            if (arg_type != expected_arg_type){
+                System.out.format(">> ERROR in function call: unmatching arguments' types:\n" +
+                        "argument #%d: expected type: (%s), but got: (%s)", i, expected_arg_type.name, arg_type.name);
                 System.exit(0);  // TODO- error handling
                 return null;
             }
         }
 
         if (type_node != null || exp_node != null){
-            // arguments and expected arguments are not in the same length
-            System.out.println(">> ERROR function call with unmatching arguments length");
+            System.out.println(">> ERROR in function call: unmatching arguments length");
             System.exit(0);  // TODO- error handling
             return null;
         }
