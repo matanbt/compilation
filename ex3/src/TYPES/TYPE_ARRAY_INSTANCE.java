@@ -7,4 +7,9 @@ public class TYPE_ARRAY_INSTANCE extends TYPE{
         this.name = arrayType.name;
         this.arrayType = arrayType;
     }
+
+    public TYPE getElementType()
+    {
+        return this.arrayType.elementType;
+    }
 }

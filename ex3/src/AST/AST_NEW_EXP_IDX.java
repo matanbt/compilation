@@ -52,8 +52,6 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 
 	public TYPE SemantMe()
 	{
-		SYMBOL_TABLE table = SYMBOL_TABLE.getInstance();
-
 		/* 1. Check that type was defined before */
 		/* TODO: Make sure this works when merging with everyone's branches */
 		TYPE array_type = this.nType.SemantMe();
@@ -91,7 +89,7 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 			System.exit(0);
 		}
 
-		/* Return type of array instance */
+		/* 4. Return type of array instance */
 		return new TYPE_ARRAY_INSTANCE((TYPE_ARRAY) array_type);
 	}
 }
