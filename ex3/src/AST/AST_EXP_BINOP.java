@@ -78,7 +78,8 @@ public class AST_EXP_BINOP extends AST_EXP
 
 		if ((semantic_left == TYPE_INT.getInstance()) && (semantic_right == TYPE_INT.getInstance()))
 		{
-			if (op.equals("/") && (right instanceof AST_EXP_INT) && (((AST_EXP_INT) right).value == 0)){  // zero division
+			if (op.equals("/") && (right instanceof AST_EXP_INT) && (((AST_EXP_INT) right).value == 0)){
+				System.out.println(">> ERROR explicit zero division");
 				System.exit(0);  // TODO- error handling
 				return null;
 			}
@@ -88,6 +89,7 @@ public class AST_EXP_BINOP extends AST_EXP
 		{
 			return TYPE_STRING.getInstance();
 		}
+		System.out.println(">> ERROR binary operations between invalid/unmatching types");
 		System.exit(0);  // TODO- error handling
 		return null;
 	}

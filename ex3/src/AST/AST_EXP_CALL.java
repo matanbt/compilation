@@ -121,6 +121,7 @@ public class AST_EXP_CALL extends AST_EXP
             TYPE caller_type = caller.SemantMe();  // TODO SemantMe for var nodes (in case of class instance- it will be TYPE_CLASS_OBJECT type)
 
             if (! (caller_type instanceof TYPE_CLASS_INSTANCE)){
+                System.out.println(">> ERROR method call by non-instance variable");
                 System.exit(0);  // TODO- error handling
                 return null;
             }
@@ -129,6 +130,7 @@ public class AST_EXP_CALL extends AST_EXP
         }
 
         if (! (type_func instanceof TYPE_FUNCTION)){
+            System.out.format(">> ERROR in function call- (%s) is not a function", func);
             System.exit(0);  // TODO- error handling
             return null;
         }
@@ -142,6 +144,7 @@ public class AST_EXP_CALL extends AST_EXP
             TYPE wanted_arg = type_node.head;
             AST_EXP exp = exp_node.head;
             if (exp.SemantMe() != wanted_arg){
+                System.out.println(">> ERROR function call with unmatching arguments' types");
                 System.exit(0);  // TODO- error handling
                 return null;
             }
@@ -149,6 +152,7 @@ public class AST_EXP_CALL extends AST_EXP
 
         if (type_node != null || exp_node != null){
             // arguments and expected arguments are not in the same length
+            System.out.println(">> ERROR function call with unmatching arguments length");
             System.exit(0);  // TODO- error handling
             return null;
         }
