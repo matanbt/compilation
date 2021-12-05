@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
@@ -98,8 +99,7 @@ public class AST_DEC_VAR extends AST_DEC
     }
 
 
-    public TYPE SemantMe()
-    {
+    public TYPE SemantMe() throws SemanticException {
         TYPE semantic_type;
 
         /****************************/
@@ -148,7 +148,10 @@ public class AST_DEC_VAR extends AST_DEC
         }
 
         if (valueType != null) { // means there is an assignment
-            TYPE.checkAssignment(semantic_type, valueType, name);
+            boolean valid = TYPE.checkAssignment(semantic_type, valueType);
+            if (!valid) {
+                this.throw_error("Assignment for variable declaration failed");
+            }
         }
         /***************************************************/
         /* [4] Enter the Function Type to the Symbol Table */

@@ -26,7 +26,7 @@ public abstract class AST_Node
 		System.out.print("AST NODE UNKNOWN\n");
 	}
 
-	public abstract TYPE SemantMe();
+	public abstract TYPE SemantMe() throws SemanticException;
 
 	public void throw_error(String message) throws SemanticException {
 		throw new SemanticException(String.format("line %d: %s", this.lineNumber, message), this.lineNumber);

@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.*;
 
@@ -44,7 +45,7 @@ public class AST_STMT_RETURN extends AST_STMT
 	}
 
 	/* verifies the type we return is the same as in the function declaration */
-	public TYPE SemantMe() {
+	public TYPE SemantMe() throws SemanticException {
 		// gets the current scope-function
 		this.inFunc = SYMBOL_TABLE.getInstance().findScopeFunc();
 
@@ -69,7 +70,10 @@ public class AST_STMT_RETURN extends AST_STMT
 		}
 
 		// perform regular assignment check for the rest of the cases (non-void functions)
-		TYPE.checkAssignment(expectedReturnType, actualReturnType, "Return Statement");
+		boolean valid = TYPE.checkAssignment(expectedReturnType, actualReturnType);
+		if (!valid) {
+			this.throw_error("Return statement");
+		}
 
 		return null; // no TYPE for return statement
 

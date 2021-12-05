@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.*;
 
@@ -96,12 +97,11 @@ public class AST_EXP_CALL extends AST_EXP
         if (args != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, args.SerialNumber);
     }
 
-    public TYPE SemantMe()
-    {
+    public TYPE SemantMe() throws SemanticException {
         TYPE type_func;
 
         if (caller == null){
-            TYPE_CLASS type_class_of_scope = SYMBOL_TABLE.findScopeClass();
+            TYPE_CLASS type_class_of_scope = SYMBOL_TABLE.getInstance().findScopeClass();
             if (type_class_of_scope == null){
                 // this function call is not inside a class scope
                 type_func = SYMBOL_TABLE.getInstance().find(func);  // find func in the closest scope  TODO- change to type_func = SYMBOL_TABLE.findInGlobalScope(func);
@@ -145,7 +145,11 @@ public class AST_EXP_CALL extends AST_EXP
             type_node = type_node.next, exp_node = exp_node.next, i++) {
             TYPE expected_arg_type = type_node.head;
             TYPE arg_type = exp_node.head.SemantMe();
-            TYPE.checkAssignment(expected_arg_type, arg_type, String.format("function call- assigning argument #%d", i));
+
+            boolean valid = TYPE.checkAssignment(expected_arg_type, arg_type);
+            if(!valid) {
+                this.throw_error(String.format(" function call - assigning argument #%d", i));
+            }
         }
 
         if (type_node != null || exp_node != null){
