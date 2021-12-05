@@ -46,6 +46,7 @@ public abstract class TYPE
 	 * Handles error in case of encountering one
 	 * ALSO general enough to support validation function return statement (keep it that way)
 	 */
+	// TODO - the following function should return enum describing what error has occurred (if at all), moving the handling of the message to it's caller
 	public static void checkAssignment(TYPE left, TYPE right, String assigneeName) {
 
 		if(!left.canBeAssigned()) {

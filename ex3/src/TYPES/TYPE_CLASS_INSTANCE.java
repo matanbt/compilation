@@ -26,10 +26,10 @@ package TYPES;
  */
 public class TYPE_CLASS_INSTANCE extends TYPE {
 
-    public TYPE_CLASS wasCreatedFromClass; // back pointer to the L-class creates instances from this TYPE
-    public TYPE_CLASS_INSTANCE (String name, TYPE_CLASS wasCreatedFromClass) {
-        this.name = name;
-        this.wasCreatedFromClass = wasCreatedFromClass;
+    public TYPE_CLASS fromClass; // back pointer to the L-class creates instances from this TYPE
+    public TYPE_CLASS_INSTANCE (TYPE_CLASS fromClass) {
+        this.name = fromClass.name;
+        this.fromClass = fromClass;
     }
 
     // note: a class can subclass itself

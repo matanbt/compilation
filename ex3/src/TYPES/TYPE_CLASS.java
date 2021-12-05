@@ -25,7 +25,7 @@ public class TYPE_CLASS extends TYPE
 		this.name = name;
 		this.father = father;
 		this.data_members = data_members;
-		this.classInstanceType = new TYPE_CLASS_INSTANCE(name, this);
+		this.classInstanceType = new TYPE_CLASS_INSTANCE(this);
 	}
 
 	public boolean isSubClassOf(TYPE_CLASS potentialFather) {
