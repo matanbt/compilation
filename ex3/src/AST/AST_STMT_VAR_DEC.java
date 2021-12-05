@@ -9,7 +9,7 @@ public class AST_STMT_VAR_DEC extends AST_STMT
     /* CONSTRUCTOR(S) */
     /******************/
 
-    public AST_STMT_VAR_DEC(AST_DEC_VAR d)
+    public AST_STMT_VAR_DEC(AST_DEC_VAR d, int lineNumber)
     {
         /******************************/
         /* SET A UNIQUE SERIAL NUMBER */
@@ -22,6 +22,7 @@ public class AST_STMT_VAR_DEC extends AST_STMT
         System.out.format("====================== stmt -> varDec ");
 
         this.d = d;
+        this.lineNumber = lineNumber;
     }
 
 

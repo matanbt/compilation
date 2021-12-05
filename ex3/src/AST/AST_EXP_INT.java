@@ -9,7 +9,7 @@ public class AST_EXP_INT extends AST_EXP
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_INT(Integer value)
+	public AST_EXP_INT(Integer value, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -25,6 +25,7 @@ public class AST_EXP_INT extends AST_EXP
 		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.value = value;
+		this.lineNumber = lineNumber;
 	}
 
 	/************************************************/

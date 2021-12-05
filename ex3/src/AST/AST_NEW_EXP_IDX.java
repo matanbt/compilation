@@ -9,7 +9,7 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_NEW_EXP_IDX(AST_TYPE nType, AST_EXP expression)
+	public AST_NEW_EXP_IDX(AST_TYPE nType, AST_EXP expression, int lineNumber)
 	{
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
@@ -18,6 +18,7 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 
 		this.nType = nType;
 		this.expression = expression;
+		this.lineNumber = lineNumber;
 	}
 
 	/*********************************************************/

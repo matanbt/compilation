@@ -13,7 +13,7 @@ public class AST_STMT_LIST extends AST_Node
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_STMT_LIST(AST_STMT head, AST_STMT_LIST tail)
+	public AST_STMT_LIST(AST_STMT head, AST_STMT_LIST tail, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -28,10 +28,11 @@ public class AST_STMT_LIST extends AST_Node
 		if (tail == null) System.out.print("====================== stmts -> stmt      \n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.head = head;
 		this.tail = tail;
+		this.lineNumber = lineNumber;
 	}
 
 	/******************************************************/

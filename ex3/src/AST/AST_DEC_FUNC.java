@@ -13,7 +13,7 @@ public class AST_DEC_FUNC extends AST_DEC
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_DEC_FUNC(AST_TYPE rtnType, String funcName, AST_DEC_FUNC_ARG_LIST argList, AST_STMT_LIST body)
+	public AST_DEC_FUNC(AST_TYPE rtnType, String funcName, AST_DEC_FUNC_ARG_LIST argList, AST_STMT_LIST body, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -29,11 +29,12 @@ public class AST_DEC_FUNC extends AST_DEC
 		this.funcName = funcName;
 		this.argList = argList;
 		this.body = body;
+		this.lineNumber = lineNumber;
 	}
 
-	public AST_DEC_FUNC(AST_TYPE rtnType, String funcName, AST_STMT_LIST body)
+	public AST_DEC_FUNC(AST_TYPE rtnType, String funcName, AST_STMT_LIST body, int lineNumber)
 	{
-		this(rtnType, funcName, null, body);
+		this(rtnType, funcName, null, body, lineNumber);
 	}
 
 

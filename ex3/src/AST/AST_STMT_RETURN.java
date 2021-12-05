@@ -4,7 +4,7 @@ public class AST_STMT_RETURN extends AST_STMT
 {
 	public AST_EXP exp; // could be null (e.g. void functions)
 
-	public AST_STMT_RETURN(AST_EXP exp)
+	public AST_STMT_RETURN(AST_EXP exp, int lineNumber)
 	{
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
@@ -13,12 +13,13 @@ public class AST_STMT_RETURN extends AST_STMT
 		System.out.print("SEMICOLON\n");
 
 		this.exp = exp;
+		this.lineNumber = lineNumber;
 	}
 
 	// overloading contractors:
-	public AST_STMT_RETURN()
+	public AST_STMT_RETURN(int lineNumber)
 	{
-		this(null);
+		this(null, lineNumber);
 	}
 
 

@@ -11,7 +11,7 @@ public class AST_DEC_LIST extends AST_Node
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_DEC_LIST(AST_DEC head, AST_DEC_LIST next)
+	public AST_DEC_LIST(AST_DEC head, AST_DEC_LIST next, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -26,10 +26,12 @@ public class AST_DEC_LIST extends AST_Node
 		if (next == null) System.out.print("====================== decs -> dec      \n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.head = head;
 		this.next = next;
+
+		this.lineNumber = lineNumber;
 	}
 
 	/******************************************************/

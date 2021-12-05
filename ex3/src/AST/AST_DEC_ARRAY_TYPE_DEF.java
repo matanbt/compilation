@@ -8,7 +8,7 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_DEC_ARRAY_TYPE_DEF(AST_TYPE type, String id)
+	public AST_DEC_ARRAY_TYPE_DEF(AST_TYPE type, String id, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -21,10 +21,11 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 		System.out.format("====================== arrayTypedef -> ARRAY ID(%s) = type [];\n",id);
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.type = type;
 		this.id = id;
+		this.lineNumber = lineNumber;
 	}
 
 	/*************************************************/

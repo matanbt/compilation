@@ -11,7 +11,7 @@ public class AST_CFIELD_LIST extends AST_Node
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_CFIELD_LIST(AST_CFIELD head,AST_CFIELD_LIST tail)
+	public AST_CFIELD_LIST(AST_CFIELD head,AST_CFIELD_LIST tail, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -25,10 +25,11 @@ public class AST_CFIELD_LIST extends AST_Node
 		if (tail == null) System.out.print("====================== cFields -> cField      \n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.head = head;
 		this.tail = tail;
+		this.lineNumber = lineNumber;
 	}
 
 	/******************************************************/

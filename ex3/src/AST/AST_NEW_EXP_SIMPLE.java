@@ -7,7 +7,7 @@ public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_NEW_EXP_SIMPLE(AST_TYPE nType)
+	public AST_NEW_EXP_SIMPLE(AST_TYPE nType, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -22,6 +22,7 @@ public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 
 
 		this.nType = nType;
+		this.lineNumber = lineNumber;
 	}
 
 	/*********************************************************/

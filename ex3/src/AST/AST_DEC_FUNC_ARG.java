@@ -5,7 +5,7 @@ public class AST_DEC_FUNC_ARG extends AST_Node
     public AST_TYPE argType;
     public String argName;
 
-    public AST_DEC_FUNC_ARG(AST_TYPE argType, String argName)
+    public AST_DEC_FUNC_ARG(AST_TYPE argType, String argName, int lineNumber)
     {
         /******************************/
         /* SET A UNIQUE SERIAL NUMBER */
@@ -18,10 +18,11 @@ public class AST_DEC_FUNC_ARG extends AST_Node
         System.out.format("====================== arg -> argName(%s)\n",argName);
 
         /*******************************/
-        /* COPY INPUT DATA NENBERS ... */
+        /* COPY INPUT DATA MEMBERS ... */
         /*******************************/
         this.argType = argType;
         this.argName = argName;
+        this.lineNumber = lineNumber;
     }
 
 

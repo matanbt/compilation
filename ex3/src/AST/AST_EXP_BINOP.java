@@ -9,7 +9,7 @@ public class AST_EXP_BINOP extends AST_EXP
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_BINOP(AST_EXP left,AST_EXP right,String op)
+	public AST_EXP_BINOP(AST_EXP left,AST_EXP right,String op, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -22,11 +22,12 @@ public class AST_EXP_BINOP extends AST_EXP
 		System.out.print("====================== exp -> exp BINOP exp\n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.left = left;
 		this.right = right;
 		this.op = op;
+		this.lineNumber = lineNumber;
 	}
 	
 	/*************************************************/

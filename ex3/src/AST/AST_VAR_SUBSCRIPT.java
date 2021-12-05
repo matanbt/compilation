@@ -8,7 +8,7 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_VAR_SUBSCRIPT(AST_VAR var,AST_EXP subscript)
+	public AST_VAR_SUBSCRIPT(AST_VAR var,AST_EXP subscript, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -21,10 +21,11 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		System.out.print("====================== var -> var [ exp ]\n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.var = var;
 		this.subscript = subscript;
+		this.lineNumber = lineNumber;
 	}
 
 	/*****************************************************/

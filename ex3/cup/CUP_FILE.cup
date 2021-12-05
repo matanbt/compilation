@@ -29,6 +29,11 @@ parser code
         file_writer.close();
 		System.exit(0);
 	}
+
+	public int getLine()
+	{
+	    return this.lexer.getLine();
+	}
 :}
 
 /************************/
@@ -156,14 +161,14 @@ start with program;
 program     ::=     decList: decLst           {: RESULT = decLst; :}
                     ;
 
-type        ::=     TYPE_INT                  {: RESULT = new AST_TYPE("int"); :}
-                    | TYPE_STRING             {: RESULT = new AST_TYPE("string"); :}
-                    | TYPE_VOID               {: RESULT = new AST_TYPE("void"); :}
-                    | ID: customizedType      {: RESULT = new AST_TYPE(customizedType); :}
+type        ::=     TYPE_INT                  {: RESULT = new AST_TYPE("int", parser.getLine()); :}
+                    | TYPE_STRING             {: RESULT = new AST_TYPE("string", parser.getLine()); :}
+                    | TYPE_VOID               {: RESULT = new AST_TYPE("void", parser.getLine()); :}
+                    | ID: customizedType      {: RESULT = new AST_TYPE(customizedType, parser.getLine()); :}
                     ;
 
-decList     ::=     dec:s   decList:l         {: RESULT = new AST_DEC_LIST(s, l); :}
-                    | dec:s                   {: RESULT = new AST_DEC_LIST(s, null); :}
+decList     ::=     dec:s   decList:l         {: RESULT = new AST_DEC_LIST(s, l, parser.getLine()); :}
+                    | dec:s                   {: RESULT = new AST_DEC_LIST(s, null, parser.getLine()); :}
                     ;
 
 dec         ::=     varDec:d              {: RESULT = d; :}
@@ -173,93 +178,93 @@ dec         ::=     varDec:d              {: RESULT = d; :}
                     ;
 
 //---------------- variable declaration ----------------
-varDec      ::=     type:t ID:i SEMICOLON                       {: RESULT = new AST_DEC_VAR(t, i); :}
-                    | type:t ID:i ASSIGN exp:e SEMICOLON        {: RESULT = new AST_DEC_VAR(t, i, e); :}
-                    | type:t ID:i ASSIGN newExp:ne SEMICOLON    {: RESULT = new AST_DEC_VAR(t, i, ne); :}
+varDec      ::=     type:t ID:i SEMICOLON                       {: RESULT = new AST_DEC_VAR(t, i, parser.getLine()); :}
+                    | type:t ID:i ASSIGN exp:e SEMICOLON        {: RESULT = new AST_DEC_VAR(t, i, e, parser.getLine()); :}
+                    | type:t ID:i ASSIGN newExp:ne SEMICOLON    {: RESULT = new AST_DEC_VAR(t, i, ne, parser.getLine()); :}
                     ;
 /** arrayDef **/
-arrayTypedef    ::=     ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON   {: RESULT = new AST_DEC_ARRAY_TYPE_DEF(t, i);    :};
+arrayTypedef    ::=     ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON   {: RESULT = new AST_DEC_ARRAY_TYPE_DEF(t, i, parser.getLine());    :};
 
 /** classDec **/
 
-classDec    ::=     CLASS ID:className EXTENDS ID:superName LBRACE cFieldList:l RBRACE   {: RESULT = new AST_DEC_CLASS(l,className,superName);    :}
-                    |  CLASS ID:className LBRACE cFieldList:l RBRACE                     {: RESULT = new AST_DEC_CLASS(l,className,null);    :}
+classDec    ::=     CLASS ID:className EXTENDS ID:superName LBRACE cFieldList:l RBRACE   {: RESULT = new AST_DEC_CLASS(l,className,superName, parser.getLine());    :}
+                    |  CLASS ID:className LBRACE cFieldList:l RBRACE                     {: RESULT = new AST_DEC_CLASS(l,className,null, parser.getLine());    :}
                     ;
 
-cFieldList	::=		cField:s	cFieldList:l		        {: RESULT = new AST_CFIELD_LIST(s,l);    :}
-					| cField:s				                {: RESULT = new AST_CFIELD_LIST(s,null); :}
+cFieldList	::=		cField:s	cFieldList:l		        {: RESULT = new AST_CFIELD_LIST(s,l, parser.getLine());    :}
+					| cField:s				                {: RESULT = new AST_CFIELD_LIST(s,null, parser.getLine()); :}
 					;
 
-cField    ::=       varDec:varDec                                   {: RESULT = new AST_CFIELD(varDec);  :}
-                    | funcDec:funcDec                               {: RESULT = new AST_CFIELD(funcDec); :}
+cField    ::=       varDec:varDec                                   {: RESULT = new AST_CFIELD(varDec, parser.getLine());  :}
+                    | funcDec:funcDec                               {: RESULT = new AST_CFIELD(funcDec, parser.getLine()); :}
                     ;
 
 
-var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name);       :}
-					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName); :}
-					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e);     :}
+var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name, parser.getLine());       :}
+					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName, parser.getLine()); :}
+					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e, parser.getLine());     :}
 					;
 
 //---------------- statements list ----------------
-stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AST_STMT_LIST(s, l);    :}
-					| stmt:s				{: RESULT = new AST_STMT_LIST(s, null); :}
+stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AST_STMT_LIST(s, l, parser.getLine());    :}
+					| stmt:s				{: RESULT = new AST_STMT_LIST(s, null, parser.getLine()); :}
 					;
 
-stmt		::=		varDec: d                                                   {: RESULT = new AST_STMT_VAR_DEC(d); :}
-                    | var:v ASSIGN exp:e SEMICOLON								{: RESULT = new AST_STMT_ASSIGN(v, e); :}
-                    | var:v ASSIGN newExp:e SEMICOLON                           {: RESULT = new AST_STMT_ASSIGN_NEW(v, e); :}
-                    | RETURN SEMICOLON                                          {: RESULT = new AST_STMT_RETURN(); :}
-                    | RETURN exp:e SEMICOLON                                    {: RESULT = new AST_STMT_RETURN(e); :}
-					| IF    LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_IF(cond, body); :}
-					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_WHILE(cond, body); :}
-					| ID:idName LPAREN RPAREN SEMICOLON                               {: RESULT = new AST_STMT_CALL(idName); :}
-					| ID:idName LPAREN expList:eList RPAREN SEMICOLON                 {: RESULT = new AST_STMT_CALL(idName, eList); :}
-					| var:v DOT ID:idName LPAREN LBRACE SEMICOLON                     {: RESULT = new AST_STMT_CALL(v, idName); :}
-					| var:v DOT ID:idName LPAREN expList:eList RPAREN SEMICOLON       {: RESULT = new AST_STMT_CALL(v, idName, eList); :}
+stmt		::=		varDec: d                                                   {: RESULT = new AST_STMT_VAR_DEC(d, parser.getLine()); :}
+                    | var:v ASSIGN exp:e SEMICOLON								{: RESULT = new AST_STMT_ASSIGN(v, e, parser.getLine()); :}
+                    | var:v ASSIGN newExp:e SEMICOLON                           {: RESULT = new AST_STMT_ASSIGN_NEW(v, e, parser.getLine()); :}
+                    | RETURN SEMICOLON                                          {: RESULT = new AST_STMT_RETURN(parser.getLine()); :}
+                    | RETURN exp:e SEMICOLON                                    {: RESULT = new AST_STMT_RETURN(e, parser.getLine()); :}
+					| IF    LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_IF(cond, body, parser.getLine()); :}
+					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_WHILE(cond, body, parser.getLine()); :}
+					| ID:idName LPAREN RPAREN SEMICOLON                               {: RESULT = new AST_STMT_CALL(idName, parser.getLine()); :}
+					| ID:idName LPAREN expList:eList RPAREN SEMICOLON                 {: RESULT = new AST_STMT_CALL(idName, eList, parser.getLine()); :}
+					| var:v DOT ID:idName LPAREN LBRACE SEMICOLON                     {: RESULT = new AST_STMT_CALL(v, idName, parser.getLine()); :}
+					| var:v DOT ID:idName LPAREN expList:eList RPAREN SEMICOLON       {: RESULT = new AST_STMT_CALL(v, idName, eList, parser.getLine()); :}
 					;
 
 // ---------------- Function Declaration ----------------
-funcDec    ::=    type:rtnType ID:funcName LPAREN RPAREN LBRACE stmtList:body RBRACE                    {: RESULT = new AST_DEC_FUNC(rtnType, funcName, body); :}
-                | type:rtnType ID:funcName LPAREN funcArgs: argList RPAREN LBRACE stmtList:body RBRACE  {: RESULT = new AST_DEC_FUNC(rtnType, funcName, argList, body); :}
+funcDec    ::=    type:rtnType ID:funcName LPAREN RPAREN LBRACE stmtList:body RBRACE                    {: RESULT = new AST_DEC_FUNC(rtnType, funcName, body, parser.getLine()); :}
+                | type:rtnType ID:funcName LPAREN funcArgs: argList RPAREN LBRACE stmtList:body RBRACE  {: RESULT = new AST_DEC_FUNC(rtnType, funcName, argList, body, parser.getLine()); :}
                 ;
 
 // Function arguments (one or more)
-funcArgs   ::=   type:argType ID:argName COMMA funcArgs:lst    {: RESULT = new AST_DEC_FUNC_ARG_LIST(new AST_DEC_FUNC_ARG(argType, argName), lst); :}
-                | type:argType ID:argName                      {: RESULT = new AST_DEC_FUNC_ARG_LIST(new AST_DEC_FUNC_ARG(argType, argName), null); :}
+funcArgs   ::=   type:argType ID:argName COMMA funcArgs:lst    {: RESULT = new AST_DEC_FUNC_ARG_LIST(new AST_DEC_FUNC_ARG(argType, argName, parser.getLine()), lst, parser.getLine()); :}
+                | type:argType ID:argName                      {: RESULT = new AST_DEC_FUNC_ARG_LIST(new AST_DEC_FUNC_ARG(argType, argName, parser.getLine()), null, parser.getLine()); :}
                 ;
 
 
-exp         ::=     var:v								        {: RESULT = new AST_EXP_VAR(v); :}
+exp         ::=     var:v								        {: RESULT = new AST_EXP_VAR(v, parser.getLine()); :}
                     | LPAREN exp:e RPAREN                       {: RESULT = e; :}
 
                     // Binary operations (each operator should be stated explicitly for precedence to work):
-                    | exp:e1 PLUS exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "+"); :}
-                    | exp:e1 MINUS exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "-"); :}
-                    | exp:e1 TIMES exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "*"); :}
-                    | exp:e1 DIVIDE exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "/"); :}
-                    | exp:e1 LT exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "<"); :}
-                    | exp:e1 GT exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, ">"); :}
-                    | exp:e1 EQ exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "="); :}
+                    | exp:e1 PLUS exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "+", parser.getLine()); :}
+                    | exp:e1 MINUS exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "-", parser.getLine()); :}
+                    | exp:e1 TIMES exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "*", parser.getLine()); :}
+                    | exp:e1 DIVIDE exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "/", parser.getLine()); :}
+                    | exp:e1 LT exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "<", parser.getLine()); :}
+                    | exp:e1 GT exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, ">", parser.getLine()); :}
+                    | exp:e1 EQ exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "=", parser.getLine()); :}
 
                     // Expression call
-                    | var:v DOT ID:i LPAREN expList:l RPAREN    {: RESULT = new AST_EXP_CALL(v, i, l); :}
-                    | var:v DOT ID:i LPAREN RPAREN              {: RESULT = new AST_EXP_CALL(v, i); :}
-                    | ID:i LPAREN expList:l RPAREN              {: RESULT = new AST_EXP_CALL(i, l); :}
-                    | ID:i LPAREN RPAREN                        {: RESULT = new AST_EXP_CALL(i); :}
+                    | var:v DOT ID:i LPAREN expList:l RPAREN    {: RESULT = new AST_EXP_CALL(v, i, l, parser.getLine()); :}
+                    | var:v DOT ID:i LPAREN RPAREN              {: RESULT = new AST_EXP_CALL(v, i, parser.getLine()); :}
+                    | ID:i LPAREN expList:l RPAREN              {: RESULT = new AST_EXP_CALL(i, l, parser.getLine()); :}
+                    | ID:i LPAREN RPAREN                        {: RESULT = new AST_EXP_CALL(i, parser.getLine()); :}
 
                     // Terminal expressions
-                    | MINUS INT:i                               {: RESULT = new AST_EXP_INT(-Integer.parseInt(i)); :}
-                    | INT:i                                     {: RESULT = new AST_EXP_INT( Integer.parseInt(i)); :}
-                    | NIL                                       {: RESULT = new AST_EXP_NIL(); :}
-                    | STRING:s                                  {: RESULT = new AST_EXP_STRING(s); :}
+                    | MINUS INT:i                               {: RESULT = new AST_EXP_INT(-Integer.parseInt(i), parser.getLine()); :}
+                    | INT:i                                     {: RESULT = new AST_EXP_INT( Integer.parseInt(i), parser.getLine()); :}
+                    | NIL                                       {: RESULT = new AST_EXP_NIL(parser.getLine()); :}
+                    | STRING:s                                  {: RESULT = new AST_EXP_STRING(s, parser.getLine()); :}
                     ;
 
-newExp      ::=     NEW type:nType                           {: RESULT = new AST_NEW_EXP_SIMPLE(nType); :}
-                    | NEW type:nType LBRACK exp:e RBRACK     {: RESULT = new AST_NEW_EXP_IDX(nType, e); :}
+newExp      ::=     NEW type:nType                           {: RESULT = new AST_NEW_EXP_SIMPLE(nType, parser.getLine()); :}
+                    | NEW type:nType LBRACK exp:e RBRACK     {: RESULT = new AST_NEW_EXP_IDX(nType, e, parser.getLine()); :}
                     ;
 
 // list of one or more exp
-expList	::=		exp:e COMMA expList:lst {: RESULT = new AST_EXP_LIST(e, lst); :}
-                | exp:e                 {: RESULT = new AST_EXP_LIST(e, null); :}
+expList	::=		exp:e COMMA expList:lst {: RESULT = new AST_EXP_LIST(e, lst, parser.getLine()); :}
+                | exp:e                 {: RESULT = new AST_EXP_LIST(e, null, parser.getLine()); :}
                 ;
 

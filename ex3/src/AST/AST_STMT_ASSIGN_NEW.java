@@ -11,7 +11,7 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_ASSIGN_NEW(AST_VAR var, AST_NEW_EXP new_exp)
+	public AST_STMT_ASSIGN_NEW(AST_VAR var, AST_NEW_EXP new_exp, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -24,10 +24,11 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 		System.out.print("====================== stmt -> var ASSIGN newExp SEMICOLON  \n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.var = var;
 		this.new_exp = new_exp;
+		this.lineNumber = lineNumber;
 	}
 
 	/*********************************************************/

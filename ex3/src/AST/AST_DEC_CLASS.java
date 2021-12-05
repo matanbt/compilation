@@ -12,7 +12,7 @@ public class AST_DEC_CLASS extends AST_DEC
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_DEC_CLASS(AST_CFIELD_LIST lst, String className, String superClassName)
+	public AST_DEC_CLASS(AST_CFIELD_LIST lst, String className, String superClassName, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -28,11 +28,12 @@ public class AST_DEC_CLASS extends AST_DEC
 		    System.out.format("====================== classDec -> CLASS ID {cField [ cField ]*}\n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.lst = lst;
 		this.className = className;
 		this.superClassName = superClassName;
+		this.lineNumber = lineNumber;
 	}
 
 	/*************************************************/

@@ -12,7 +12,7 @@ public class AST_STMT_CALL extends AST_STMT
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_CALL(AST_VAR v, String idName, AST_EXP_LIST eList)
+	public AST_STMT_CALL(AST_VAR v, String idName, AST_EXP_LIST eList, int lineNumber)
 	{
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
@@ -21,22 +21,23 @@ public class AST_STMT_CALL extends AST_STMT
 		this.v = v;
 		this.idName = idName;
 		this.eList = eList;
+		this.lineNumber = lineNumber;
 	}
 
 	// overloading constructors
-	public AST_STMT_CALL(String idName)
+	public AST_STMT_CALL(String idName, int lineNumber)
 	{
-		this(null, idName, null);
+		this(null, idName, null, lineNumber);
 	}
 
-	public AST_STMT_CALL(String idName, AST_EXP_LIST eList)
+	public AST_STMT_CALL(String idName, AST_EXP_LIST eList, int lineNumber)
 	{
-		this(null, idName, eList);
+		this(null, idName, eList, lineNumber);
 	}
 
-	public AST_STMT_CALL(AST_VAR v, String idName)
+	public AST_STMT_CALL(AST_VAR v, String idName, int lineNumber)
 	{
-		this(v, idName, null);
+		this(v, idName, null, lineNumber);
 	}
 
 

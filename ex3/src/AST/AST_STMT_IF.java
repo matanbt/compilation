@@ -11,7 +11,7 @@ public class AST_STMT_IF extends AST_STMT
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_IF(AST_EXP cond, AST_STMT_LIST body)
+	public AST_STMT_IF(AST_EXP cond, AST_STMT_LIST body, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -24,10 +24,11 @@ public class AST_STMT_IF extends AST_STMT
 		System.out.print("====================== stmt -> IF ( cond ) { body } \n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.cond = cond;
 		this.body = body;
+		this.lineNumber = lineNumber;
 	}
 
 	/*********************************************************/

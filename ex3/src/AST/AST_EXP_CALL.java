@@ -9,7 +9,7 @@ public class AST_EXP_CALL extends AST_EXP
     /******************/
     /* CONSTRUCTOR(S) */
     /******************/
-    public AST_EXP_CALL(AST_VAR caller, String func, AST_EXP_LIST args)
+    public AST_EXP_CALL(AST_VAR caller, String func, AST_EXP_LIST args, int lineNumber)
     {
         /******************************/
         /* SET A UNIQUE SERIAL NUMBER */
@@ -37,21 +37,22 @@ public class AST_EXP_CALL extends AST_EXP
         this.caller = caller;
         this.func = func;
         this.args = args;
+        this.lineNumber = lineNumber;
     }
 
-    public AST_EXP_CALL(String func, AST_EXP_LIST args)
+    public AST_EXP_CALL(String func, AST_EXP_LIST args, int lineNumber)
     {
-        this(null, func, args);
+        this(null, func, args, lineNumber);
     }
 
-    public AST_EXP_CALL(AST_VAR caller, String func)
+    public AST_EXP_CALL(AST_VAR caller, String func, int lineNumber)
     {
-        this(caller, func, null);
+        this(caller, func, null, lineNumber);
     }
 
-    public AST_EXP_CALL(String func)
+    public AST_EXP_CALL(String func, int lineNumber)
     {
-        this(null, func, null);
+        this(null, func, null, lineNumber);
     }
 
     /*****************************************************/

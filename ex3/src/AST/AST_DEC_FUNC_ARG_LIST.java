@@ -6,7 +6,7 @@ public class AST_DEC_FUNC_ARG_LIST extends AST_Node
 	public AST_DEC_FUNC_ARG_LIST next; // could be null (means end of the list)
 
 
-	public AST_DEC_FUNC_ARG_LIST(AST_DEC_FUNC_ARG head, AST_DEC_FUNC_ARG_LIST next)
+	public AST_DEC_FUNC_ARG_LIST(AST_DEC_FUNC_ARG head, AST_DEC_FUNC_ARG_LIST next, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -20,10 +20,11 @@ public class AST_DEC_FUNC_ARG_LIST extends AST_Node
 		if (next == null) System.out.print("====================== func_args -> func_arg      \n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.head = head;
 		this.next = next;
+		this.lineNumber = lineNumber;
 	}
 
 

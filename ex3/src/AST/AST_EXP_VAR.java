@@ -7,7 +7,7 @@ public class AST_EXP_VAR extends AST_EXP
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_VAR(AST_VAR var)
+	public AST_EXP_VAR(AST_VAR var, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -20,9 +20,10 @@ public class AST_EXP_VAR extends AST_EXP
 		System.out.print("====================== exp -> var\n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.var = var;
+		this.lineNumber = lineNumber;
 	}
 	
 	/***********************************************/

@@ -6,7 +6,7 @@ package AST;
 	public AST_EXP_LIST next; // could be null (means end of the list)
 
 
-	public AST_EXP_LIST(AST_EXP head, AST_EXP_LIST next)
+	public AST_EXP_LIST(AST_EXP head, AST_EXP_LIST next, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -20,10 +20,11 @@ package AST;
 		if (next == null) System.out.print("====================== exp_list -> exp      \n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.head = head;
 		this.next = next;
+		this.lineNumber = lineNumber;
 	}
 
 

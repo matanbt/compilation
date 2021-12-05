@@ -10,7 +10,7 @@ public class AST_CFIELD extends AST_Node
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_CFIELD(AST_DEC dec)
+	public AST_CFIELD(AST_DEC dec, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -23,9 +23,10 @@ public class AST_CFIELD extends AST_Node
 		System.out.print("====================== cField -> Dec\n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.dec = dec;
+		this.lineNumber = lineNumber;
 	}
 
 	/*********************************************************/

@@ -14,7 +14,7 @@ public class AST_DEC_VAR extends AST_DEC
     /* CONSTRUCTOR(S) */
     /******************/
 
-    public AST_DEC_VAR(AST_TYPE type, String name, AST_EXP exp, AST_NEW_EXP new_exp)
+    public AST_DEC_VAR(AST_TYPE type, String name, AST_EXP exp, AST_NEW_EXP new_exp, int lineNumber)
     {
         /******************************/
         /* SET A UNIQUE SERIAL NUMBER */
@@ -43,21 +43,22 @@ public class AST_DEC_VAR extends AST_DEC
         this.name = name;
         this.exp = exp;
         this.new_exp = new_exp;
+        this.lineNumber = lineNumber;
     }
 
-    public AST_DEC_VAR(AST_TYPE type, String name)
+    public AST_DEC_VAR(AST_TYPE type, String name, int lineNumber)
     {
-        this(type, name, null, null);
+        this(type, name, null, null, lineNumber);
     }
 
-    public AST_DEC_VAR(AST_TYPE type, String name, AST_EXP exp)
+    public AST_DEC_VAR(AST_TYPE type, String name, AST_EXP exp, int lineNumber)
     {
-        this(type, name, exp, null);
+        this(type, name, exp, null, lineNumber);
     }
 
-    public AST_DEC_VAR(AST_TYPE type, String name, AST_NEW_EXP new_exp)
+    public AST_DEC_VAR(AST_TYPE type, String name, AST_NEW_EXP new_exp, int lineNumber)
     {
-        this(type, name, null, new_exp);
+        this(type, name, null, new_exp, lineNumber);
     }
 
     /*****************************************************/
