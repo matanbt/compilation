@@ -6,14 +6,14 @@ public class TYPE_LIST
 	/* DATA MEMBERS */
 	/****************/
 	public TYPE head;
-	public TYPE_LIST tail;
+	public TYPE_LIST next;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public TYPE_LIST(TYPE head,TYPE_LIST tail)
+	public TYPE_LIST(TYPE head,TYPE_LIST next)
 	{
 		this.head = head;
-		this.tail = tail;
+		this.next = next;
 	}
 }
