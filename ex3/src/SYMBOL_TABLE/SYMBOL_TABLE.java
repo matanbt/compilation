@@ -376,13 +376,14 @@ public class SYMBOL_TABLE
 			/*****************************************/
 			/* [1] Enter primitive types int, string */
 			/*****************************************/
-			instance.beginScope(TYPE_FOR_SCOPE_BOUNDARIES.BUILTIN_SCOPE);
+			/* Create global scope */
+			instance.beginScope(TYPE_FOR_SCOPE_BOUNDARIES.GLOB_SCOPE);
 			instance.enter("void",   TYPE_VOID.getInstance());
 			instance.enter("int",   TYPE_INT.getInstance());
 			instance.enter("string",TYPE_STRING.getInstance());
 
 			/***************************************/
-			/* [3] Enter library function PrintInt */
+			/* [3] Enter library functions         */
 			/***************************************/
 			instance.enter(
 				"PrintInt",
@@ -392,10 +393,31 @@ public class SYMBOL_TABLE
 					new TYPE_LIST(
 						TYPE_INT.getInstance(),
 						null)));
-			// TODO - add the rest of the builtin stuff here
 
-		}
+			instance.enter(
+					"PrintString",
+					new TYPE_FUNCTION(
+							TYPE_VOID.getInstance(),
+							"PrintString",
+							new TYPE_LIST(
+									TYPE_STRING.getInstance(),
+									null
+							)
+					)
+			);
 
+			instance.enter(
+					"PrintTrace",
+					new TYPE_FUNCTION(
+							TYPE_VOID.getInstance(),
+							"PrintTrace",
+							new TYPE_LIST(
+									null, null
+							)
+					)
+			);
+
+    }
 
 		return instance;
 	}

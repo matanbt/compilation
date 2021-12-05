@@ -38,4 +38,5 @@ public class TYPE_NIL extends TYPE
     public boolean canBeAssignedNil() {
         return false;
     }
+    
 }

@@ -11,8 +11,8 @@ public class TYPE_FUNCTION extends TYPE
 	/* types of input params */
 	/*************************/
 	public TYPE_LIST args;
-
-	// ---- Fields updated during semantic analysis ----
+  
+  // ---- Fields updated during semantic analysis ----
 	// verify there exist a return (if needed)
 	public boolean isReturnExists;
 
@@ -40,5 +40,6 @@ public class TYPE_FUNCTION extends TYPE
 	// we forbid any assignment to function, in particular the following.
 	public boolean canBeAssignedNil() {
 		return false;
+
 	}
 }
