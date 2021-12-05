@@ -78,7 +78,7 @@ public class AST_DEC_FUNC extends AST_DEC
 
 		if(semantic_rtnType.isClass()) {
 			// our L-function will return an INSTANCE of this class
-			semantic_rtnType = ((TYPE_CLASS) (semantic_rtnType)).getInstance();
+			semantic_rtnType = ((TYPE_CLASS) (semantic_rtnType)).getInstanceType();
 		}
 
 		if(semantic_rtnType == null)

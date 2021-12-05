@@ -40,7 +40,7 @@ public class TYPE_CLASS extends TYPE
 	}
 
 
-	public TYPE_CLASS_INSTANCE getInstance() {
+	public TYPE_CLASS_INSTANCE getInstanceType() {
 		return this.classInstanceType;
 	}
 

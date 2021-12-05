@@ -113,7 +113,7 @@ public class AST_DEC_VAR extends AST_DEC
         }
         if (semantic_type.isClass()) {
             // we want our declared variable to be INSTANCE of the class
-            semantic_type = ((TYPE_CLASS) semantic_type).getInstance();
+            semantic_type = ((TYPE_CLASS) semantic_type).getInstanceType();
         }
         if (!semantic_type.canBeAssigned()) {
             System.out.format(">> ERROR type (%s) cannot be used as a variable type\n", this.type);
