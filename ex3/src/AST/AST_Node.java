@@ -1,5 +1,7 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
+
 public abstract class AST_Node
 {
 	/*******************************************/
@@ -20,5 +22,9 @@ public abstract class AST_Node
 	public void PrintMe()
 	{
 		System.out.print("AST NODE UNKNOWN\n");
+	}
+
+	public void throw_error(String message) throws SemanticException {
+		throw new SemanticException(String.format("line %d: %s", this.lineNumber, message), this.lineNumber);
 	}
 }

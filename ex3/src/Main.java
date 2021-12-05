@@ -1,6 +1,8 @@
    
 import java.io.*;
 import java.io.PrintWriter;
+
+import EXCEPTIONS.SemanticException;
 import java_cup.runtime.Symbol;
 import AST.*;
 
@@ -52,7 +54,15 @@ public class Main
 			/**************************/
 			/* [7] Semant the AST ... */
 			/**************************/
-			AST.SemantMe();
+			try
+			{
+				AST.SemantMe();
+				file_writer.println("OK");
+			}
+			catch (SemanticException e)
+			{
+				file_writer.println(String.format("ERROR(%d)", e.lineNumber));
+			}
 			
 			/*************************/
 			/* [8] Close output file */
