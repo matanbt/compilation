@@ -1,11 +1,17 @@
 package AST;
+import TYPES.TYPE;
+import TYPES.TYPE_INT;
+import TYPES.TYPE_STRING;
+
+import TYPES.TYPE;
+import TYPES.TYPE_INT;
 
 public class AST_EXP_BINOP extends AST_EXP
 {
 	public String op;
 	public AST_EXP left;
 	public AST_EXP right;
-	
+
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
@@ -29,19 +35,19 @@ public class AST_EXP_BINOP extends AST_EXP
 		this.op = op;
 		this.lineNumber = lineNumber;
 	}
-	
+
 	/*************************************************/
 	/* The printing message for a binop exp AST node */
 	/*************************************************/
 	public void PrintMe()
 	{
 		String sOP="";
-		
+
 		/*********************************/
 		/* CONVERT OP to a printable sOP */
 		/*********************************/
 		sOP = this.op; // TODO if we'll change the type of "op", we should support conversion to string here
-		
+
 		/*************************************/
 		/* AST NODE TYPE = AST BINOP EXP */
 		/*************************************/
@@ -52,33 +58,44 @@ public class AST_EXP_BINOP extends AST_EXP
 		/**************************************/
 		if (left != null) left.PrintMe();
 		if (right != null) right.PrintMe();
-		
+
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			String.format("BINOP(%s)",sOP));
-		
+
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (left  != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,left.SerialNumber);
 		if (right != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,right.SerialNumber);
 	}
+
 	public TYPE SemantMe()
 	{
-		TYPE t1 = null;
-		TYPE t2 = null;
+		TYPE semantic_left = null;
+		TYPE semantic_right = null;
 
-		if (left  != null) t1 = left.SemantMe();
-		if (right != null) t2 = right.SemantMe();
+		if (left  != null) semantic_left = left.SemantMe();
+		if (right != null) semantic_right = right.SemantMe();
 
-		if ((t1 == TYPE_INT.getInstance()) && (t2 == TYPE_INT.getInstance()))
+		if ((semantic_left == TYPE_INT.getInstance()) && (semantic_right == TYPE_INT.getInstance()))
 		{
+			if (op.equals("/") && (right instanceof AST_EXP_INT) && (((AST_EXP_INT) right).value == 0)){
+				System.out.println(">> ERROR explicit zero division");
+				System.exit(0);  // TODO- error handling
+				return null;
+			}
 			return TYPE_INT.getInstance();
 		}
-		System.exit(0);
+		if ((semantic_left == TYPE_STRING.getInstance()) && (semantic_right == TYPE_STRING.getInstance()) && (op.equals("+")))
+		{
+			return TYPE_STRING.getInstance();
+		}
+		System.out.format(">> ERROR binary operations between invalid/unmatching types: left = (%s), right = (%s)\n", semantic_left.name, semantic_right.name);
+		System.exit(0);  // TODO- error handling
 		return null;
 	}
 

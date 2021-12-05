@@ -10,6 +10,9 @@ public class AST_DEC_VAR extends AST_DEC
     public AST_EXP exp;
     public AST_NEW_EXP new_exp;
 
+    // ---- Semantic Properties ---
+    public boolean isCField = false; // TODO - should be marked by CField
+
     /******************/
     /* CONSTRUCTOR(S) */
     /******************/
@@ -41,6 +44,7 @@ public class AST_DEC_VAR extends AST_DEC
         /*******************************/
         this.type = type;
         this.name = name;
+        // NOTE either exp or new_exp must be null
         this.exp = exp;
         this.new_exp = new_exp;
         this.lineNumber = lineNumber;
@@ -96,33 +100,63 @@ public class AST_DEC_VAR extends AST_DEC
 
     public TYPE SemantMe()
     {
-        TYPE t;
+        TYPE semantic_type;
 
         /****************************/
         /* [1] Check If Type exists */
         /****************************/
-        t = SYMBOL_TABLE.getInstance().find(type.type_name);
-        if (t == null)
+        semantic_type = this.type.SemantMe();
+        if (semantic_type == null)
         {
-            System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,type);
+            System.out.format(">> ERROR non existing type (%s)\n", this.type);
+            // TODO ERROR HANDLING
+            System.exit(0);
+        }
+        if (semantic_type.isClass()) {
+            // we want our declared variable to be INSTANCE of the class
+            semantic_type = ((TYPE_CLASS) semantic_type).getInstanceType();
+        }
+        if (!semantic_type.canBeAssigned()) {
+            System.out.format(">> ERROR type (%s) cannot be used as a variable type\n", this.type);
+            // TODO ERROR HANDLING
             System.exit(0);
         }
 
         /**************************************/
         /* [2] Check That Name does NOT exist */
         /**************************************/
-        if (SYMBOL_TABLE.getInstance().find(name) != null)
+        if(isCField) {
+            // CField is being checked separately by AST_CFEILD
+        }
+        // else means it's scope declaration (might be global)
+        else if (SYMBOL_TABLE.getInstance().findInCurrentScope(name) != null)
         {
-            System.out.format(">> ERROR [%d:%d] variable %s already exists in scope\n",2,2,name);
+            System.out.format(">> ERROR variable %s already exists inside the scope\n", name);
+            // TODO deal with error
+            System.exit(0);
         }
 
         /***************************************************/
-        /* [3] Enter the Function Type to the Symbol Table */
+        /* [3] Check for the given value is from expected type */
         /***************************************************/
-        SYMBOL_TABLE.getInstance().enter(name,t);
+        TYPE valueType = null;
+        if (exp != null) {
+            valueType = exp.SemantMe();
+        }
+        else if (new_exp != null) {
+            valueType = new_exp.SemantMe();
+        }
+
+        if (valueType != null) { // means there is an assignment
+            TYPE.checkAssignment(semantic_type, valueType, name);
+        }
+        /***************************************************/
+        /* [4] Enter the Function Type to the Symbol Table */
+        /***************************************************/
+        SYMBOL_TABLE.getInstance().enter(name, semantic_type);
 
         /*********************************************************/
-        /* [4] Return value is irrelevant for class declarations */
+        /* [5] Return value is irrelevant for declarations */
         /*********************************************************/
         return null;
     }

@@ -1,8 +1,14 @@
 package AST;
 
+import SYMBOL_TABLE.SYMBOL_TABLE;
+import TYPES.*;
+
 public class AST_STMT_RETURN extends AST_STMT
 {
-	public AST_EXP exp; // could be null (e.g. void functions)
+	public AST_EXP exp;         // could be null (IFF void functions)
+
+	// ---- SEMANTIC FIELDS ----
+	public TYPE_FUNCTION inFunc; // the function in which the return is in context
 
 	public AST_STMT_RETURN(AST_EXP exp, int lineNumber)
 	{
@@ -13,6 +19,8 @@ public class AST_STMT_RETURN extends AST_STMT
 		System.out.print("SEMICOLON\n");
 
 		this.exp = exp;
+		this.inFunc = null; // will be defined in the semantic-analysis
+
 		this.lineNumber = lineNumber;
 	}
 
@@ -33,5 +41,37 @@ public class AST_STMT_RETURN extends AST_STMT
 			"RETURN");
 
 		if (exp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, exp.SerialNumber);
+	}
+
+	/* verifies the type we return is the same as in the function declaration */
+	public TYPE SemantMe() {
+		// gets the current scope-function
+		this.inFunc = SYMBOL_TABLE.getInstance().findScopeFunc();
+
+		// a return for 'inFunc' has been found
+		inFunc.isReturnExists = true;
+
+		TYPE expectedReturnType = inFunc.rtnType;
+		TYPE actualReturnType = exp != null ? exp.SemantMe(): TYPE_VOID.getInstance();
+
+		// We can look at validating return type as assignment check...
+		// The only exception here is that we allow expectedReturnType (=assignee) to be void, which we'll take care separately
+		if(expectedReturnType == TYPE_VOID.getInstance()) {
+			if(actualReturnType != TYPE_VOID.getInstance())
+			{
+				System.out.format(">> ERROR actual return type (%s) is different than expected (%s)" +
+						", in function %s(..)", expectedReturnType.name, actualReturnType.name, inFunc.name);
+				// TODO deal with error
+				System.exit(0);
+			}
+			// here if our function is 'void' and our statement is "return;"
+			return null; // means success
+		}
+
+		// perform regular assignment check for the rest of the cases (non-void functions)
+		TYPE.checkAssignment(expectedReturnType, actualReturnType, "Return Statement");
+
+		return null; // no TYPE for return statement
+
 	}
 }

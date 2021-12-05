@@ -127,6 +127,7 @@ non terminal AST_DEC_LIST program;
 non terminal AST_TYPE type;
 non terminal AST_DEC_LIST decList;
 non terminal AST_DEC dec;
+non terminal AST_DEC_VAR cFieldVarDec;
 non terminal AST_DEC_VAR varDec;
 non terminal AST_NEW_EXP newExp;
 non terminal String binop;
@@ -187,19 +188,26 @@ arrayTypedef    ::=     ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON   {: RESULT
 
 /** classDec **/
 
-classDec    ::=     CLASS ID:className EXTENDS ID:superName LBRACE cFieldList:l RBRACE   {: RESULT = new AST_DEC_CLASS(l,className,superName, parser.getLine());    :}
-                    |  CLASS ID:className LBRACE cFieldList:l RBRACE                     {: RESULT = new AST_DEC_CLASS(l,className,null, parser.getLine());    :}
+classDec    ::=     CLASS ID:className EXTENDS ID:superName LBRACE cFieldList:l RBRACE   {: RESULT = new AST_DEC_CLASS(l, className, superName, parser.getLine());    :}
+                    |  CLASS ID:className LBRACE cFieldList:l RBRACE                     {: RESULT = new AST_DEC_CLASS(l, className, null, parser.getLine());    :}
                     ;
 
-cFieldList	::=		cField:s	cFieldList:l		        {: RESULT = new AST_CFIELD_LIST(s,l, parser.getLine());    :}
-					| cField:s				                {: RESULT = new AST_CFIELD_LIST(s,null, parser.getLine()); :}
+cFieldList	::=		cField:s	cFieldList:l		        {: RESULT = new AST_CFIELD_LIST(s, l, parser.getLine());    :}
+					| cField:s				                {: RESULT = new AST_CFIELD_LIST(s, null, parser.getLine()); :}
 					;
 
-cField    ::=       varDec:varDec                                   {: RESULT = new AST_CFIELD(varDec, parser.getLine());  :}
+cField    ::=       cFieldVarDec:varDec                             {: RESULT = new AST_CFIELD(varDec, parser.getLine());  :}
                     | funcDec:funcDec                               {: RESULT = new AST_CFIELD(funcDec, parser.getLine()); :}
                     ;
 
+// Enforces the limitations of CField var-declaration synthatically // TODO review me (maybe it must be semantic?)
+cFieldVarDec ::=    type:t ID:id SEMICOLON                        {: RESULT = new AST_DEC_VAR(t, id, parser.getLine()); :}
+                    | type:t ID:id ASSIGN INT:i SEMICOLON         {: RESULT = new AST_DEC_VAR(t, id, new AST_EXP_INT( Integer.parseInt(i), parser.getLine()), parser.getLine()); :}
+                    | type:t ID:id ASSIGN STRING:s SEMICOLON      {: RESULT = new AST_DEC_VAR(t, id, new AST_EXP_STRING(s, parser.getLine()), parser.getLine()); :}
+                    | type:t ID:id ASSIGN NIL SEMICOLON           {: RESULT = new AST_DEC_VAR(t, id, new AST_EXP_NIL(parser.getLine()), parser.getLine()); :}
+                    ;
 
+//---------------- var ----------------
 var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name, parser.getLine());       :}
 					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName, parser.getLine()); :}
 					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e, parser.getLine());     :}
@@ -238,10 +246,10 @@ exp         ::=     var:v								        {: RESULT = new AST_EXP_VAR(v, parser.g
                     | LPAREN exp:e RPAREN                       {: RESULT = e; :}
 
                     // Binary operations (each operator should be stated explicitly for precedence to work):
-                    | exp:e1 PLUS exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "+", parser.getLine()); :}
-                    | exp:e1 MINUS exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "-", parser.getLine()); :}
-                    | exp:e1 TIMES exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "*", parser.getLine()); :}
-                    | exp:e1 DIVIDE exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "/", parser.getLine()); :}
+                    | exp:e1 PLUS exp:e2                  {: RESULT = new AST_EXP_BINOP(e1, e2, "+", parser.getLine()); :}
+                    | exp:e1 MINUS exp:e2                 {: RESULT = new AST_EXP_BINOP(e1, e2, "-", parser.getLine()); :}
+                    | exp:e1 TIMES exp:e2                 {: RESULT = new AST_EXP_BINOP(e1, e2, "*", parser.getLine()); :}
+                    | exp:e1 DIVIDE exp:e2                {: RESULT = new AST_EXP_BINOP(e1, e2, "/", parser.getLine()); :}
                     | exp:e1 LT exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "<", parser.getLine()); :}
                     | exp:e1 GT exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, ">", parser.getLine()); :}
                     | exp:e1 EQ exp:e2                    {: RESULT = new AST_EXP_BINOP(e1, e2, "=", parser.getLine()); :}

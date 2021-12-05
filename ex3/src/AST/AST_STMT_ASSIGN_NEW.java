@@ -1,5 +1,8 @@
 package AST;
 
+import SYMBOL_TABLE.SYMBOL_TABLE;
+import TYPES.TYPE;
+
 public class AST_STMT_ASSIGN_NEW extends AST_STMT
 {
 	/***************/
@@ -59,5 +62,38 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,new_exp.SerialNumber);
+	}
+
+	public TYPE SemantMe() {
+		TYPE leftType, rightType;
+
+		/****************************/
+		/* [1] Check If Type exists */
+		/****************************/
+		leftType = this.var.SemantMe();
+		rightType = this.new_exp.SemantMe();
+		if (leftType == null || rightType == null)
+		{ // shouldn't be here, should return an error way before
+			System.out.format(">> ERROR failed when typing var-assign-statement (SHOULDN'T GET HERE) \n");
+			// TODO ERROR HANDLING
+			System.exit(0);
+		}
+		if(!rightType.isNewable()) {
+			// TODO - this check should be (also, or maybe only) in AST_NEW_EXP
+			System.out.format(">> ERROR 'new' keyword cannot precede type (%s) \n", rightType.name);
+			// TODO ERROR HANDLING
+			System.exit(0);
+		}
+
+
+		/***************************************************/
+		/* [3] Check for the given value is from expected type */
+		/***************************************************/
+		TYPE.checkAssignment(leftType, rightType, "Variable-Assignment-NEW-Statement");
+
+		/*********************************************************/
+		/* [5] Return value is irrelevant for statements */
+		/*********************************************************/
+		return null;
 	}
 }

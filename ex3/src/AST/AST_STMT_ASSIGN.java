@@ -1,5 +1,7 @@
 package AST;
 
+import TYPES.TYPE;
+
 public class AST_STMT_ASSIGN extends AST_STMT
 {
 	/***************/
@@ -60,18 +62,33 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
 	}
+
 	public TYPE SemantMe()
 	{
-		TYPE t1 = null;
-		TYPE t2 = null;
+		TYPE leftType, rightType;
 
-		if (var != null) t1 = var.SemantMe();
-		if (exp != null) t2 = exp.SemantMe();
+		/****************************/
+		/* [1] Check If Type exists */
+		/****************************/
+		leftType = this.var.SemantMe();
+		rightType = this.exp.SemantMe();
 
-		if (t1 != t2)
-		{
-			System.out.format(">> ERROR [%d:%d] type mismatch for var := exp\n",6,6);
+		if (leftType == null || rightType == null)
+		{ // shouldn't be here, should return an error way before
+			System.out.format(">> ERROR failed when typing var-assign-statement (SHOULDN'T GET HERE) \n");
+			// TODO ERROR HANDLING
+			System.exit(0);
 		}
+
+
+		/***************************************************/
+		/* [3] Check for the given value is from expected type */
+		/***************************************************/
+		TYPE.checkAssignment(leftType, rightType, "Variable-Assignment-Statement");
+
+		/*********************************************************/
+		/* [5] Return value is irrelevant for statements */
+		/*********************************************************/
 		return null;
 	}
 }

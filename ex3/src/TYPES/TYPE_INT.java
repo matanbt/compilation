@@ -24,4 +24,18 @@ public class TYPE_INT extends TYPE
 		}
 		return instance;
 	}
+
+	// We forbid int i:= nil
+	public boolean canBeAssignedNil() {
+		return false;
+	}
+
+	public boolean canBeRtnType() {
+		return true;
+	}
+
+	@Override
+	public boolean canBeAssigned() {
+		return true;
+	}
 }

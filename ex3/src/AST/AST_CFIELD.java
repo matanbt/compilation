@@ -1,5 +1,7 @@
 package AST;
 
+import TYPES.TYPE;
+
 public class AST_CFIELD extends AST_Node
 {
 	/********************************/
@@ -25,6 +27,7 @@ public class AST_CFIELD extends AST_Node
 		/*******************************/
 		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
+		// dec MUST BE instance of "limited" DEC_VAR or DEC_FUNC. This is enforced by the grammar (cup file).
 		this.dec = dec;
 		this.lineNumber = lineNumber;
 	}
@@ -55,5 +58,10 @@ public class AST_CFIELD extends AST_Node
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,dec.SerialNumber);
+	}
+
+	public TYPE SemantMe() {
+		// TODO: (1) Check that each CField has different name. (2) Make sure AST_DEC_VAR.isCField is taken care of.
+		return null;
 	}
 }
