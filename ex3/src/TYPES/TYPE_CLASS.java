@@ -30,7 +30,7 @@ public class TYPE_CLASS extends TYPE
 		while (curr_class != null){
 			CFIELD_LIST curr_cfield_list = curr_class.cfield_list;
 			for(CFIELD_LIST node = curr_cfield_list; node != null; node = node.next){
-				CFILD cfild = node.head;
+				CFIELD cfild = node.head;
 				if (cfild.name.equals(name)){
 					return cfild.type;
 				}

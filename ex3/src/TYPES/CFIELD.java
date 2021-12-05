@@ -1,11 +1,11 @@
 package TYPES;
 
-public class CFILD
+public class CFIELD
 {
 	public TYPE type;
 	public String name;
 	
-	public CFILD(TYPE type, String name)
+	public CFIELD(TYPE type, String name)
 	{
 		this.type = type;
 		this.name = name;
