@@ -1,8 +1,10 @@
 package AST;
 
+import TYPES.TYPE;
+
 public class AST_DEC_FUNC_ARG_LIST extends AST_Node
 {
-	public AST_DEC_FUNC_ARG head; // could NOT be null
+	public AST_DEC_FUNC_ARG head;      // could NOT be null
 	public AST_DEC_FUNC_ARG_LIST next; // could be null (means end of the list)
 
 
@@ -48,4 +50,9 @@ public class AST_DEC_FUNC_ARG_LIST extends AST_Node
 		if (next != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, next.SerialNumber);
 	}
 
+	public TYPE SemantMe() {
+		// no TYPE for argument-list, we do analyze it in AST_DEC_FUNC
+		System.out.print("[DEBUG] Warning: unexpected call of AST_DEC_FUNC_ARG_LIST.SemantMe()\n");
+		return null;
+	}
 }

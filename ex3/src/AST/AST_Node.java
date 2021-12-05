@@ -1,5 +1,7 @@
 package AST;
 
+import TYPES.TYPE;
+
 public abstract class AST_Node
 {
 	/*******************************************/
@@ -8,12 +10,7 @@ public abstract class AST_Node
 	/* a graphviz dot format of the AST ...    */
 	/*******************************************/
 	public int SerialNumber;
-	
-	/***********************************************/
-	/* The default message for an unknown AST node */
-	/***********************************************/
-	public void PrintMe()
-	{
-		System.out.print("AST NODE UNKNOWN\n");
-	}
+
+	public abstract void PrintMe();
+	public abstract TYPE SemantMe();
 }

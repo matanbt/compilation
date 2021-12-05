@@ -24,4 +24,19 @@ public class TYPE_STRING extends TYPE
 		}
 		return instance;
 	}
+
+	// we forbid String s := nil;
+	public boolean canBeAssignedNil() {
+		return false;
+	}
+
+	@Override
+	public boolean canBeAssigned() {
+		return true;
+	}
+
+	@Override
+	public boolean canBeRtnType() {
+		return true;
+	}
 }

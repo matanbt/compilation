@@ -24,7 +24,7 @@ public class AST_STMT_IF extends AST_STMT
 		System.out.print("====================== stmt -> IF ( cond ) { body } \n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.cond = cond;
 		this.body = body;
@@ -63,17 +63,19 @@ public class AST_STMT_IF extends AST_STMT
 	public TYPE SemantMe()
 	{
 		/****************************/
-		/* [0] Semant the Condition */
+		/* [0] Semant the Condition + verifications*/
 		/****************************/
 		if (cond.SemantMe() != TYPE_INT.getInstance())
 		{
-			System.out.format(">> ERROR [%d:%d] condition inside IF is not integral\n",2,2);
+			System.out.format(">> ERROR condition inside IF is not int\n");
+			// TODO deal with error
+			System.exit(0);
 		}
 
 		/*************************/
 		/* [1] Begin Class Scope */
 		/*************************/
-		SYMBOL_TABLE.getInstance().beginScope();
+		SYMBOL_TABLE.getInstance().beginScope(TYPE_FOR_SCOPE_BOUNDARIES.IF_WHILE_SCOPE, this);
 
 		/***************************/
 		/* [2] Semant Data Members */
@@ -86,7 +88,7 @@ public class AST_STMT_IF extends AST_STMT
 		SYMBOL_TABLE.getInstance().endScope();
 
 		/*********************************************************/
-		/* [4] Return value is irrelevant for class declarations */
+		/* [4] Return value is irrelevant for IF statements */
 		/*********************************************************/
 		return null;
 	}
