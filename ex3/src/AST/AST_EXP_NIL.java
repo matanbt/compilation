@@ -1,7 +1,7 @@
 package AST;
 
 import TYPES.TYPE;
-import TYPES.TYPE_NIL;
+import TYPES.TYPE_NIL_INSTANCE;
 
 public class AST_EXP_NIL extends AST_EXP
 {
@@ -41,5 +41,5 @@ public class AST_EXP_NIL extends AST_EXP
                 "NIL");
     }
     public TYPE SemantMe()
-    { return TYPE_NIL.getInstance(); }
+    { return TYPE_NIL_INSTANCE.getInstance(); }
 }
