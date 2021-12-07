@@ -1,6 +1,6 @@
 package TYPES;
 
-public class TYPE_CLASS extends TYPE
+public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 {
 	/*********************************************************************/
 	/* If this class does not extend a father class this should be null  */
@@ -52,21 +52,8 @@ public TYPE findInClassAndSuperClasses(String cfield_name)
 		return false; // TODO on class task: IMPLEMENT
 	}
   
-	public TYPE_CLASS_INSTANCE getInstanceType() {
+	public TYPE getInstanceType() {
 		return this.classInstanceType;
 	}
 
-	// we forbid assigning to class 'A := nil' when A is a class
-	public boolean canBeAssigned() {
-		return false;
-	}
-
-	public boolean canBeAssignedNil() {
-		return false;
-	}
-
-	public boolean canBeRtnType() {
-		return false; // maybe counter-intuitive, but rtnType should be 'this.classInstanceType'
-  }
-  
 }
