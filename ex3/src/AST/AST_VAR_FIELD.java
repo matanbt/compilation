@@ -1,5 +1,8 @@
 package AST;
 
+import TYPES.TYPE;
+import TYPES.TYPE_CLASS_INSTANCE;
+
 public class AST_VAR_FIELD extends AST_VAR
 {
 	public AST_VAR var;
@@ -55,5 +58,41 @@ public class AST_VAR_FIELD extends AST_VAR
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (var != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
+	}
+
+	@Override
+	public TYPE SemantMe() {
+		// finds the type of the variable (might be recursive, where the base case is in AST_VAR_SIMPLE)
+		TYPE var_type = this.var.SemantMe();
+		if (var_type == null) {
+			/* TODO: Errorize */
+			System.out.format(">> ERROR got bad type from variable");
+			System.exit(0);
+		}
+
+		// var_type must class-instance if it wants to access a field
+		if(!var_type.isInstanceOfSomeClass()) {
+			/* TODO: Errorize */
+			System.out.format(">> ERROR type (%s) is not class-instance and has no fields", var_type.name);
+			System.exit(0);
+		}
+
+		// finds the field in this class or in its supers'
+		TYPE field_type = ((TYPE_CLASS_INSTANCE) var_type).getTypeInstance().findInClassAndSuperClasses(this.fieldName);
+		if(field_type == null) {
+			/* TODO: Errorize */
+			System.out.format(">> ERROR failed to resolve field (%s) from variable (%s)", this.fieldName , var_type.name);
+			System.exit(0);
+		}
+
+		// a variable must be assignable - We looked for CField, so it's possible we got back a method,
+		// or maybe another unexpected type
+		if (!field_type.canBeAssigned()) {
+			/* TODO: Errorize */
+			System.out.format(">> ERROR failed to resolve field (%s) from variable (%s)", this.fieldName , var_type.name);
+			System.exit(0);
+		}
+
+		return field_type;
 	}
 }

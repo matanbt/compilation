@@ -1,5 +1,8 @@
 package AST;
 
+import SYMBOL_TABLE.SYMBOL_TABLE;
+import TYPES.TYPE;
+
 public class AST_VAR_SIMPLE extends AST_VAR
 {
 	/************************/
@@ -45,5 +48,21 @@ public class AST_VAR_SIMPLE extends AST_VAR
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			String.format("SIMPLE\nVAR\n(%s)",name));
+	}
+
+	public TYPE SemantMe() {
+		// finds the type of the variable
+		TYPE var_type = SYMBOL_TABLE.getInstance().find(this.name);
+		if (var_type == null) {
+			System.out.format(">> ERROR:  Failed to resolve variable (%s) ", this.name);
+			// TODO deal with error
+			System.exit(0);
+		}
+		if (!var_type.isInstanceType()) {
+			System.out.format(">> ERROR:  got bad type (%s) for variable (%s) ", var_type.name, this.name);
+			// TODO deal with error
+			System.exit(0);
+		}
+		return var_type;
 	}
 }
