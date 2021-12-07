@@ -21,6 +21,8 @@ class Bar extends Foo {
     }
 }
 
+*** OK
+
 
 /// same_name_glob_and_cfield_3
 class Foo {
@@ -37,10 +39,10 @@ class Bar extends Foo {
 
 *** ERROR(9)
 
-//********************************************
+
 /// variables_can_have_names_of_types_1
 // TODO PONDER
-array myIntArr := int[];
+array myIntArr = int[];
 
 class Foo {
     int myIntArr := 0;
@@ -71,7 +73,7 @@ class Father {
 int i := 1;
 int global_context_var := 2;
 
-class Son {
+class Son extends Father {
     String foo(){
         return i;  // expected to be inherited
     }
@@ -185,7 +187,7 @@ class A {
 
 *** OK
 
-// ************************************
+
 // overshadowing_cfield_variable
 // TODO PONDER
 class A {
@@ -281,7 +283,7 @@ void main {
 *** ERROR(3)
 
 
-/// can_overshdow_classname_and_then_fetch_its_cfields
+/// can_overshadow_classname_and_then_fetch_its_cfields
 class A { int i; }
 void main {
     A obj := a;
@@ -315,7 +317,7 @@ array foos = foo[];
 
 
 /// declaring_same-name_method_as_global_func
-int foo();
+int foo() {return 1;}
 int b;
 class A {
     int b;
