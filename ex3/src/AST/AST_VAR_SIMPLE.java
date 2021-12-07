@@ -58,7 +58,9 @@ public class AST_VAR_SIMPLE extends AST_VAR
 			// TODO deal with error
 			System.exit(0);
 		}
-		if (!var_type.isInstanceType()) {
+
+		// a variable must be assignable
+		if (!var_type.canBeAssigned()) {
 			System.out.format(">> ERROR:  got bad type (%s) for variable (%s) ", var_type.name, this.name);
 			// TODO deal with error
 			System.exit(0);

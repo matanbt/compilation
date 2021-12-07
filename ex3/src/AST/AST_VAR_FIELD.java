@@ -62,8 +62,9 @@ public class AST_VAR_FIELD extends AST_VAR
 
 	@Override
 	public TYPE SemantMe() {
-		// finds the type of the variable (might be recursive, where the base case is in AST_VAR_SIMPLE)
+		// finds the type of the variable (possibly recursive, and the base case is AST_VAR_SIMPLE.SemantMe)
 		TYPE var_type = this.var.SemantMe();
+
 		if (var_type == null) {
 			/* TODO: Errorize */
 			System.out.format(">> ERROR got bad type from variable");
@@ -85,8 +86,8 @@ public class AST_VAR_FIELD extends AST_VAR
 			System.exit(0);
 		}
 
-		// a variable must be assignable - We looked for CField, so it's possible we got back a method,
-		// or maybe another unexpected type
+		// a variable must be assignable
+		// We looked for CField, so it's possible we got back a method or maybe another unexpected type
 		if (!field_type.canBeAssigned()) {
 			/* TODO: Errorize */
 			System.out.format(">> ERROR failed to resolve field (%s) from variable (%s)", this.fieldName , var_type.name);
