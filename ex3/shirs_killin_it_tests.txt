@@ -1,0 +1,152 @@
+/// predefined_id
+int shir := 12;
+class shir(){};
+
+*** ERROR(2)
+
+/// return_statements_only_inside_functions
+int x := 3;
+return x;
+
+*** ERROR(2)
+
+/// no_return_when_void_and_override_x
+int x := 2;
+void f(){
+	string x;
+}
+
+*** OK
+
+/// override_in_global
+int salary := 7800;
+string salary := "7800";
+
+*** ERROR(2)
+
+/// new_is_for_arrays_and_classes_only
+int x := 2;
+int y := new x;
+
+*** ERROR(2)
+
+
+/// class_func_inheritance_and_override_f
+class A{
+	void f(){}
+}
+class B extends A{}
+A b := new B();
+void f(){ 
+b.f();
+}
+
+*** OK
+
+/// call_non_method_func_by_instance
+void f(){}
+class A{}
+class B extends A{}
+A b := new B();
+b.f();
+
+*** ERROR(5)
+
+/// glob_function_call_inside_class
+void f(){}
+class A{
+void g(){f();}
+}
+
+*** OK
+
+/// function_override_in_class
+void f(){}
+class A{
+void f(){}
+}
+
+*** OK 
+
+/// f_call_more_arg_1
+void f(int x, int y){}
+void g{
+f(1,2,3);
+}
+
+*** ERROR(3)
+
+/// f_call_more_arg_2
+void f(){}
+void g{
+f(1);
+}
+
+*** ERROR(3)
+
+/// f_call_less_arg_1
+void f(int x, int y){}
+void g{
+f(1);
+}
+
+*** ERROR(3)
+
+/// f_call_less_arg_2
+void f(int x, int y){}
+void g{
+f();
+}
+
+*** ERROR(3)
+
+/// override_f_in_class
+void f(){}
+class Person{
+string f(){return "Shir";}
+}
+
+*** OK
+
+/// NoReturns_when_void
+void f(){}
+
+*** OK
+
+/// NoReturn_when_int
+int f(){}
+
+*** ERROR(1)
+
+/// sMoodle1_1
+int j := 1;
+void main(){
+j := 2;
+string j;
+}
+
+*** OK
+
+/// sMoodle1_2
+class Shir{int f(){return 1;}}
+int i := Shir.f();
+
+*** ERROR(2)
+
+/// sMoodle1_3
+class Shir{void f()};
+Shir s;
+void main(){
+s.f(); //notInitialized
+}
+
+*** OK
+
+/// sMoodle1_4
+class A {}
+void main(){
+A A := new A;
+}
+
+*** OK
+
