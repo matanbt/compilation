@@ -1,10 +1,6 @@
 package AST;
-import TYPES.TYPE;
-import TYPES.TYPE_INT;
-import TYPES.TYPE_STRING;
-
-import TYPES.TYPE;
-import TYPES.TYPE_INT;
+import EXCEPTIONS.SemanticException;
+import TYPES.*;
 
 public class AST_EXP_BINOP extends AST_EXP
 {
@@ -73,7 +69,32 @@ public class AST_EXP_BINOP extends AST_EXP
 		if (right != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,right.SerialNumber);
 	}
 
-	public TYPE SemantMe()
+	private void checkEqualityTesting(TYPE e1, TYPE e2) throws SemanticException
+	{
+		if (e1 != e2)
+		{
+			if (e1.isClass() && e2.isClass())
+			{
+				TYPE_CLASS class_e1 = (TYPE_CLASS_INSTANCE)e1.getSymbolType();
+				TYPE_CLASS class_e2 = (TYPE_CLASS_INSTANCE)e2.getSymbolType();
+
+				if (!(class_e1.isSubClassOf(class_e2) || class_e2.isSubClassOf(class_e1)))
+				{
+					this.throw_error(String.format("Trying to check for equality for 2 not related classes %s %s", class_e1, class_e2));
+				}
+			}
+			else if (e1.isNewable() && e2 != TYPE_NIL_INSTANCE.getInstance())
+			{
+				this.throw_error("Trying to compare a class with something that isn't a class or nil");
+			}
+			else if (e2.isNewable() && e1 != TYPE_NIL_INSTANCE.getInstance())
+			{
+				this.throw_error("Trying to compare a class with something that isn't a class or nil");
+			}
+		}
+	}
+
+	public TYPE SemantMe() throws SemanticException
 	{
 		TYPE semantic_left = null;
 		TYPE semantic_right = null;
@@ -81,9 +102,16 @@ public class AST_EXP_BINOP extends AST_EXP
 		if (left  != null) semantic_left = left.SemantMe();
 		if (right != null) semantic_right = right.SemantMe();
 
+		/* Equality testing */
+		if (op.equals("="))
+		{
+			this.checkEqualityTesting(semantic_left, semantic_right);
+			return TYPE_INT.getInstance();
+		}
+
 		if ((semantic_left == TYPE_INT.getInstance()) && (semantic_right == TYPE_INT.getInstance()))
 		{
-			if (op.equals("/") && (right instanceof AST_EXP_INT) && (((AST_EXP_INT) right).value == 0)){
+			if (op.equals("/") && (right instanceof AST_EXP_INT) && (((AST_EXP_INT) right).value == 0)) {
 				System.out.println(">> ERROR explicit zero division");
 				System.exit(0);  // TODO- error handling
 				return null;
