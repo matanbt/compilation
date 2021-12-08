@@ -83,13 +83,13 @@ public class AST_EXP_BINOP extends AST_EXP
 					this.throw_error(String.format("Trying to check for equality for 2 not related classes %s %s", class_e1, class_e2));
 				}
 			}
-			else if (e1.isNewable() && e2 != TYPE_NIL_INSTANCE.getInstance())
+			else if (e1.canBeAssignedNil() && e2 != TYPE_NIL_INSTANCE.getInstance())
 			{
-				this.throw_error("Trying to compare a class with something that isn't a class or nil");
+				this.throw_error("Trying to compare a class instance with something that isn't a class instance or nil");
 			}
-			else if (e2.isNewable() && e1 != TYPE_NIL_INSTANCE.getInstance())
+			else if (e2.canBeAssignedNil() && e1 != TYPE_NIL_INSTANCE.getInstance())
 			{
-				this.throw_error("Trying to compare a class with something that isn't a class or nil");
+				this.throw_error("Trying to compare a class instance with something that isn't a class instance or nil");
 			}
 		}
 	}
