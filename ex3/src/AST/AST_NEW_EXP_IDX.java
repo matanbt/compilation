@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
 import TYPES.TYPE_ARRAY;
@@ -62,7 +63,7 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 		}
 
 		/* 2. Check that type is indeed an array type */
-		if (!array_type.isArray())
+		if (!array_type.isArraySymbol())
 		{
 			this.throw_error("trying to create array from something that isn't an array type");
 		}

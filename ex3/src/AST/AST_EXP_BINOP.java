@@ -74,10 +74,10 @@ public class AST_EXP_BINOP extends AST_EXP
 		if (e1 != e2)
 		{
 			String message = "Mismatched types: %s %s";
-			if (e1.isClassInstance() && e2.isClassInstance())
+			if (e1.isInstanceOfSomeClass() && e2.isInstanceOfSomeClass())
 			{
-				TYPE_CLASS class_e1 = ((TYPE_CLASS_INSTANCE)e1).getSymbolType();
-				TYPE_CLASS class_e2 = ((TYPE_CLASS_INSTANCE)e2).getSymbolType();
+				TYPE_CLASS class_e1 = (TYPE_CLASS) ((TYPE_CLASS_INSTANCE)e1).getSymbolType();
+				TYPE_CLASS class_e2 = (TYPE_CLASS) ((TYPE_CLASS_INSTANCE)e2).getSymbolType();
 
 				if (!(class_e1.isSubClassOf(class_e2) || class_e2.isSubClassOf(class_e1)))
 				{
