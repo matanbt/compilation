@@ -2,7 +2,6 @@ package AST;
 
 import EXCEPTIONS.SemanticException;
 import TYPES.TYPE;
-import TYPES.TYPE_CLASS;
 import TYPES.TYPE_CLASS_INSTANCE;
 
 public class AST_VAR_FIELD extends AST_VAR
@@ -78,7 +77,7 @@ public class AST_VAR_FIELD extends AST_VAR
 		}
 
 		// finds the field in this class or in its supers'
-		TYPE field_type = ((TYPE_CLASS)((TYPE_CLASS_INSTANCE) var_type).getSymbolType()).findInClassAndSuperClasses(this.fieldName);
+		TYPE field_type = ((TYPE_CLASS_INSTANCE) var_type).getTypeInstance().findInClassAndSuperClasses(this.fieldName);
 
 		if(field_type == null) {
 			this.throw_error(String.format(">> ERROR failed to resolve field (%s) from variable (%s)", this.fieldName , var_type.name));
