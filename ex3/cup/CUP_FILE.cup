@@ -209,8 +209,8 @@ cFieldVarDec ::=    type:t ID:id SEMICOLON                        {: RESULT = ne
 
 //---------------- var ----------------
 var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name, parser.getLine());       :}
-					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName, parser.getLine()); :}
-					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e, parser.getLine());     :}
+					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v, fieldName, parser.getLine()); :}
+					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v, e, parser.getLine());     :}
 					;
 
 //---------------- statements list ----------------

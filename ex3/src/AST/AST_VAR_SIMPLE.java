@@ -1,5 +1,9 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
+import SYMBOL_TABLE.SYMBOL_TABLE;
+import TYPES.TYPE;
+
 public class AST_VAR_SIMPLE extends AST_VAR
 {
 	/************************/
@@ -45,5 +49,19 @@ public class AST_VAR_SIMPLE extends AST_VAR
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			String.format("SIMPLE\nVAR\n(%s)",name));
+	}
+
+	public TYPE SemantMe() throws SemanticException {
+		// finds the type of the variable
+		TYPE var_type = SYMBOL_TABLE.getInstance().find(this.name);
+		if (var_type == null) {
+			this.throw_error(String.format(">> ERROR:  Failed to resolve variable (%s) ", this.name));
+		}
+
+		// a variable must be assignable
+		if (!var_type.isInstanceOfType()) {
+			this.throw_error(String.format(">> ERROR:  got bad type (%s) for variable (%s) ", var_type.name, this.name));
+		}
+		return var_type;
 	}
 }
