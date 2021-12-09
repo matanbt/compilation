@@ -53,12 +53,12 @@ public class AST_STMT_RETURN extends AST_STMT
 		inFunc.isReturnExists = true;
 
 		TYPE expectedReturnType = inFunc.rtnType;
-		TYPE actualReturnType = exp != null ? exp.SemantMe(): TYPE_VOID.getInstance();
+		TYPE actualReturnType = exp != null ? exp.SemantMe(): null;
 
 		// We can look at validating return type as assignment check...
 		// The only exception here is that we allow expectedReturnType (=assignee) to be void, which we'll take care separately
-		if(expectedReturnType == TYPE_VOID.getInstance()) {
-			if(actualReturnType != TYPE_VOID.getInstance())
+		if(expectedReturnType == null) {
+			if(actualReturnType != null)
 			{
 				System.out.format(">> ERROR actual return type (%s) is different than expected (%s)" +
 						", in function %s(..)", expectedReturnType.name, actualReturnType.name, inFunc.name);

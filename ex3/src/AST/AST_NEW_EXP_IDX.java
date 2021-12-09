@@ -1,5 +1,11 @@
 package AST;
 
+import SYMBOL_TABLE.SYMBOL_TABLE;
+import TYPES.TYPE;
+import TYPES.TYPE_ARRAY;
+import TYPES.TYPE_ARRAY_INSTANCE;
+import TYPES.TYPE_INT;
+
 // indexable new-expression
 public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 {
@@ -43,5 +49,40 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, nType.SerialNumber);
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, expression.SerialNumber);
+	}
+
+	public TYPE SemantMe() throws SemanticException
+	{
+		/* 1. Check that type was defined before */
+		/* TODO: Make sure this works when merging with everyone's branches */
+		TYPE array_type = this.nType.SemantMe();
+		if (array_type == null)
+		{
+			this.throw_error("undefined type for array creation");
+		}
+
+		/* 2. Check that type is indeed an array type */
+		if (!array_type.isArray())
+		{
+			this.throw_error("trying to create array from something that isn't an array type");
+		}
+
+		/* 3. Check that size of array is integral */
+		/* TODO: Does integral mean constant, or just int? - looks like int according to the forum.
+		 */
+		TYPE index_type = this.expression.SemantMe();
+		if (index_type == null || !(index_type instanceof TYPE_INT))
+		{
+			this.throw_error("undefined type for size of array");
+		}
+
+		Integer value = ((AST_EXP_INT)this.expression).value;
+		if (value <= 0)
+		{
+			this.throw_error("invalid size for array");
+		}
+
+		/* 4. Return type of array instance */
+		return new array_type.convertSymbolToInstance();
 	}
 }
