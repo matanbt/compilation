@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
 
@@ -64,7 +65,7 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,new_exp.SerialNumber);
 	}
 
-	public TYPE SemantMe() {
+	public TYPE SemantMe() throws SemanticException {
 		TYPE leftType, rightType;
 
 		/****************************/
@@ -89,7 +90,10 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 		/***************************************************/
 		/* [3] Check for the given value is from expected type */
 		/***************************************************/
-		TYPE.checkAssignment(leftType, rightType, "Variable-Assignment-NEW-Statement");
+		boolean valid = TYPE.checkAssignment(leftType, rightType);
+		if(!valid) {
+			this.throw_error("Variable Assignment NEW Statement");
+		}
 
 		/*********************************************************/
 		/* [5] Return value is irrelevant for statements */

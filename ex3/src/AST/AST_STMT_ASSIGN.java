@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import TYPES.TYPE;
 
 public class AST_STMT_ASSIGN extends AST_STMT
@@ -63,8 +64,7 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
 	}
 
-	public TYPE SemantMe()
-	{
+	public TYPE SemantMe() throws SemanticException {
 		TYPE leftType, rightType;
 
 		/****************************/
@@ -84,7 +84,10 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		/***************************************************/
 		/* [3] Check for the given value is from expected type */
 		/***************************************************/
-		TYPE.checkAssignment(leftType, rightType, "Variable-Assignment-Statement");
+		boolean valid = TYPE.checkAssignment(leftType, rightType);
+		if(!valid) {
+			this.throw_error("Variable assignment statement");
+		}
 
 		/*********************************************************/
 		/* [5] Return value is irrelevant for statements */

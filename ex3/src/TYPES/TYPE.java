@@ -96,23 +96,22 @@ public abstract class TYPE
 
 	/*
 	 * validate assignment of types: left := right
-	 * Handles error in case of encountering one
 	 * ALSO general enough to support validation function return statement (keep it that way)
+	 *
+	 * TRUE means the assignment is valid
+	 * In case of error it returns 'FALSE' and print some informative message. We DO NOT handle errors here.
 	 */
-	// TODO - the following function should return enum describing what error has occurred (if at all), moving the handling of the message to it's caller
-	public static void checkAssignment(TYPE left, TYPE right, String assigneeName) {
+	public static boolean checkAssignment(TYPE left, TYPE right) {
 
 		if(!left.canBeAssigned()) {
 			// we note that canBeVarType holds for 'left' IFF it can be assigned with some value
 			System.out.format(">> ERROR type (%s) cannot be used as an assignee\n", left.name);
-			// TODO ERROR HANDLING
-			System.exit(0);
+			return false;
 		}
 
 		if (!left.canBeAssignedNil() && right == TYPE_NIL_INSTANCE.getInstance()) {
 			System.out.format(">> ERROR cannot assign NIL to type (%s)\n", left.name);
-			// TODO deal with error
-			System.exit(0);
+			return false;
 		}
 		// TODO assignments of arrays?
 		else if ((left != right) && (right != TYPE_NIL_INSTANCE.getInstance())) {
@@ -120,20 +119,19 @@ public abstract class TYPE
 				// in OOP we allow assignment of different types
 				if(!((TYPE_CLASS_INSTANCE) right).isSubClassOf((TYPE_CLASS_INSTANCE) left)) // TODO after TYPE_CLASS implementation
 				{
-					System.out.format(">> ERROR in (%s) :  cannot assign to class (%s) is" +
-							" NOT super class of (%s)", assigneeName, left.name, right.name);
-					// TODO deal with error
-					System.exit(0);
+					System.out.format(">> ERROR:  cannot assign to class (%s) is" +
+							" NOT super class of (%s)", left.name, right.name);
+					return false;
 				}
 			}
 			else {
 				// OOP assignment failed means error
-				System.out.format(">> ERROR in (%s) : expected assigned type of (%s) " +
-						"but got (%s) \n", assigneeName, left.name, right.name);
-				// TODO deal with error
-				System.exit(0);
+				System.out.format(">> ERROR: expected assigned type of (%s) " +
+						"but got (%s) \n", left.name, right.name);
+				return false;
 			}
 		}
+		return true;
 	}
 
 }
