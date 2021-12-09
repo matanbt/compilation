@@ -92,7 +92,7 @@ public class AST_DEC_FUNC extends AST_DEC
 			// we're in global context, so we make sure no same-name declaration
 			if(SYMBOL_TABLE.getInstance().find(funcName) != null) {
 				this.throw_error(String.format( "identifier (%s) is previously declared, " +
-						"can't declare global-function\n", funcName));
+						"can't declare global-function", funcName));
 			}
 		}
 		// else: it's a method, will be checked as a CFIELD
@@ -109,7 +109,7 @@ public class AST_DEC_FUNC extends AST_DEC
 			TYPE semantic_argType = arg.SemantMe();
 			if (semantic_argType == null)
 			{
-				this.throw_error(String.format("non existing type %s\n",arg.argType));
+				this.throw_error(String.format("non existing type %s",arg.argType));
 				// TODO deal with error
 				System.exit(0);
 			}
