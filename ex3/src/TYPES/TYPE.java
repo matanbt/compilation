@@ -134,4 +134,24 @@ public abstract class TYPE
 		return true;
 	}
 
+	/*
+		Checks assignments of sort 'IntArray arr := new int[5]'.
+	 */
+	public static boolean checkNewArrayAssignment(TYPE left, TYPE_ARRAY_INSTANCE right) {
+		TYPE rightElementType = right.getElementType();
+
+		if(!(left instanceof TYPE_ARRAY_INSTANCE)) {
+			System.out.println("Can't assign new array to non-array type");
+			return false;
+		}
+
+		TYPE leftElementType = ((TYPE_ARRAY_INSTANCE)left).getElementType();
+		if(leftElementType != rightElementType) {
+			System.out.format("Expected new array of (%s), but got (%s)\n",
+					leftElementType, rightElementType);
+			return false;
+		}
+		return true;
+	}
+
 }

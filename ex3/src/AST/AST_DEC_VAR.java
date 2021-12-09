@@ -141,7 +141,17 @@ public class AST_DEC_VAR extends AST_DEC
         }
 
         if (valueType != null) { // means there is an assignment
-            boolean valid = TYPE.checkAssignment(semantic_type, valueType);
+            boolean valid;
+
+            if (new_exp != null && valueType instanceof TYPE_ARRAY_INSTANCE) {
+                // Special case of creating a new array instance
+                valid = TYPE.checkNewArrayAssignment(semantic_type, (TYPE_ARRAY_INSTANCE) valueType);
+                int array_len = new_exp.size; // TODO use it in the future - insert it as a property ot the symbol table
+            } else {
+                // regular assignment check
+                valid = TYPE.checkAssignment(semantic_type, valueType);
+            }
+
             if (!valid) {
                 this.throw_error("Assignment for variable declaration failed");
             }
