@@ -5,7 +5,7 @@ public class TYPE_FUNCTION extends TYPE
 	/***********************************/
 	/* The return type of the function */
 	/***********************************/
-	public TYPE rtnType;  // instance-type. null means void.
+	public TYPE rtnType;  // instance-type. null is "the instance" of void
 
 	/*************************/
 	/* types of input params */

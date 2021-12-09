@@ -16,7 +16,7 @@ public abstract class TYPE
 	/* isClass() */
 	/*************/
 	// THIS IS NOT L-CLASS, but the type of instance of one
-	public boolean isClass(){ return this instanceof TYPE_CLASS;}
+	public boolean isClassSymbol(){ return this instanceof TYPE_CLASS;}
 
 	/*************/
 	/* isInstanceOfSomeClass() */
@@ -26,8 +26,12 @@ public abstract class TYPE
 	/*************/
 	/* isArray() */
 	/*************/
-	public boolean isArray(){ return false;}
+	public boolean isArraySymbol(){ return this instanceof TYPE_ARRAY;}
 
+	/*************/
+	/* isInstanceOfSomeClass() */
+	/*************/
+	public boolean isInstanceOfSomeArray(){ return this instanceof TYPE_ARRAY_INSTANCE;}
 	/*************/
 	/* isFunction() */
 	/*************/
@@ -52,11 +56,12 @@ public abstract class TYPE
 	public boolean isInstanceOfType() {
 		return this instanceof I_INSTANCE_TYPE;
 	}
+
 	/*************/
 	/* Can this type be assigned with value (i.e. in its declaration)?
 	 * This allows us to distinguish between identifiers that can be assigned
 	 * For example TYPE_VOID.getInstance().canBeAssigned() == false
-	 * EXAMPLE: // we forbid the (nasty) case in which 'func i:= func;' where 'func' is a previously declared function
+	 * EXAMPLE: we forbid the (nasty) case in which 'func i:= func;' where 'func' is a previously declared function
 	 * NOTE: this check is equivalent to the question "can this type be declared for a variable?"
 	 *       for example - a function cannot be assigned, and cannot be variable */
 	public boolean canBeAssigned() { return isInstanceOfType(); }
@@ -71,7 +76,7 @@ public abstract class TYPE
 	/* can an expression of this type be preceded with 'new' keyword? */
 	/*************/
 	public boolean isNewable() {
-		return (isArray() || isClass());
+		return (isArraySymbol() || isClassSymbol());
 	}
 
 
@@ -83,7 +88,7 @@ public abstract class TYPE
 		return ((I_SYMBOL_TYPE) this).getInstanceType();
 	}
 
-	public TYPE convertTypeToSymbol() {
+	public TYPE convertInstanceToSymbol() {
 		assert isInstanceOfType();
 		return ((I_INSTANCE_TYPE) this).getSymbolType();
 	}
