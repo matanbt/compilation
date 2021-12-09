@@ -110,8 +110,6 @@ public class AST_DEC_FUNC extends AST_DEC
 			if (semantic_argType == null)
 			{
 				this.throw_error(String.format("non existing type %s",arg.argType));
-				// TODO deal with error
-				System.exit(0);
 			}
 			// each argument has a type that we'll want to verify when it'll be called
 			semantic_argType = semantic_argType.convertSymbolToInstance(); // we convert to the instance-type
