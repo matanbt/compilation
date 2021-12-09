@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
@@ -59,42 +60,28 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 		if (type != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
 	}
 
-	public TYPE SemantMe()
+	public TYPE SemantMe() throws SemanticException
 	{
 		SYMBOL_TABLE table = SYMBOL_TABLE.getInstance();
 
-		/* 1. Check we are in the global scope */
-		/* TODO: Make sure this works when merging with everyone's branches */
-		if (!table.isGlobalScope())
-		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR array typedef not in global scope");
-			System.exit(0);
-		}
-
-		/* 2. Check that the identifier name is valid (AKA not used) */
+		/* 1. Check that the identifier name is valid (AKA not used) */
 		if (table.find(this.id) != null)
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR identifier already used");
-			System.exit(0);
+			this.throw_error("identifier already used");
 		}
 
-		/* 3. Check that the type is valid (AKA defined before) */
+		/* 2. Check that the type is valid (AKA defined before) */
 		/* TODO: Make sure this works when merging with everyone's branches */
 		TYPE array_type = this.type.SemantMe();
-		if (array_type == null)
+		if (array_type == null || array_type.canBeAssigned())
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR Invalid type for array");
-			System.exit(0);
+			this.throw_error("Invalid type for array");
 		}
 
-		/* 4. Update symbol table with this new type */
+		/* 3. Update symbol table with this new type */
 		TYPE_ARRAY array = new TYPE_ARRAY(this.id, array_type);
 		table.enter(this.id, array);
 
-		/* 5. Return type of array */
-		return array;
+		return null;
 	}
 }

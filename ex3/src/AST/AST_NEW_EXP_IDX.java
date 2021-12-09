@@ -50,46 +50,38 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, expression.SerialNumber);
 	}
 
-	public TYPE SemantMe()
+	public TYPE SemantMe() throws SemanticException
 	{
 		/* 1. Check that type was defined before */
 		/* TODO: Make sure this works when merging with everyone's branches */
 		TYPE array_type = this.nType.SemantMe();
 		if (array_type == null)
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR undefined type for array creation");
-			System.exit(0);
+			this.throw_error("undefined type for array creation");
 		}
 
 		/* 2. Check that type is indeed an array type */
-		if (!(array_type instanceof TYPE_ARRAY))
+		if (!array_type.isArray())
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR trying to create array from something that isn't an array");
-			System.exit(0);
+			this.throw_error("trying to create array from something that isn't an array type");
 		}
 
 		/* 3. Check that size of array is integral */
-		/* TODO: Does integral mean constant, or just int?
-		   Int will have some implications on the next assignment.
+		/* TODO: Does integral mean constant, or just int? - looks like int according to the forum.
 		 */
 		TYPE index_type = this.expression.SemantMe();
-		if (index_type == null)
+		if (index_type == null || !(index_type instanceof TYPE_INT))
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR undefined type for index of array");
-			System.exit(0);
+			this.throw_error("undefined type for size of array");
 		}
 
-		if (!(index_type instanceof TYPE_INT))
+		Integer value = ((AST_EXP_INT)this.expression).value;
+		if (value <= 0)
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR Trying to access array not using an integer");
-			System.exit(0);
+			this.throw_error("invalid size for array");
 		}
 
 		/* 4. Return type of array instance */
-		return new TYPE_ARRAY_INSTANCE((TYPE_ARRAY) array_type);
+		return new array_type.convertSymbolToInstance();
 	}
 }
