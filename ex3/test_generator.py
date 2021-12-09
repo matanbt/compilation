@@ -1,7 +1,12 @@
 import os.path
 from typing import Dict
 
-TEST_GENERATOR_FILE_PATH = "./tests.txt"
+TEST_GENERATOR_FILE_PATH = "./tests/tests.txt"
+TEST_GENERATOR_FILE_PATHS_LIST = 
+    ["./tests/tests.txt", 
+     "./tests/matans_killer_tests.txt", 
+     "./tests/matans-tests-2.txt", 
+     "./tests/shirs_killin_it_tests.txt"]
 TEST_INPUT_DIR = "./input"
 TEST_OUTPUT_DIR = "./expected_output"
 
@@ -44,6 +49,11 @@ def generate_tests(generator_path: str, input_dir: str, output_dir: str):
     for test in raw_tests:
         parsed_test = parse_single_test(test)
         generate_single_test(parsed_test, input_dir, output_dir)
+
+
+def generate_all_tests():
+    for test_generator_file_path in TEST_GENERATOR_FILE_PATHS_LIST:
+            generate_tests(test_generator_file_path, TEST_INPUT_DIR, TEST_OUTPUT_DIR)
 
 
 def main():
