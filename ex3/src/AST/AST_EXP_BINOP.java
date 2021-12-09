@@ -73,10 +73,11 @@ public class AST_EXP_BINOP extends AST_EXP
 	{
 		if (e1 != e2)
 		{
-			if (e1.isClass() && e2.isClass())
+			String message = "Mismatched types: %s %s";
+			if (e1.isClassInstance() && e2.isClassInstance())
 			{
-				TYPE_CLASS class_e1 = (TYPE_CLASS_INSTANCE)e1.getSymbolType();
-				TYPE_CLASS class_e2 = (TYPE_CLASS_INSTANCE)e2.getSymbolType();
+				TYPE_CLASS class_e1 = ((TYPE_CLASS_INSTANCE)e1).getSymbolType();
+				TYPE_CLASS class_e2 = ((TYPE_CLASS_INSTANCE)e2).getSymbolType();
 
 				if (!(class_e1.isSubClassOf(class_e2) || class_e2.isSubClassOf(class_e1)))
 				{
@@ -85,11 +86,11 @@ public class AST_EXP_BINOP extends AST_EXP
 			}
 			else if (e1.canBeAssignedNil() && e2 != TYPE_NIL_INSTANCE.getInstance())
 			{
-				this.throw_error("Trying to compare a class instance with something that isn't a class instance or nil");
+				this.throw_error(String.format(message, e1, e2));
 			}
 			else if (e2.canBeAssignedNil() && e1 != TYPE_NIL_INSTANCE.getInstance())
 			{
-				this.throw_error("Trying to compare a class instance with something that isn't a class instance or nil");
+				this.throw_error(String.format(message, e1, e2));
 			}
 		}
 	}
