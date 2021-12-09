@@ -148,7 +148,7 @@ public class AST_EXP_CALL extends AST_EXP
 
             boolean valid = TYPE.checkAssignment(expected_arg_type, arg_type);
             if(!valid) {
-                this.throw_error(String.format(" function call - assigning argument #%d", i));
+                this.throw_error(String.format("function call - assigning argument #%d", i));
             }
         }
 
