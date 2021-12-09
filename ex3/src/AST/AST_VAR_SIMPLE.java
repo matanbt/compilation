@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
 
@@ -50,20 +51,16 @@ public class AST_VAR_SIMPLE extends AST_VAR
 			String.format("SIMPLE\nVAR\n(%s)",name));
 	}
 
-	public TYPE SemantMe() {
+	public TYPE SemantMe() throws SemanticException {
 		// finds the type of the variable
 		TYPE var_type = SYMBOL_TABLE.getInstance().find(this.name);
 		if (var_type == null) {
-			System.out.format(">> ERROR:  Failed to resolve variable (%s) ", this.name);
-			// TODO deal with error
-			System.exit(0);
+			this.throw_error(String.format(">> ERROR:  Failed to resolve variable (%s) ", this.name));
 		}
 
 		// a variable must be assignable
 		if (!var_type.canBeAssigned()) {
-			System.out.format(">> ERROR:  got bad type (%s) for variable (%s) ", var_type.name, this.name);
-			// TODO deal with error
-			System.exit(0);
+			this.throw_error(String.format(">> ERROR:  got bad type (%s) for variable (%s) ", var_type.name, this.name));
 		}
 		return var_type;
 	}

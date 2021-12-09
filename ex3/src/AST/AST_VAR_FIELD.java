@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import TYPES.TYPE;
 import TYPES.TYPE_CLASS_INSTANCE;
 
@@ -61,37 +62,31 @@ public class AST_VAR_FIELD extends AST_VAR
 	}
 
 	@Override
-	public TYPE SemantMe() {
+	public TYPE SemantMe() throws SemanticException {
 		// finds the type of the variable (possibly recursive, and the base case is AST_VAR_SIMPLE.SemantMe)
 		TYPE var_type = this.var.SemantMe();
 
 		if (var_type == null) {
-			/* TODO: Errorize */
-			System.out.format(">> ERROR got bad type from variable");
-			System.exit(0);
+			// Shouldn't get here
+			this.throw_error(">> ERROR got bad type from variable");
 		}
 
-		// var_type must class-instance if it wants to access a field
+		// var_type must be a class-instance if it wants to access a field
 		if(!var_type.isInstanceOfSomeClass()) {
-			/* TODO: Errorize */
-			System.out.format(">> ERROR type (%s) is not class-instance and has no fields", var_type.name);
-			System.exit(0);
+			this.throw_error(String.format(">> ERROR type (%s) is not class-instance and has no fields", var_type.name));
 		}
 
 		// finds the field in this class or in its supers'
 		TYPE field_type = ((TYPE_CLASS_INSTANCE) var_type).getTypeInstance().findInClassAndSuperClasses(this.fieldName);
+
 		if(field_type == null) {
-			/* TODO: Errorize */
-			System.out.format(">> ERROR failed to resolve field (%s) from variable (%s)", this.fieldName , var_type.name);
-			System.exit(0);
+			this.throw_error(String.format(">> ERROR failed to resolve field (%s) from variable (%s)", this.fieldName , var_type.name));
 		}
 
 		// a variable must be assignable
 		// We looked for CField, so it's possible we got back a method or maybe another unexpected type
 		if (!field_type.canBeAssigned()) {
-			/* TODO: Errorize */
-			System.out.format(">> ERROR failed to resolve field (%s) from variable (%s)", this.fieldName , var_type.name);
-			System.exit(0);
+			this.throw_error(String.format(">> ERROR failed to resolve field (%s) from variable (%s)", this.fieldName , var_type.name));
 		}
 
 		return field_type;
