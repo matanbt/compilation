@@ -85,7 +85,7 @@ public class AST_VAR_FIELD extends AST_VAR
 
 		// a variable must be assignable
 		// We looked for CField, so it's possible we got back a method or maybe another unexpected type
-		if (!field_type.canBeAssigned()) {
+		if (!field_type.isInstanceOfType()) {
 			this.throw_error(String.format(">> ERROR failed to resolve field (%s) from variable (%s)", this.fieldName , var_type.name));
 		}
 

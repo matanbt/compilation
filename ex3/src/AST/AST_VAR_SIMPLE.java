@@ -59,7 +59,7 @@ public class AST_VAR_SIMPLE extends AST_VAR
 		}
 
 		// a variable must be assignable
-		if (!var_type.canBeAssigned()) {
+		if (!var_type.isInstanceOfType()) {
 			this.throw_error(String.format(">> ERROR:  got bad type (%s) for variable (%s) ", var_type.name, this.name));
 		}
 		return var_type;
