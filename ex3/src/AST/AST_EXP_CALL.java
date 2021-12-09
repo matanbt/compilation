@@ -119,25 +119,21 @@ public class AST_EXP_CALL extends AST_EXP
 
         else{
             // this is a function call by a class instance (caller)
-            TYPE caller_type = caller.SemantMe();  // TODO SemantMe for var nodes (in case of class instance- it will be TYPE_CLASS_OBJECT type)
+            TYPE caller_type = caller.SemantMe();
 
-            if (! caller_type.isInstanceOfSomeClass()){
-                System.out.println(">> ERROR method call by non-instance variable");
-                System.exit(0);  // TODO- error handling
-                return null;
+            if (! (caller_type instanceof TYPE_CLASS_INSTANCE)){
+                this.throw_error("method call by non-instance variable");
             }
 
-            type_func = ((TYPE_CLASS_INSTANCE) caller_type).wasCreatedFromClass.findInClassAndSuperClasses(func);
+            type_func = ((TYPE_CLASS_INSTANCE) caller_type).fromClass.findInClassAndSuperClasses(func);
         }
 
-        if (! type_func.isFunction()){
-            System.out.format(">> ERROR in function call- (%s) expected type = function, but got (%s)\n", func, type_func.name);
-            System.exit(0);  // TODO- error handling
-            return null;
+        if (! (type_func instanceof TYPE_FUNCTION)){
+            this.throw_error(String.format("function call: (%s) expected type = function, but got (%s)", func, type_func.name));
         }
 
         // verify arguments' types
-        TYPE_LIST expected_args = ((TYPE_FUNCTION) type_func).args;
+        TYPE_LIST expected_args = ((TYPE_FUNCTION) type_func).args;  // instance-types
         TYPE_LIST type_node;
         AST_EXP_LIST exp_node;
         int i;
@@ -148,15 +144,13 @@ public class AST_EXP_CALL extends AST_EXP
 
             boolean valid = TYPE.checkAssignment(expected_arg_type, arg_type);
             if(!valid) {
-                this.throw_error(String.format("function call - assigning argument #%d", i));
+                this.throw_error(String.format("function call: assigning argument #%d", i));
             }
         }
 
         if (type_node != null || exp_node != null){
-            System.out.println(">> ERROR in function call: unmatching arguments length");
-            System.exit(0);  // TODO- error handling
-            return null;
+            this.throw_error("function call: unmatching arguments' length");
         }
-        return ((TYPE_FUNCTION) type_func).rtnType;
+        return ((TYPE_FUNCTION) type_func).rtnType;  // instance-type. null if it's a void function
     }
 }
