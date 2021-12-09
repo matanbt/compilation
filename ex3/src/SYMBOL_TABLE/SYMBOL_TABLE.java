@@ -186,6 +186,20 @@ public class SYMBOL_TABLE
 	}
 
 	/*
+	 * Get the last added entry's name
+	 */
+	public String getLastEntryName(){
+		return top.name;
+	}
+
+	/*
+	 * Get the last added entry's type
+	 */
+	public TYPE getLastEntryType(){
+		return top.type;
+	}
+
+	/*
 	 * Returns whether we're in the global scope right now.
 	 */
 	public boolean isGlobalScope()
