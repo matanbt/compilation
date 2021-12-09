@@ -1,6 +1,6 @@
 package TYPES;
 
-public class TYPE_STRING extends TYPE
+public class TYPE_STRING extends TYPE implements I_SYMBOL_TYPE
 {
 	/**************************************/
 	/* USUAL SINGLETON IMPLEMENTATION ... */
@@ -25,18 +25,8 @@ public class TYPE_STRING extends TYPE
 		return instance;
 	}
 
-	// we forbid String s := nil;
-	public boolean canBeAssignedNil() {
-		return false;
-	}
-
 	@Override
-	public boolean canBeAssigned() {
-		return true;
-	}
-
-	@Override
-	public boolean canBeRtnType() {
-		return true;
+	public TYPE getInstanceType() {
+		return TYPE_STRING_INSTANCE.getInstance();
 	}
 }

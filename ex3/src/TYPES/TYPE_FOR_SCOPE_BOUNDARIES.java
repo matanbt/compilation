@@ -34,18 +34,4 @@ public class TYPE_FOR_SCOPE_BOUNDARIES extends TYPE
 
 	// put false on all the properties. We should never fetch them anyway.
 
-	@Override
-	public boolean canBeAssigned() {
-		return false;
-	}
-
-	@Override
-	public boolean canBeRtnType() {
-		return false;
-	}
-
-	@Override
-	public boolean canBeAssignedNil() {
-		return false;
-	}
 }

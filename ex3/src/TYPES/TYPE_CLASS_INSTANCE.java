@@ -24,7 +24,7 @@ package TYPES;
     `
     Even though a_1 is another variable than a_2, it holds that both have the *same java-instance* of TYPE_CLASS_INSTANCE.
  */
-public class TYPE_CLASS_INSTANCE extends TYPE {
+public class TYPE_CLASS_INSTANCE extends TYPE implements I_INSTANCE_TYPE{
 
     public TYPE_CLASS fromClass; // back pointer to the L-class creates instances from this TYPE
     public TYPE_CLASS_INSTANCE (TYPE_CLASS fromClass) {
@@ -37,19 +37,9 @@ public class TYPE_CLASS_INSTANCE extends TYPE {
         return false; // TODO on class task: IMPLEMENT
     }
 
-
-
-    // Stating the defaults of the following explicitly:
-
-    public boolean canBeAssigned() {
-        return true;
+    @Override
+    public TYPE getSymbolType() {
+        return this.fromClass;
     }
 
-    public boolean canBeAssignedNil() {
-        return true;
-    }
-
-    public boolean canBeRtnType() {
-        return true;
-    }
 }

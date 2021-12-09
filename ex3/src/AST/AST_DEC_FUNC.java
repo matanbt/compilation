@@ -75,23 +75,11 @@ public class AST_DEC_FUNC extends AST_DEC
 		/* Semant return type */
 		/* Note that semantic analysis for rtnType is special bc it can be void */
 		/*******************/
-		TYPE semantic_rtnType = rtnType.SemantMe();
+		TYPE semantic_rtnType_signature = rtnType.SemantMe(); // the type of the signature (null means 'void')
 
-		if(semantic_rtnType.isClass()) {
-			// our L-function will return an INSTANCE of this class
-			semantic_rtnType = ((TYPE_CLASS) (semantic_rtnType)).getInstanceType();
-		}
-
-		if(semantic_rtnType == null)
-		{
-			System.out.format(">> ERROR non existing return type (%s)\n", rtnType.type_name);
-			// TODO deal with error
-			System.exit(0);
-		}
-		if(!semantic_rtnType.canBeRtnType()) {
-			System.out.format(">> ERROR type (%s) cannot be returned from a function\n", rtnType.type_name);
-			// TODO deal with error
-			System.exit(0);
+		TYPE semantic_rtnType = null; // the actual instance-type we expect to get in return statement, although we allow void
+		if(semantic_rtnType_signature != null) {
+			semantic_rtnType = semantic_rtnType_signature.convertSymbolToInstance();
 		}
 
 		/*******************/
@@ -127,6 +115,7 @@ public class AST_DEC_FUNC extends AST_DEC
 				System.exit(0);
 			}
 			// each argument has a type that we'll want to verify when it'll be called
+			semantic_argType = semantic_argType.convertSymbolToInstance(); // we convert to the instance-type
 			list_argTypes = new TYPE_LIST(semantic_argType, list_argTypes);
 		}
 
@@ -173,7 +162,7 @@ public class AST_DEC_FUNC extends AST_DEC
 
 		// forces non-void-functions to contain at least one RETURN
 		// Must be checked only after body.semantMe;
-		if (!result_SemantMe.isReturnExists && (result_SemantMe.rtnType != TYPE_VOID.getInstance())) {
+		if (!result_SemantMe.isReturnExists && (result_SemantMe.rtnType != null)) {
 			System.out.format(">> ERROR no return statement exists, when declared-return is (%s) " +
 					"for function (%s) ", rtnType.type_name, funcName);
 			// TODO deal with error
@@ -193,7 +182,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		// Part 2:
 		SemantMe_FuncBody(result_SemantMe);
 
-		return result_SemantMe;
+		return null;
 	}
 
 	public boolean isMethod() {

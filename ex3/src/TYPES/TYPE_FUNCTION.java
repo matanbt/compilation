@@ -5,12 +5,12 @@ public class TYPE_FUNCTION extends TYPE
 	/***********************************/
 	/* The return type of the function */
 	/***********************************/
-	public TYPE rtnType;
+	public TYPE rtnType;  // instance-type. null is "the instance" of void
 
 	/*************************/
 	/* types of input params */
 	/*************************/
-	public TYPE_LIST args;
+	public TYPE_LIST args; // instance-types
   
   // ---- Fields updated during semantic analysis ----
 	// verify there exist a return (if needed)
@@ -25,21 +25,5 @@ public class TYPE_FUNCTION extends TYPE
 		this.rtnType = rtnType;
 		this.args = args;
 		this.isReturnExists = false;
-	}
-
-	// we forbid the (nasty) case in which 'func i:= func;' where 'func' is a previously declared function
-	public boolean canBeAssigned() {
-		return false;
-	}
-
-	// we do not allow returning functions
-	public boolean canBeRtnType() {
-		return false;
-	}
-
-	// we forbid any assignment to function, in particular the following.
-	public boolean canBeAssignedNil() {
-		return false;
-
 	}
 }
