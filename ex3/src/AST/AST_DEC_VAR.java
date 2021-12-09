@@ -114,12 +114,6 @@ public class AST_DEC_VAR extends AST_DEC
         }
 
         semantic_type = semantic_type.convertSymbolToInstance();
-        if (!semantic_type.canBeAssigned()) {
-            // shouldn't get here assuming convertSymbolToInstance is correct
-            System.out.format(">> ERROR type (%s) cannot be used as a variable type\n", this.type);
-            // TODO ERROR HANDLING
-            System.exit(0);
-        }
 
         /**************************************/
         /* [2] Check That Name does NOT exist */

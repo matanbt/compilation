@@ -62,6 +62,7 @@ public abstract class TYPE
 	 * This allows us to distinguish between identifiers that can be assigned
 	 * For example TYPE_VOID.getInstance().canBeAssigned() == false
 	 * EXAMPLE: we forbid the (nasty) case in which 'func i:= func;' where 'func' is a previously declared function
+	 * EXAMPLE: `int num;` num.semantMe().canBeAssigned() == true
 	 * NOTE: this check is equivalent to the question "can this type be declared for a variable?"
 	 *       for example - a function cannot be assigned, and cannot be variable */
 	public boolean canBeAssigned() { return isInstanceOfType(); }
