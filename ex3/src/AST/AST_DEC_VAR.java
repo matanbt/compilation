@@ -108,9 +108,7 @@ public class AST_DEC_VAR extends AST_DEC
         semantic_type = this.type.SemantMe();
         if (semantic_type == null)
         {
-            System.out.format(">> ERROR non existing type (%s)\n", this.type);
-            // TODO ERROR HANDLING
-            System.exit(0);
+            this.throw_error(String.format("non existing type (%s)\n", this.type));
         }
 
         semantic_type = semantic_type.convertSymbolToInstance();
@@ -124,9 +122,7 @@ public class AST_DEC_VAR extends AST_DEC
         // else means it's scope declaration (might be global)
         else if (SYMBOL_TABLE.getInstance().findInCurrentScope(name) != null)
         {
-            System.out.format(">> ERROR variable %s already exists inside the scope\n", name);
-            // TODO deal with error
-            System.exit(0);
+            this.throw_error(String.format("variable %s already exists inside the scope\n", name));
         }
 
         /***************************************************/

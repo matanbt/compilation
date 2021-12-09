@@ -75,9 +75,7 @@ public class AST_STMT_ASSIGN extends AST_STMT
 
 		if (leftType == null || rightType == null)
 		{ // shouldn't be here, should return an error way before
-			System.out.format(">> ERROR failed when typing var-assign-statement (SHOULDN'T GET HERE) \n");
-			// TODO ERROR HANDLING
-			System.exit(0);
+			this.throw_error(String.format("failed when typing var-assign-statement (SHOULDN'T GET HERE)"));
 		}
 
 

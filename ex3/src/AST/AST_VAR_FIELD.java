@@ -73,20 +73,23 @@ public class AST_VAR_FIELD extends AST_VAR
 
 		// var_type must be a class-instance if it wants to access a field
 		if(!var_type.isInstanceOfSomeClass()) {
-			this.throw_error(String.format(">> ERROR type (%s) is not class-instance and has no fields", var_type.name));
+			this.throw_error(String.format("type (%s) is not class-instance and has no fields",
+					var_type.name));
 		}
 
 		// finds the field in this class or in its supers'
 		TYPE field_type = ((TYPE_CLASS_INSTANCE) var_type).getTypeInstance().findInClassAndSuperClasses(this.fieldName);
 
 		if(field_type == null) {
-			this.throw_error(String.format(">> ERROR failed to resolve field (%s) from variable (%s)", this.fieldName , var_type.name));
+			this.throw_error(String.format("failed to resolve field (%s) from variable (%s)",
+					this.fieldName , var_type.name));
 		}
 
 		// a variable must be assignable
 		// We looked for CField, so it's possible we got back a method or maybe another unexpected type
 		if (!field_type.isInstanceOfType()) {
-			this.throw_error(String.format(">> ERROR failed to resolve field (%s) from variable (%s)", this.fieldName , var_type.name));
+			this.throw_error(String.format("failed to resolve field (%s) from variable (%s)",
+					this.fieldName , var_type.name));
 		}
 
 		return field_type;
