@@ -2,12 +2,13 @@ package TYPES;
 
 import AST.AST_Node;
 
+import java.util.Arrays;
+import java.util.List;
+
 // Special class for scopes
 public class TYPE_FOR_SCOPE_BOUNDARIES extends TYPE
 {
 	// ---- names of different scopes ----
-	// the first symbol of every program, for the builtins functions / types
-	public static String BUILTIN_SCOPE = "BUILTINS-SCOPE";
 	// the global scope (comes right after builtins-scope)
 	public static String GLOB_SCOPE = "GLOBAL-SCOPE";
 	// a scope for function
@@ -16,6 +17,9 @@ public class TYPE_FOR_SCOPE_BOUNDARIES extends TYPE
 	public static String CLASS_SCOPE = "CLASS-SCOPE";
 	// a scope for class
 	public static String IF_WHILE_SCOPE = "IF-WHILE-SCOPE";
+
+	// what we define as 'main-scopes'
+	public static List<String> MAIN_SCOPES = Arrays.asList(GLOB_SCOPE, FUNC_SCOPE, CLASS_SCOPE);
 
 
 	// the AST-node / Type representing to this scope (e.g. AST_DEC_FUNC / TYPE_FUNCTION)
