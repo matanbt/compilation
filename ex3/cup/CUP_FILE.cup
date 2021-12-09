@@ -189,7 +189,7 @@ arrayTypedef    ::=     ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON   {: RESULT
 /** classDec **/
 
 classDec    ::=     CLASS ID:className EXTENDS ID:superName LBRACE cFieldList:l RBRACE   {: RESULT = new AST_DEC_CLASS(l, className, superName, parser.getLine());    :}
-                    |  CLASS ID:className LBRACE cFieldList:l RBRACE                     {: RESULT = new AST_DEC_CLASS(l, className, null, parser.getLine());    :}
+                    |  CLASS ID:className LBRACE cFieldList:l RBRACE                     {: RESULT = new AST_DEC_CLASS(l, className, parser.getLine());    :}
                     ;
 
 cFieldList	::=		cField:s	cFieldList:l		        {: RESULT = new AST_CFIELD_LIST(s, l, parser.getLine());    :}

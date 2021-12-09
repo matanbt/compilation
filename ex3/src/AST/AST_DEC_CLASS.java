@@ -36,6 +36,12 @@ public class AST_DEC_CLASS extends AST_DEC
 		this.lineNumber = lineNumber;
 	}
 
+
+	public AST_DEC_CLASS(AST_CFIELD_LIST lst, String className, int lineNumber)
+	{
+		this(lst, className, null, lineNumber);
+	}
+
 	/*************************************************/
 	/* The printing message for a class dec AST node */
 	/*************************************************/
