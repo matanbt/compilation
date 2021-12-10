@@ -40,7 +40,7 @@ public class TYPE_FUNCTION extends TYPE
 		if(!this.name.equals(otherFunc.name)) return false;
 
 		// Compare return type
-		if (this.rtnType != otherFunc.rtnType) return false;
+		if (this.rtnType != otherFunc.rtnType) return false;   // comparing java-instances ids
 
 		// Compare args by type
 		TYPE_LIST thisNode = this.args;
@@ -50,7 +50,12 @@ public class TYPE_FUNCTION extends TYPE
 			thisNode = thisNode.next, otherNode = otherNode.next) {
 			TYPE thisArg = thisNode.head;
 			TYPE otherArg = otherNode.head;
-			if (thisArg != otherArg) return false;
+			if (thisArg != otherArg) return false;  // comparing java-instances ids
+		}
+
+		if (thisNode != null || otherNode != null){
+			// unmatching arguments length
+			return false;
 		}
 
 		return true;

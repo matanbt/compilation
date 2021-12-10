@@ -101,7 +101,7 @@ public class AST_DEC_VAR extends AST_DEC
     }
 
     // SemantMe Part 1: Analyze the var type by it's declared type
-    public TYPE SemantMe_declaredType() throws SemanticException {
+    private TYPE SemantMe_declaredType() throws SemanticException {
         TYPE semantic_type;
 
         /****************************/
@@ -119,20 +119,20 @@ public class AST_DEC_VAR extends AST_DEC
         /**************************************/
         /* [2] Check That Name does NOT exist */
         /**************************************/
-        if (this.encompassingClass != null) {
-            // CField is being checked separately by AST_CFEILD
+        if (this.encompassingClass == null) {
+            // it's a scope declaration (might be global)
+            if (SYMBOL_TABLE.getInstance().findInCurrentScope(name) != null) {
+              this.throw_error(String.format("variable %s already exists inside the scope\n", name));
+            }
         }
-        // else means it's scope declaration (might be global)
-        else if (SYMBOL_TABLE.getInstance().findInCurrentScope(name) != null)
-        {
-            this.throw_error(String.format("variable %s already exists inside the scope\n", name));
-        }
+        // else - CField is being checked separately by AST_CFEILD
+
         return semantic_type;
     }
 
 
     // SemantMe Part 2: Check assignment (if exists) & update Symbol Table
-    public void SemantMe_checkAssignment(TYPE semantic_type) throws SemanticException {
+    private void SemantMe_checkAssignment(TYPE semantic_type) throws SemanticException {
         /*
         * semantic_type = instance type representing the type of var by it's type declaration
         * e.g.: 'int x := "";'  --> semantic_type = TYPE_INT_INSTANCE
