@@ -189,7 +189,7 @@ arrayTypedef    ::=     ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON   {: RESULT
 /** classDec **/
 
 classDec    ::=     CLASS ID:className EXTENDS ID:superName LBRACE cFieldList:l RBRACE   {: RESULT = new AST_DEC_CLASS(l, className, superName, parser.getLine());    :}
-                    |  CLASS ID:className LBRACE cFieldList:l RBRACE                     {: RESULT = new AST_DEC_CLASS(l, className, null, parser.getLine());    :}
+                    |  CLASS ID:className LBRACE cFieldList:l RBRACE                     {: RESULT = new AST_DEC_CLASS(l, className, parser.getLine());    :}
                     ;
 
 cFieldList	::=		cField:s	cFieldList:l		        {: RESULT = new AST_CFIELD_LIST(s, l, parser.getLine());    :}
@@ -200,7 +200,7 @@ cField    ::=       cFieldVarDec:varDec                             {: RESULT = 
                     | funcDec:funcDec                               {: RESULT = new AST_CFIELD(funcDec, parser.getLine()); :}
                     ;
 
-// Enforces the limitations of CField var-declaration synthatically // TODO review me (maybe it must be semantic?)
+// Enforces the limitations of CField var-declaration syntactically
 cFieldVarDec ::=    type:t ID:id SEMICOLON                        {: RESULT = new AST_DEC_VAR(t, id, parser.getLine()); :}
                     | type:t ID:id ASSIGN INT:i SEMICOLON         {: RESULT = new AST_DEC_VAR(t, id, new AST_EXP_INT( Integer.parseInt(i), parser.getLine()), parser.getLine()); :}
                     | type:t ID:id ASSIGN STRING:s SEMICOLON      {: RESULT = new AST_DEC_VAR(t, id, new AST_EXP_STRING(s, parser.getLine()), parser.getLine()); :}
