@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
@@ -61,8 +62,7 @@ public class AST_STMT_IF extends AST_STMT
 		if (body != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, body.SerialNumber);
 	}
 
-	public TYPE SemantMe()
-	{
+	public TYPE SemantMe() throws SemanticException {
 		/****************************/
 		/* [0] Semant the Condition + verifications*/
 		/****************************/

@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import TYPES.*;
 
 public class AST_STMT_LIST extends AST_Node
@@ -65,8 +66,7 @@ public class AST_STMT_LIST extends AST_Node
 		if (next != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, next.SerialNumber);
 	}
 
-	public TYPE SemantMe()
-	{
+	public TYPE SemantMe() throws SemanticException {
 		// semant all the list recursively:
 		if (head != null) head.SemantMe();
 		if (next != null) next.SemantMe();

@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
 import TYPES.TYPE_ARRAY_INSTANCE;
@@ -63,8 +64,7 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		if (subscript != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,subscript.SerialNumber);
 	}
 
-	public TYPE SemantMe()
-	{
+	public TYPE SemantMe() throws SemanticException {
 		/* 1. Check that var was defined before */
 		/* TODO: Make sure this works when merging with everyone's branches */
 		TYPE var_type = this.var.SemantMe();

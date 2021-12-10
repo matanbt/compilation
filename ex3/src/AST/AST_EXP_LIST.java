@@ -1,6 +1,9 @@
 package AST;
 
-	public class AST_EXP_LIST extends AST_Node
+import EXCEPTIONS.SemanticException;
+import TYPES.TYPE;
+
+public class AST_EXP_LIST extends AST_Node
 {
 	public AST_EXP head; // could NOT be null
 	public AST_EXP_LIST next; // could be null (means end of the list)
@@ -47,6 +50,11 @@ package AST;
 		/****************************************/
 		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, head.SerialNumber);
 		if (next != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, next.SerialNumber);
+	}
+
+	@Override
+	public TYPE SemantMe() throws SemanticException {
+		return null; // TODO
 	}
 
 }

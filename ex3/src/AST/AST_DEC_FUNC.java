@@ -119,7 +119,7 @@ public class AST_DEC_FUNC extends AST_DEC
 	}
 
 	// SemantMe Part 2: Update Symbol Table & analyze the inner scope of the function
-	private void SemantMe_FuncBody(TYPE_FUNCTION result_SemantMe) {
+	private void SemantMe_FuncBody(TYPE_FUNCTION result_SemantMe) throws SemanticException {
 		/***************************************************/
 		/* Enter the Function Type to the Symbol Table  */
 		/* - We SHOULD first enter the function as a symbol, and only then create its scope */
