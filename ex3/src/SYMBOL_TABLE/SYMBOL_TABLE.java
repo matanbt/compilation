@@ -185,19 +185,21 @@ public class SYMBOL_TABLE
 		return (TYPE_FUNCTION)((TYPE_FOR_SCOPE_BOUNDARIES)(curr.type)).scopeContextType;
 	}
 
-	/*
-	 * Get the last added entry's name
-	 */
-	public String getLastEntryName(){
-		return top.name;
-	}
 
-	/*
-	 * Get the last added entry's type
-	 */
-	public TYPE getLastEntryType(){
-		return top.type;
-	}
+	//TODO delete comment
+//	/*
+//	 * Get the last added entry's name
+//	 */
+//	public String getLastEntryName(){
+//		return top.name;
+//	}
+//
+//	/*
+//	 * Get the last added entry's type
+//	 */
+//	public TYPE getLastEntryType(){
+//		return top.type;
+//	}
 
 	/*
 	 * Returns whether we're in the global scope right now.

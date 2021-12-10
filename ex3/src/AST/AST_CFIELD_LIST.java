@@ -1,5 +1,8 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
+import TYPES.TYPE;
+
 public class AST_CFIELD_LIST extends AST_Node
 {
 	/****************/
@@ -61,5 +64,14 @@ public class AST_CFIELD_LIST extends AST_Node
 		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,head.SerialNumber);
 		if (next != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,next.SerialNumber);
 	}
-	
+
+	@Override
+	public TYPE SemantMe() throws SemanticException {
+		// semant all the list recursively:
+		if (head != null) head.SemantMe();
+		if (next != null) next.SemantMe();
+
+		return null; // there is no TYPE for sequence of statements.
+	}
+
 }

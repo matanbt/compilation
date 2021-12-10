@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
@@ -13,6 +14,7 @@ public class AST_DEC_FUNC extends AST_DEC
 	// -------------------- Semantic Additions --------------------
 	// non-null means method of 'encompassingClass', and null means it's global function
 	public TYPE_CLASS encompassingClass = null;
+	public TYPE funcType = null;  // gets real value when calling getType
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
@@ -70,7 +72,7 @@ public class AST_DEC_FUNC extends AST_DEC
 	}
 
 	// SemantMe Part 1: Analyze the signature of the function
-	private TYPE_FUNCTION SemantMe_FuncSignature() {
+	private TYPE_FUNCTION SemantMe_FuncSignature() throws SemanticException {
 		/*******************/
 		/* Semant return type */
 		/* Note that semantic analysis for rtnType is special bc it can be void */
@@ -85,8 +87,6 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*******************/
 		/* Check that func name is valid */
 		/*******************/
-		this.encompassingClass = SYMBOL_TABLE.getInstance().findScopeClass();
-
 		if(encompassingClass == null) {
 			// we're in global context, so we make sure no same-name declaration
 			if(SYMBOL_TABLE.getInstance().find(funcName) != null) {
@@ -119,19 +119,19 @@ public class AST_DEC_FUNC extends AST_DEC
 			list_argTypes = new TYPE_LIST(semantic_argType, list_argTypes);
 		}
 
+		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes);
+	}
+
+	// SemantMe Part 2: Update Symbol Table & analyze the inner scope of the function
+	private void SemantMe_FuncBody(TYPE_FUNCTION result_SemantMe) {
 		/***************************************************/
 		/* Enter the Function Type to the Symbol Table  */
 		/* - We SHOULD first enter the function as a symbol, and only then create its scope */
 		/* - This insertion must be done before body.SemantMe inorder to allow recursive calls */
+		/* - This insertion must be done after AST_CFIELD name and signature check (in the method-cfield case) */
 		/***************************************************/
-		TYPE_FUNCTION result_SemantMe = new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes);
 		SYMBOL_TABLE.getInstance().enter(funcName, result_SemantMe);
 
-		return result_SemantMe;
-	}
-
-	// SemantMe Part 2: Analyze the inner scope of the function
-	private void SemantMe_FuncBody(TYPE_FUNCTION result_SemantMe) {
 		/****************************/
 		/* Begin Function Scope */
 		/****************************/
@@ -175,19 +175,26 @@ public class AST_DEC_FUNC extends AST_DEC
 		SYMBOL_TABLE.getInstance().endScope();
 	}
 
-	public TYPE SemantMe()
-	{
-		// Part 1:
-		TYPE_FUNCTION result_SemantMe = SemantMe_FuncSignature();
-		// Part 2:
-		SemantMe_FuncBody(result_SemantMe);
-
-		return null;
+	public TYPE SemantMe() throws SemanticException {
+		SemantMe_FuncBody((TYPE_FUNCTION) getType());
+		return null;  // Return value is irrelevant for declarations
 	}
 
+	// TODO- delete isMethod if not used
 	public boolean isMethod() {
 		// NOTE: only relevant AFTER SemantMe
-		return encompassingClass != null; // TODO SEMANT IT
+		return encompassingClass != null;
+	}
+
+	public TYPE getType() throws SemanticException {
+		// getType() isn't changing the Symbol Table & not entering the function scope
+		if (this.funcType == null)
+			this.funcType = SemantMe_FuncSignature();
+		return this.funcType;
+	}
+
+	public String getName(){
+		return this.funcName;
 	}
 
 }

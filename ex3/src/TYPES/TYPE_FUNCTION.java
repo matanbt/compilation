@@ -26,4 +26,34 @@ public class TYPE_FUNCTION extends TYPE
 		this.args = args;
 		this.isReturnExists = false;
 	}
+
+	public boolean equals(Object other) {
+		if (! (other instanceof TYPE_FUNCTION))
+			return false;
+
+		TYPE_FUNCTION otherFunc = (TYPE_FUNCTION) other;
+
+		// Basic comparison
+		if (this == otherFunc) return true;
+
+		// Compare name
+		if(!this.name.equals(otherFunc.name)) return false;
+
+		// Compare return type
+		if (this.rtnType != otherFunc.rtnType) return false;
+
+		// Compare args by type
+		TYPE_LIST thisNode = this.args;
+		TYPE_LIST otherNode = otherFunc.args;
+
+		for(; thisNode != null && otherNode != null;
+			thisNode = thisNode.next, otherNode = otherNode.next) {
+			TYPE thisArg = thisNode.head;
+			TYPE otherArg = otherNode.head;
+			if (thisArg != otherArg) return false;
+		}
+
+		return true;
+	}
+
 }
