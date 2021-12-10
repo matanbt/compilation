@@ -1,0 +1,120 @@
+/// accessing_nested_vars_pos
+array IntArr = int[];
+array Mat = IntArr[];
+class Father {
+    Mat mat = new Mat[8];
+}
+class Son extends Father {int i := 1;}
+class GSon extends Son{int j:= 1;}
+void main() {
+    GSon obj := new GSon;
+    int i := obj.mat[0][2]
+}
+
+*** OK
+
+/// regular_identifier_tries_to_be_type_1
+
+int var := 1;
+var varname := 1;
+
+*** ERROR(2)
+
+/// regular_identifier_tries_to_be_type_2
+
+class A { int i := 1;}
+A obj := new A;
+obj some_var;
+
+*** ERROR(3)
+
+/// over_shadowing_type_is_allowed
+
+int int := 1;
+int string := 1;
+
+void main() {
+    string int := 1;
+}
+
+/// return_a_type_symbol_1
+int foo() {
+    return int; // we try to return a symbol-type
+}
+
+*** ERROR(2)
+
+
+/// return_a_type_symbol_2
+int main() {
+    int int := 1;
+    return int; // 'int' is now a number, not a type-symbol
+}
+
+*** OK
+
+/// overshadow_type_symbol
+void main() {
+    int int := 1;
+    int i; // cant declare with variable name!
+}
+
+*** ERROR(3)
+
+/// abusing_class_name_1
+class A {
+    A A;
+}
+
+*** OK
+
+/// abusing_class_name_2
+class A {
+    A A;
+
+    A foo () { // cant have instance in signature function
+        return A
+    }
+}
+
+*** ERROR(4)
+
+
+/// polymophysem_in_arrays
+class Father {int i;}
+class Son extends Father {int j;}
+
+array FathersArray = Father[];
+array SonsArray = Son[];
+
+FathersArray main() {
+        SonsArray arr := new Son[5];
+        return arr;
+}
+
+*** ERROR(8)
+
+
+/// cant_compare_classes
+class A {int i;}
+
+int main() {
+    return (A = A);
+}
+
+*** ERROR(4)
+
+
+/// array_is_not_class_1
+array IntArr arr = int[];
+IntArr arr := new IntArr;
+
+*** ERROR(2)
+
+
+/// renaming_array
+array IntArr arr = int[];
+IntArr arr := new IntArr;
+IntArr arrOtherName := arr;
+
+*** OK
