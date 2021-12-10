@@ -68,9 +68,7 @@ public class AST_STMT_IF extends AST_STMT
 		/****************************/
 		if (cond.SemantMe() != TYPE_INT.getInstance())
 		{
-			System.out.format(">> ERROR condition inside IF is not int\n");
-			// TODO deal with error
-			System.exit(0);
+			this.throw_error("condition inside IF is not int");
 		}
 
 		/*************************/

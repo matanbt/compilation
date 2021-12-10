@@ -60,10 +60,8 @@ public class AST_STMT_RETURN extends AST_STMT
 		if(expectedReturnType == null) {
 			if(actualReturnType != null)
 			{
-				System.out.format(">> ERROR actual return type (%s) is different than expected (%s)" +
-						", in function %s(..)", expectedReturnType.name, actualReturnType.name, inFunc.name);
-				// TODO deal with error
-				System.exit(0);
+				this.throw_error(String.format("expected return type (%s) is different than actual (%s)" +
+						", in function %s(..)", "void", actualReturnType.name, inFunc.name));
 			}
 			// here if our function is 'void' and our statement is "return;"
 			return null; // means success

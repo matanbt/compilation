@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import TYPES.TYPE;
 
 // basically a class to wrap varDec, when it is a statement (=inside func)
@@ -60,7 +61,7 @@ public class AST_STMT_VAR_DEC extends AST_STMT
     }
 
     @Override
-    public TYPE SemantMe() {
+    public TYPE SemantMe() throws SemanticException {
         return this.d.SemantMe();
     }
 }
