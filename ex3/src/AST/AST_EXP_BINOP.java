@@ -74,10 +74,10 @@ public class AST_EXP_BINOP extends AST_EXP
 		if (e1 != e2)
 		{
 			String message = "Mismatched types: %s %s";
-			if (e1.isClassInstance() && e2.isClassInstance())
+			if ((e1 instanceof TYPE_CLASS_INSTANCE) && (e2 instanceof TYPE_CLASS_INSTANCE))
 			{
-				TYPE_CLASS class_e1 = ((TYPE_CLASS_INSTANCE)e1).getSymbolType();
-				TYPE_CLASS class_e2 = ((TYPE_CLASS_INSTANCE)e2).getSymbolType();
+				TYPE_CLASS class_e1 = (TYPE_CLASS) ((TYPE_CLASS_INSTANCE)e1).getSymbolType();
+				TYPE_CLASS class_e2 = (TYPE_CLASS) ((TYPE_CLASS_INSTANCE)e2).getSymbolType();
 
 				if (!(class_e1.isSubClassOf(class_e2) || class_e2.isSubClassOf(class_e1)))
 				{
@@ -113,9 +113,7 @@ public class AST_EXP_BINOP extends AST_EXP
 		if ((semantic_left == TYPE_INT.getInstance()) && (semantic_right == TYPE_INT.getInstance()))
 		{
 			if (op.equals("/") && (right instanceof AST_EXP_INT) && (((AST_EXP_INT) right).value == 0)) {
-				System.out.println(">> ERROR explicit zero division");
-				System.exit(0);  // TODO- error handling
-				return null;
+				this.throw_error("explicit zero division");
 			}
 			return TYPE_INT.getInstance();
 		}
@@ -123,8 +121,7 @@ public class AST_EXP_BINOP extends AST_EXP
 		{
 			return TYPE_STRING.getInstance();
 		}
-		System.out.format(">> ERROR binary operations between invalid/unmatching types: left = (%s), right = (%s)\n", semantic_left.name, semantic_right.name);
-		System.exit(0);  // TODO- error handling
+		this.throw_error(String.format("binary operations between invalid/unmatching types: left = (%s), right = (%s)", semantic_left.name, semantic_right.name));
 		return null;
 	}
 

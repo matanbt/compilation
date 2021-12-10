@@ -1,17 +1,20 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
+import TYPES.TYPE;
+
 public class AST_CFIELD_LIST extends AST_Node
 {
 	/****************/
 	/* DATA MEMBERS */
 	/****************/
 	public AST_CFIELD head;
-	public AST_CFIELD_LIST tail;
+	public AST_CFIELD_LIST next;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_CFIELD_LIST(AST_CFIELD head,AST_CFIELD_LIST tail, int lineNumber)
+	public AST_CFIELD_LIST(AST_CFIELD head,AST_CFIELD_LIST next, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -21,14 +24,14 @@ public class AST_CFIELD_LIST extends AST_Node
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		if (tail != null) System.out.print("====================== cFields -> cField cFields\n");
-		if (tail == null) System.out.print("====================== cFields -> cField      \n");
+		if (next != null) System.out.print("====================== cFields -> cField cFields\n");
+		if (next == null) System.out.print("====================== cFields -> cField      \n");
 
 		/*******************************/
 		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.head = head;
-		this.tail = tail;
+		this.next = next;
 		this.lineNumber = lineNumber;
 	}
 
@@ -43,10 +46,10 @@ public class AST_CFIELD_LIST extends AST_Node
 		System.out.print("AST NODE CFIELD LIST\n");
 
 		/*************************************/
-		/* RECURSIVELY PRINT HEAD + TAIL ... */
+		/* RECURSIVELY PRINT HEAD + NEXT ... */
 		/*************************************/
 		if (head != null) head.PrintMe();
-		if (tail != null) tail.PrintMe();
+		if (next != null) next.PrintMe();
 
 		/**********************************/
 		/* PRINT to AST GRAPHVIZ DOT file */
@@ -59,7 +62,16 @@ public class AST_CFIELD_LIST extends AST_Node
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,head.SerialNumber);
-		if (tail != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,tail.SerialNumber);
+		if (next != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,next.SerialNumber);
 	}
-	
+
+	@Override
+	public TYPE SemantMe() throws SemanticException {
+		// semant all the list recursively:
+		if (head != null) head.SemantMe();
+		if (next != null) next.SemantMe();
+
+		return null; // there is no TYPE for sequence of statements.
+	}
+
 }

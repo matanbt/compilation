@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
 import TYPES.TYPE_ARRAY;
@@ -11,6 +12,8 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 {
 	public AST_TYPE nType;
 	public AST_EXP expression; // not null
+	/* Should only be used after a successful call to SemantMe */
+	public Integer size;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
@@ -62,7 +65,7 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 		}
 
 		/* 2. Check that type is indeed an array type */
-		if (!array_type.isArray())
+		if (!array_type.isArraySymbol())
 		{
 			this.throw_error("trying to create array from something that isn't an array type");
 		}
@@ -81,8 +84,10 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 		{
 			this.throw_error("invalid size for array");
 		}
+		this.size = value;
 
 		/* 4. Return type of array instance */
-		return new array_type.convertSymbolToInstance();
+		TYPE_ARRAY t = new TYPE_ARRAY("", array_type);
+		return t.convertSymbolToInstance();
 	}
 }

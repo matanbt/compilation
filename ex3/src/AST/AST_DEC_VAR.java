@@ -12,7 +12,9 @@ public class AST_DEC_VAR extends AST_DEC
     public AST_NEW_EXP new_exp;
 
     // ---- Semantic Properties ---
-    public boolean isCField = false; // TODO - should be marked by CField
+    // non-null means var field of 'encompassingClass', and null means it's not in class scope
+    public TYPE_CLASS encompassingClass = null;
+    public TYPE varType = null;  // gets real value when calling getType
 
     /******************/
     /* CONSTRUCTOR(S) */
@@ -98,8 +100,8 @@ public class AST_DEC_VAR extends AST_DEC
         if (new_exp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, new_exp.SerialNumber);
     }
 
-
-    public TYPE SemantMe() throws SemanticException {
+    // SemantMe Part 1: Analyze the var type by it's declared type
+    public TYPE SemantMe_declaredType() throws SemanticException {
         TYPE semantic_type;
 
         /****************************/
@@ -109,6 +111,7 @@ public class AST_DEC_VAR extends AST_DEC
         if (semantic_type == null)
         {
             this.throw_error(String.format("non existing type (%s)\n", this.type));
+
         }
 
         semantic_type = semantic_type.convertSymbolToInstance();
@@ -116,7 +119,7 @@ public class AST_DEC_VAR extends AST_DEC
         /**************************************/
         /* [2] Check That Name does NOT exist */
         /**************************************/
-        if(isCField) {
+        if (this.encompassingClass != null) {
             // CField is being checked separately by AST_CFEILD
         }
         // else means it's scope declaration (might be global)
@@ -124,9 +127,19 @@ public class AST_DEC_VAR extends AST_DEC
         {
             this.throw_error(String.format("variable %s already exists inside the scope\n", name));
         }
+        return semantic_type;
+    }
+
+
+    // SemantMe Part 2: Check assignment (if exists) & update Symbol Table
+    public void SemantMe_checkAssignment(TYPE semantic_type) throws SemanticException {
+        /*
+        * semantic_type = instance type representing the type of var by it's type declaration
+        * e.g.: 'int x := "";'  --> semantic_type = TYPE_INT_INSTANCE
+        * */
 
         /***************************************************/
-        /* [3] Check for the given value is from expected type */
+        /* [1] Check that the given value is from expected type */
         /***************************************************/
         TYPE valueType = null;
         if (exp != null) {
@@ -137,20 +150,41 @@ public class AST_DEC_VAR extends AST_DEC
         }
 
         if (valueType != null) { // means there is an assignment
-            boolean valid = TYPE.checkAssignment(semantic_type, valueType);
+            boolean valid;
+
+            if (new_exp != null && valueType instanceof TYPE_ARRAY_INSTANCE) {
+                // Special case of creating a new array instance
+                valid = TYPE.checkNewArrayAssignment(semantic_type, (TYPE_ARRAY_INSTANCE) valueType);
+                int array_len = new_exp.size; // TODO use it in the future - insert it as a property ot the symbol table
+            } else {
+                // regular assignment check
+                valid = TYPE.checkAssignment(semantic_type, valueType);
+            }
+
             if (!valid) {
                 this.throw_error("Assignment for variable declaration failed");
             }
         }
         /***************************************************/
-        /* [4] Enter the Function Type to the Symbol Table */
+        /* [2] Enter the Function Type to the Symbol Table */
         /***************************************************/
         SYMBOL_TABLE.getInstance().enter(name, semantic_type);
 
-        /*********************************************************/
-        /* [5] Return value is irrelevant for declarations */
-        /*********************************************************/
-        return null;
+    }
+
+    public TYPE SemantMe() throws SemanticException {
+        SemantMe_checkAssignment(this.getType());
+        return null;  // Return value is irrelevant for declarations
+    }
+
+    public TYPE getType() throws SemanticException {
+        // getType() isn't changing the Symbol Table & not checking var assignment
+        if (this.varType == null)
+            this.varType = SemantMe_declaredType();
+        return this.varType;
+    }
+    public String getName(){
+        return this.name;
     }
 
 }

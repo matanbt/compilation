@@ -3,6 +3,7 @@ package AST;
 import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
+import TYPES.TYPE_ARRAY_INSTANCE;
 
 public class AST_STMT_ASSIGN_NEW extends AST_STMT
 {
@@ -79,18 +80,21 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 			// TODO ERROR HANDLING
 			System.exit(0);
 		}
-		if(!rightType.isNewable()) {
-			// TODO - this check should be (also, or maybe only) in AST_NEW_EXP
-			System.out.format(">> ERROR 'new' keyword cannot precede type (%s) \n", rightType.name);
-			// TODO ERROR HANDLING
-			System.exit(0);
-		}
+
 
 
 		/***************************************************/
 		/* [3] Check for the given value is from expected type */
 		/***************************************************/
-		boolean valid = TYPE.checkAssignment(leftType, rightType);
+		boolean valid;
+		if (rightType instanceof TYPE_ARRAY_INSTANCE) {
+			// Special case of creating a new array instance
+			valid = TYPE.checkNewArrayAssignment(leftType, (TYPE_ARRAY_INSTANCE) rightType);
+		} else {
+			// must be case of creating a class instance
+			valid = TYPE.checkAssignment(leftType, rightType);
+		}
+
 		if(!valid) {
 			this.throw_error("Variable Assignment NEW Statement");
 		}

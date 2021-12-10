@@ -1,52 +1,56 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
+import SYMBOL_TABLE.SYMBOL_TABLE;
+import TYPES.*;
+
 public class AST_STMT_CALL extends AST_STMT
 {
 	/***************/
 	/*  var := exp */
 	/***************/
-	public AST_VAR v; // name of the function to be called
-	public String idName; // name of the function to be called
-	public AST_EXP_LIST eList; // name of the function to be called
+	public AST_VAR caller;  // the class's instance who called the function, can be null
+	public String func;
+	public AST_EXP_LIST args;  // can be null
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_CALL(AST_VAR v, String idName, AST_EXP_LIST eList, int lineNumber)
+	public AST_STMT_CALL(AST_VAR caller, String func, AST_EXP_LIST args, int lineNumber)
 	{
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
-		System.out.print("====================== stmt -> "+idName+"(); \n");
+		System.out.print("====================== stmt -> "+func+"(); \n");
 
-		this.v = v;
-		this.idName = idName;
-		this.eList = eList;
+		this.caller = caller;
+		this.func = func;
+		this.args = args;
 		this.lineNumber = lineNumber;
 	}
 
 	// overloading constructors
-	public AST_STMT_CALL(String idName, int lineNumber)
+	public AST_STMT_CALL(String func, int lineNumber)
 	{
-		this(null, idName, null, lineNumber);
+		this(null, func, null, lineNumber);
 	}
 
-	public AST_STMT_CALL(String idName, AST_EXP_LIST eList, int lineNumber)
+	public AST_STMT_CALL(String func, AST_EXP_LIST args, int lineNumber)
 	{
-		this(null, idName, eList, lineNumber);
+		this(null, func, args, lineNumber);
 	}
 
-	public AST_STMT_CALL(AST_VAR v, String idName, int lineNumber)
+	public AST_STMT_CALL(AST_VAR caller, String func, int lineNumber)
 	{
-		this(v, idName, null, lineNumber);
+		this(caller, func, null, lineNumber);
 	}
 
 
 	public void PrintMe()
 	{
-		System.out.print("AST NODE CALL "+idName+" STMT\n");
+		System.out.print("AST NODE CALL "+func+" STMT\n");
 
-		if (v != null) v.PrintMe();
-		if (eList != null) eList.PrintMe();
+		if (caller != null) caller.PrintMe();
+		if (args != null) args.PrintMe();
 
 
 		/***************************************/
@@ -54,9 +58,14 @@ public class AST_STMT_CALL extends AST_STMT
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			"CALL("+ idName +")\n");
+			"CALL("+ func +")\n");
 
-		if (v != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, v.SerialNumber);
-		if (eList != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, eList.SerialNumber);
+		if (caller != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, caller.SerialNumber);
+		if (args != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, args.SerialNumber);
+	}
+
+	public TYPE SemantMe() throws SemanticException {
+		return this.functionCallSemantMe(caller, func, args);  // instance-type. null if it's a void function call
+		// NOTE: by L syntax, this return value is not being used
 	}
 }
