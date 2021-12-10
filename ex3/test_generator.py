@@ -2,8 +2,7 @@ import os.path
 from typing import Dict
 
 TEST_GENERATOR_FILE_PATH = "./tests/tests.txt"
-TEST_GENERATOR_FILE_PATHS_LIST = 
-    ["./tests/tests.txt", 
+TEST_GENERATOR_FILE_PATHS_LIST = ["./tests/tests.txt", 
      "./tests/matans_killer_tests.txt", 
      "./tests/matans-tests-2.txt", 
      "./tests/shirs_killin_it_tests.txt"]

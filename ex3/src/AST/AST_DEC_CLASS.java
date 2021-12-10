@@ -90,8 +90,10 @@ public class AST_DEC_CLASS extends AST_DEC
 
 		/* Get father class */
 		TYPE father = null;
-		if (superClassName != null){
+		if (superClassName != null) {
 			father = table.find(this.superClassName);
+			if (father == null)
+				this.throw_error("class declaration- father class name is not defined");
 			if (! (father instanceof TYPE_CLASS)){
 				this.throw_error("class declaration- father class name is not a class");
 			}

@@ -82,7 +82,7 @@ void main() {
 
 /// binops_59
 void main() {
-    int k := 0
+    int k := 0;
     int x := 7 / k;
 }
 
@@ -206,7 +206,7 @@ array intArray = int[];
 void foo(int d) {
     int k := 3;
     intArray arr := new int[10];
-    arr[k] = 17;
+    arr[k] := 17;
 }
 
 *** OK
@@ -230,7 +230,7 @@ class Base {
 
 void main() {
     Base o := new Base;
-    o.y = 1;
+    o.y := 1;
 }
 
 *** ERROR(7)
@@ -242,7 +242,7 @@ class Base {
 
 void main() {
     Base o := new Base;
-    o.x = 1;
+    o.x := 1;
 }
 
 *** OK

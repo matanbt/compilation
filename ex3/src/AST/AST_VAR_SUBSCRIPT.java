@@ -5,6 +5,7 @@ import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
 import TYPES.TYPE_ARRAY_INSTANCE;
 import TYPES.TYPE_INT;
+import TYPES.TYPE_INT_INSTANCE;
 
 public class AST_VAR_SUBSCRIPT extends AST_VAR
 {
@@ -70,17 +71,13 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		TYPE var_type = this.var.SemantMe();
 		if (var_type == null)
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR unknown variable");
-			System.exit(0);
+			this.throw_error("unknown variable");
 		}
 
 		/* 2. Make sure var is indeed TYPE_ARRAY_INSTANCE */
 		if (!(var_type instanceof TYPE_ARRAY_INSTANCE))
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR trying to index something that isn't an array");
-			System.exit(0);
+			this.throw_error("trying to index something that isn't an array");
 		}
 
 		/* 3. Check that index of array is integral */
@@ -88,19 +85,15 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		TYPE index_type = this.subscript.SemantMe();
 		if (index_type == null)
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR undefined type for index of array");
-			System.exit(0);
+			this.throw_error("undefined type for index of array");
 		}
 
-		if (!(index_type instanceof TYPE_INT))
+		if (!(index_type instanceof TYPE_INT_INSTANCE))
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR Trying to access array not using an integer");
-			System.exit(0);
+			this.throw_error("trying to access array not using an integer");
 		}
 
 		/* 4. Return type of array instance */
-		return ((TYPE_ARRAY_INSTANCE) var_type).getElementType();
+		return ((TYPE_ARRAY_INSTANCE) var_type).getElementType().convertSymbolToInstance();
 	}
 }

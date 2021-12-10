@@ -107,19 +107,19 @@ public class AST_EXP_BINOP extends AST_EXP
 		if (op.equals("="))
 		{
 			this.checkEqualityTesting(semantic_left, semantic_right);
-			return TYPE_INT.getInstance();
+			return TYPE_INT_INSTANCE.getInstance();
 		}
 
-		if ((semantic_left == TYPE_INT.getInstance()) && (semantic_right == TYPE_INT.getInstance()))
+		if ((semantic_left == TYPE_INT_INSTANCE.getInstance()) && (semantic_right == TYPE_INT_INSTANCE.getInstance()))
 		{
 			if (op.equals("/") && (right instanceof AST_EXP_INT) && (((AST_EXP_INT) right).value == 0)) {
 				this.throw_error("explicit zero division");
 			}
-			return TYPE_INT.getInstance();
+			return TYPE_INT_INSTANCE.getInstance();
 		}
 		if ((semantic_left == TYPE_STRING.getInstance()) && (semantic_right == TYPE_STRING.getInstance()) && (op.equals("+")))
 		{
-			return TYPE_STRING.getInstance();
+			return TYPE_STRING_INSTANCE.getInstance();
 		}
 		this.throw_error(String.format("binary operations between invalid/unmatching types: left = (%s), right = (%s)", semantic_left.name, semantic_right.name));
 		return null;

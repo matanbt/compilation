@@ -76,9 +76,7 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 		rightType = this.new_exp.SemantMe();
 		if (leftType == null || rightType == null)
 		{ // shouldn't be here, should return an error way before
-			System.out.format(">> ERROR failed when typing var-assign-statement (SHOULDN'T GET HERE) \n");
-			// TODO ERROR HANDLING
-			System.exit(0);
+			this.throw_error("failed when typing var-assign-statement (SHOULDN'T GET HERE)");
 		}
 
 

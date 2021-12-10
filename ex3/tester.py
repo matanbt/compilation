@@ -1,4 +1,4 @@
-from subprocess import run
+import subprocess
 import os
 
 input_dir = "./input/"
@@ -18,7 +18,8 @@ def run_on_test_files():
     for filename in test_files:
         input_file =  input_dir + filename                        # input/test.txt
         output_file = output_dir + filename[:-4] + "_Output.txt"  # output/test_Output.txt
-        run(['java', '-jar', 'COMPILER', input_file, output_file])
+        print(input_file)
+        subprocess.run(['java', '-jar', 'COMPILER', input_file, output_file], stdout=subprocess.DEVNULL)
 
 
 def simple_tester():
@@ -26,8 +27,8 @@ def simple_tester():
     print("\n\n=============== SIMPLE_TESTER ================")
 
     for filename in test_files:
-        output_file = output_dir + filename + "_Output.txt"                       # output/test_Output.txt
-        expected_file = expected_output_dir + filename + "_Expected_Output.txt"   # expected_output/test_Expected_Output.txt
+        output_file = output_dir + filename[:-4] + "_Output.txt"                       # output/test_Output.txt
+        expected_file = expected_output_dir + filename[:-4] + "_Expected_Output.txt"   # expected_output/test_Expected_Output.txt
         with open(output_file, 'r') as f1, open(expected_file, 'r') as f2:
             s1 = f1.read().strip()
             s2 = f2.read().strip()

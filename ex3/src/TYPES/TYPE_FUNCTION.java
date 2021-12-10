@@ -28,6 +28,9 @@ public class TYPE_FUNCTION extends TYPE
 	}
 
 	public boolean equals(Object other) {
+		if (other == null)
+			return false;
+
 		if (! (other instanceof TYPE_FUNCTION))
 			return false;
 

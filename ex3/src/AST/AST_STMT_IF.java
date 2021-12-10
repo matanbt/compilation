@@ -66,7 +66,7 @@ public class AST_STMT_IF extends AST_STMT
 		/****************************/
 		/* [0] Semant the Condition + verifications*/
 		/****************************/
-		if (cond.SemantMe() != TYPE_INT.getInstance())
+		if (cond.SemantMe() != TYPE_INT_INSTANCE.getInstance())
 		{
 			this.throw_error("condition inside IF is not int");
 		}

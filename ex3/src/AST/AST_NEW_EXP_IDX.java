@@ -2,10 +2,7 @@ package AST;
 
 import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
-import TYPES.TYPE;
-import TYPES.TYPE_ARRAY;
-import TYPES.TYPE_ARRAY_INSTANCE;
-import TYPES.TYPE_INT;
+import TYPES.*;
 
 // indexable new-expression
 public class AST_NEW_EXP_IDX extends AST_NEW_EXP
@@ -65,7 +62,7 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 		}
 
 		/* 2. Check that type is indeed an array type */
-		if (!array_type.isArraySymbol())
+		if (!array_type.isSymbolType())
 		{
 			this.throw_error("trying to create array from something that isn't an array type");
 		}
@@ -74,7 +71,7 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 		/* TODO: Does integral mean constant, or just int? - looks like int according to the forum.
 		 */
 		TYPE index_type = this.expression.SemantMe();
-		if (index_type == null || !(index_type instanceof TYPE_INT))
+		if (index_type == null || !(index_type instanceof TYPE_INT_INSTANCE))
 		{
 			this.throw_error("undefined type for size of array");
 		}

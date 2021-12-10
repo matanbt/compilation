@@ -4,7 +4,7 @@ import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
 import TYPES.TYPE_FOR_SCOPE_BOUNDARIES;
-import TYPES.TYPE_INT;
+import TYPES.TYPE_INT_INSTANCE;
 
 public class AST_STMT_WHILE extends AST_STMT
 {
@@ -60,7 +60,7 @@ public class AST_STMT_WHILE extends AST_STMT
 		/****************************/
 		/* [0] Semant the Condition + verifications*/
 		/****************************/
-		if (cond.SemantMe() != TYPE_INT.getInstance())
+		if (cond.SemantMe() != TYPE_INT_INSTANCE.getInstance())
 		{
 			this.throw_error("condition inside WHILE is not int");
 		}
