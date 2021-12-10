@@ -1,5 +1,8 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
+import TYPES.TYPE;
+
 public class AST_DEC_LIST extends AST_Node
 {
 	/****************/
@@ -62,6 +65,18 @@ public class AST_DEC_LIST extends AST_Node
 		/****************************************/
 		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, head.SerialNumber);
 		if (next != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, next.SerialNumber);
+	}
+
+	public TYPE SemantMe() throws SemanticException
+	{
+		if (head != null) {
+			head.SemantMe();
+		}
+		if (next != null) {
+			next.SemantMe();
+		}
+
+		return null;
 	}
 	
 }
