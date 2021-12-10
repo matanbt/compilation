@@ -90,10 +90,8 @@ public class AST_DEC_FUNC extends AST_DEC
 		if(encompassingClass == null) {
 			// we're in global context, so we make sure no same-name declaration
 			if(SYMBOL_TABLE.getInstance().find(funcName) != null) {
-				System.out.format(">> ERROR identifier (%s) is previously declared, " +
-						"can't declare global-function\n", funcName);
-				// TODO deal with error
-				System.exit(0);
+				this.throw_error(String.format( "identifier (%s) is previously declared, " +
+						"can't declare global-function", funcName));
 			}
 		}
 		// else: it's a method, will be checked as a CFIELD
@@ -110,9 +108,7 @@ public class AST_DEC_FUNC extends AST_DEC
 			TYPE semantic_argType = arg.SemantMe();
 			if (semantic_argType == null)
 			{
-				System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,arg.argType);
-				// TODO deal with error
-				System.exit(0);
+				this.throw_error(String.format("non existing type %s",arg.argType));
 			}
 			// each argument has a type that we'll want to verify when it'll be called
 			semantic_argType = semantic_argType.convertSymbolToInstance(); // we convert to the instance-type
@@ -160,14 +156,13 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*******************/
 		body.SemantMe();
 
+		// --- Check for return is currently commented-out due to change in instructions ---
 		// forces non-void-functions to contain at least one RETURN
 		// Must be checked only after body.semantMe;
-		if (!result_SemantMe.isReturnExists && (result_SemantMe.rtnType != null)) {
-			System.out.format(">> ERROR no return statement exists, when declared-return is (%s) " +
-					"for function (%s) ", rtnType.type_name, funcName);
-			// TODO deal with error
-			System.exit(0);
-		}
+//		if (!result_SemantMe.isReturnExists && (result_SemantMe.rtnType != null)) {
+//			this.throw_error(String.format(">> ERROR no return statement exists, when declared-return is (%s) " +
+//					"for function (%s) ", rtnType.type_name, funcName));
+//		}
 
 		/*****************/
 		/* [4] End Scope */

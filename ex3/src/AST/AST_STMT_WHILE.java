@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
 import TYPES.TYPE_FOR_SCOPE_BOUNDARIES;
@@ -55,16 +56,13 @@ public class AST_STMT_WHILE extends AST_STMT
 	}
 
 
-	public TYPE SemantMe()
-	{
+	public TYPE SemantMe() throws SemanticException {
 		/****************************/
 		/* [0] Semant the Condition + verifications*/
 		/****************************/
 		if (cond.SemantMe() != TYPE_INT.getInstance())
 		{
-			System.out.format(">> ERROR condition inside WHILE is not int\n");
-			// TODO deal with error
-			System.exit(0);
+			this.throw_error("condition inside WHILE is not int");
 		}
 
 		/*************************/

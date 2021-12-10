@@ -108,10 +108,10 @@ public class AST_DEC_VAR extends AST_DEC
         /* [1] Check If Type exists */
         /****************************/
         semantic_type = this.type.SemantMe();
-        if (semantic_type == null) {
-            System.out.format(">> ERROR non existing type (%s)\n", this.type);
-            // TODO ERROR HANDLING
-            System.exit(0);
+        if (semantic_type == null)
+        {
+            this.throw_error(String.format("non existing type (%s)\n", this.type));
+
         }
 
         semantic_type = semantic_type.convertSymbolToInstance();
@@ -122,9 +122,7 @@ public class AST_DEC_VAR extends AST_DEC
         if (this.encompassingClass == null) {
             // it's a scope declaration (might be global)
             if (SYMBOL_TABLE.getInstance().findInCurrentScope(name) != null) {
-                System.out.format(">> ERROR variable %s already exists inside the scope\n", name);
-                // TODO deal with error
-                System.exit(0);
+              this.throw_error(String.format("variable %s already exists inside the scope\n", name));
             }
         }
         // else - CField is being checked separately by AST_CFEILD
@@ -152,7 +150,17 @@ public class AST_DEC_VAR extends AST_DEC
         }
 
         if (valueType != null) { // means there is an assignment
-            boolean valid = TYPE.checkAssignment(semantic_type, valueType);
+            boolean valid;
+
+            if (new_exp != null && valueType instanceof TYPE_ARRAY_INSTANCE) {
+                // Special case of creating a new array instance
+                valid = TYPE.checkNewArrayAssignment(semantic_type, (TYPE_ARRAY_INSTANCE) valueType);
+                int array_len = new_exp.size; // TODO use it in the future - insert it as a property ot the symbol table
+            } else {
+                // regular assignment check
+                valid = TYPE.checkAssignment(semantic_type, valueType);
+            }
+
             if (!valid) {
                 this.throw_error("Assignment for variable declaration failed");
             }

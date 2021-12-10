@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import TYPES.TYPE;
 
 
@@ -54,7 +55,7 @@ public class AST_DEC_FUNC_ARG extends AST_Node
         AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, argType.SerialNumber);
     }
 
-    public TYPE SemantMe() {
+    public TYPE SemantMe() throws SemanticException {
         return argType.SemantMe();
     }
 }

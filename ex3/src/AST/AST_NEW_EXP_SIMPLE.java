@@ -1,5 +1,8 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
+import TYPES.TYPE;
+
 public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 {
 	public AST_TYPE nType;
@@ -46,5 +49,24 @@ public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, nType.SerialNumber);
 
+	}
+
+	public TYPE SemantMe() throws SemanticException
+	{
+		/* 1. Check that type was defined before */
+		TYPE class_type = this.nType.SemantMe();
+		if (class_type == null)
+		{
+			this.throw_error("undefined type for class creation");
+		}
+
+		/* 2. Check that type is indeed a class type */
+		if (!class_type.isClassSymbol())
+		{
+			this.throw_error("trying to create class instance from something that isn't a class type");
+		}
+
+		/* 3. Return type of class instance */
+		return class_type.convertSymbolToInstance();
 	}
 }
