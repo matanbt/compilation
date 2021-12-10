@@ -6,9 +6,9 @@ import TYPES.*;
 
 public class AST_EXP_CALL extends AST_EXP
 {
-    public AST_VAR caller;
+    public AST_VAR caller;  // the class's instance who called the function, can be null
     public String func;
-    public AST_EXP_LIST args;
+    public AST_EXP_LIST args;  // can be null
 
     /******************/
     /* CONSTRUCTOR(S) */
@@ -151,6 +151,9 @@ public class AST_EXP_CALL extends AST_EXP
         if (type_node != null || exp_node != null){
             this.throw_error("function call: unmatching arguments' length");
         }
-        return ((TYPE_FUNCTION) type_func).rtnType;  // instance-type. null if it's a void function
+        TYPE return_type = ((TYPE_FUNCTION) type_func).rtnType;  // instance-type. null if it's a void function call
+        if (return_type == null)
+            this.throw_error("void function was called but a return value is expected (EXP_CALL)");
+        return return_type;
     }
 }
