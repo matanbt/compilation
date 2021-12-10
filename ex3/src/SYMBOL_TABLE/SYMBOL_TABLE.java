@@ -391,7 +391,7 @@ public class SYMBOL_TABLE
 					TYPE_VOID.getInstance(),
 					"PrintInt",
 					new TYPE_LIST(
-						TYPE_INT.getInstance(),
+						TYPE_INT_INSTANCE.getInstance(),
 						null)));
 
 			instance.enter(
@@ -400,7 +400,7 @@ public class SYMBOL_TABLE
 							TYPE_VOID.getInstance(),
 							"PrintString",
 							new TYPE_LIST(
-									TYPE_STRING.getInstance(),
+									TYPE_STRING_INSTANCE.getInstance(),
 									null
 							)
 					)
