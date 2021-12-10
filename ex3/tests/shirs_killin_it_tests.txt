@@ -24,7 +24,7 @@ string salary := "7800";
 
 *** ERROR(2)
 
-/// new_is_for_arrays_and_classes_only
+/// new_is_for_arrays_and_classes_only_moodle_2_4
 int x := 2;
 int y := new x;
 
@@ -149,4 +149,129 @@ A A := new A;
 }
 
 *** OK
+
+/// s_moodle_33394
+class A 
+{
+int a;
+}
+class B extends A
+{
+void a()
+{
+return;
+}
+}
+
+*** ERROR(7)
+
+/// func_call_with_override
+void f(){
+int f;
+f();
+}
+
+*** ERROR(3)
+
+/// recursive_call
+void f(){
+f();
+}
+
+*** OK
+
+/// return_expected_type
+int f(){
+return "d";}
+
+*** ERROR(1)
+
+/// arr_equality_testing
+array IDsArray = int[];
+IDsArray i:= NEW int[8];
+IDsArray g:= NEW int[7];
+int j := i = g;
+
+*** OK
+
+/// class_recursive_method
+class Shir{
+void f(){
+int x;
+f();
+}
+}
+
+*** OK
+
+/// class_recursive_method_with_if
+class A{
+void f(){
+if (1){
+f();
+}
+}
+}
+
+*** OK
+
+/// no_cfields
+class E{}
+
+*** OK
+
+/// class_illegal_override
+class A{}
+class B extends A{}
+
+class C{A a;}
+class D extends C{B a;}
+
+*** ERROR(5)
+
+/// assign_with_void_func_call
+void f(){}
+int i := f();
+
+*** ERROR(2)
+
+/// class_invalid_overshadowing
+class A{String s;}
+class B extends A{
+int s := unknownId;
+}
+
+*** ERROR(3)
+
+/// class_invalid_father
+int B;
+class A extends B{}
+
+*** ERROR(2)
+
+/// function_call_not_catch_return_val
+int f(){return 1;}
+class A{
+f();
+}
+
+*** OK
+
+/// void_exp_call
+void f(){}
+int i := f();
+
+*** ERROR(2)
+
+/// class_implicit_dec
+class A{
+int i := 3+3;
+}
+
+*** ERROR(2)
+
+
+
+
+
 
