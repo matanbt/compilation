@@ -89,7 +89,7 @@ public class AST_CFIELD extends AST_Node
 			/* Verify new declaration is overriding the previous one (has the same signature/type)
 			 * - If both are variables, their TYPE is the same java object
 			 * - if both are functions, TYPE_FUNCTION.equals() is called */
-			if (field_type != pre_defined_type) {
+			if (! field_type.equals(pre_defined_type)) {
 				this.throw_error(String.format("class identifier (%s) overshadowing the super class " +
 						"declaration", field_name));
 			}
