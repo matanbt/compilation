@@ -1,7 +1,7 @@
 package AST;
 
 import TYPES.TYPE;
-import TYPES.TYPE_STRING;
+import TYPES.TYPE_STRING_INSTANCE;
 
 public class AST_EXP_STRING extends AST_EXP
 {
@@ -51,6 +51,6 @@ public class AST_EXP_STRING extends AST_EXP
 
     public TYPE SemantMe()
     {
-        return TYPE_STRING.getInstance();
+        return TYPE_STRING_INSTANCE.getInstance();
     }
 }
