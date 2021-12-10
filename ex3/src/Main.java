@@ -39,7 +39,7 @@ public class Main
 			/*******************************/
 			/* [4] Initialize a new parser */
 			/*******************************/
-			p = new Parser(l);
+			p = new Parser(l, file_writer);
 
 			/***********************************/
 			/* [5] 3 ... 2 ... 1 ... Parse !!! */
@@ -49,7 +49,7 @@ public class Main
 			/*************************/
 			/* [6] Print the AST ... */
 			/*************************/
-			AST.PrintMe();
+//			AST.PrintMe();
 
 			/**************************/
 			/* [7] Semant the AST ... */
@@ -61,6 +61,7 @@ public class Main
 			}
 			catch (SemanticException e)
 			{
+				System.out.println(e.getMessage());
 				file_writer.println(String.format("ERROR(%d)", e.lineNumber));
 			}
 			

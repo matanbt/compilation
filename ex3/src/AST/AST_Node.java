@@ -74,6 +74,10 @@ public abstract class AST_Node
 			type_func = ((TYPE_CLASS_INSTANCE) caller_type).fromClass.findInClassAndSuperClasses(func);
 		}
 
+		if (type_func == null)
+		{
+			this.throw_error(String.format("function call: (%s) undefined", func));
+		}
 		if (! (type_func instanceof TYPE_FUNCTION)){
 			this.throw_error(String.format("function call: (%s) expected type = function, but got (%s)", func, type_func.name));
 		}
