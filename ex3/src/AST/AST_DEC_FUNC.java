@@ -102,7 +102,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		/***************************/
 		/* [2] Semant Arguments */
 		/***************************/
-		TYPE_LIST list_argTypes = null; // lists of the semantic types of arguments
+		TYPE_LIST list_argTypes = new TYPE_LIST(); // lists of the semantic types of arguments
 		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next)
 		{
 			// find the TYPE of each
@@ -114,7 +114,7 @@ public class AST_DEC_FUNC extends AST_DEC
 			}
 			// each argument has a type that we'll want to verify when it'll be called
 			semantic_argType = semantic_argType.convertSymbolToInstance(); // we convert to the instance-type
-			list_argTypes = new TYPE_LIST(semantic_argType, list_argTypes);
+			list_argTypes.add(semantic_argType);
 		}
 
 		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes);
@@ -140,17 +140,16 @@ public class AST_DEC_FUNC extends AST_DEC
 		/* [2] Add Arguments as local Arguments */
 		/***************************/
 		TYPE_LIST list_argTypes = result_SemantMe.args;
-		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next)
+		int i = 0;
+		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next, i++)
 		{
 			// find the TYPE of each
 			AST_DEC_FUNC_ARG arg = it.head; // the arg of the iterator
-			TYPE argType = list_argTypes.head; // the corresponding type of the arg
+			TYPE argType = list_argTypes.get(i); // the corresponding type of the arg
 
 			// each argument is also a local variable in the function scope
 			// must be done AFTER creating the function scope
 			SYMBOL_TABLE.getInstance().enter(arg.argName, argType);
-
-			list_argTypes = list_argTypes.next;
 		}
 
 		/*******************/

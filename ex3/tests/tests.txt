@@ -133,11 +133,11 @@ void main() {
 
 /// return_71
 string g() {
-    return "123";
+    return "abc";
 }
 
 int main() {
-    return g() + "4";
+    return g() + "d";
 }
 
 *** ERROR(6)
@@ -416,7 +416,9 @@ void main() {
 *** OK
 
 /// null_121
-class A {}
+class A {
+    int x;
+}
 
 void foo(A a) {
     int x;
