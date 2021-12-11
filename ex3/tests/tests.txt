@@ -159,7 +159,7 @@ int g(int x) {
 }
 
 int main() {
-    string z = "...";
+    string z := "aaa";
     return g(z);
 }
 
@@ -378,9 +378,17 @@ class B extends A {
 *** ERROR(6)
 
 /// inheritance_115
-class A {}
-class B extends A {}
-void foo(A a) {}
+class A {
+    int x;
+}
+
+class B extends A {
+    int y;
+}
+
+void foo(A a) {
+    return;
+}
 
 void main() {
     B o := new B;
@@ -390,16 +398,23 @@ void main() {
 *** OK
 
 /// inheritance_117
-class A {}
-class B extends A {}
-void foo(B b) {}
+class A {
+    int x;
+}
+
+class B extends A {
+    int y;
+}
+void foo(B b) {
+    return;
+}
 
 void main() {
     A o := new A;
     foo(o);
 }
 
-*** ERROR(7)
+*** ERROR(14)
 
 /// null_119
 array arrt = int[];
