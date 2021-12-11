@@ -113,7 +113,8 @@ public class SYMBOL_TABLE
 		SYMBOL_TABLE_ENTRY curr = this.top;
 
 		// iterates until a function-scope is found or until we find the name
-		while (!(curr.name.equals("SCOPE-BOUNDARY")
+		while (curr != null
+				&& !(curr.name.equals("SCOPE-BOUNDARY")
 				&& curr.type.name.equals(TYPE_FOR_SCOPE_BOUNDARIES.FUNC_SCOPE)))
 		{
 			if (curr.name.equals(name)) {
@@ -131,13 +132,13 @@ public class SYMBOL_TABLE
 	public TYPE findInCurrentScope(String name) {
 		SYMBOL_TABLE_ENTRY curr = this.top;
 
-		// iterates until a function-scope is found or until we find the name
+		// iterates until a scope is found or until we find the name
 		while (!curr.name.equals("SCOPE-BOUNDARY"))
 		{
-			curr = curr.prevtop;
 			if (curr.name.equals(name)) {
 				return curr.type; // FOUND
 			}
+			curr = curr.prevtop;
 		}
 
 		return null; // NOT FOUND
@@ -390,19 +391,17 @@ public class SYMBOL_TABLE
 				new TYPE_FUNCTION(
 					TYPE_VOID.getInstance(),
 					"PrintInt",
-					new TYPE_LIST(
-						TYPE_INT_INSTANCE.getInstance(),
-						null)));
+					new TYPE_LIST(TYPE_INT_INSTANCE.getInstance())
+				)
+			);
+
 
 			instance.enter(
 					"PrintString",
 					new TYPE_FUNCTION(
 							TYPE_VOID.getInstance(),
 							"PrintString",
-							new TYPE_LIST(
-									TYPE_STRING_INSTANCE.getInstance(),
-									null
-							)
+							new TYPE_LIST(TYPE_STRING_INSTANCE.getInstance())
 					)
 			);
 
