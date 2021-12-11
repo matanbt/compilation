@@ -49,7 +49,17 @@ public TYPE findInClassAndSuperClasses(String cfield_name)
   
   
   	public boolean isSubClassOf(TYPE_CLASS potentialFather) {
-		return false; // TODO on class task: IMPLEMENT
+		// note: a class can subclass itself
+		// search for potentialFather in this class's fathers tree
+		TYPE_CLASS curr_class = this;
+		while (curr_class != null) {
+			if (curr_class.name.equals(potentialFather.name))
+				return true;
+			// this father is not potentialFather, continue search
+			curr_class = curr_class.father;
+		}
+		// didn't find potentialFather
+		return false;
 	}
   
 	public TYPE getInstanceType() {
