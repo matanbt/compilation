@@ -310,11 +310,11 @@ class A {
     int x;
 }
 
-class B extends A {}
+class B extends A { int b; }
 
 void main() {
     B o := new B;
-    o.x = 100;
+    o.x := 100;
 }
 
 *** OK
@@ -324,11 +324,11 @@ class A {
     int x;
 }
 
-class B extends A {}
+class B extends A { int b; }
 
 void main() {
     B o := new B;
-    o.y = 100;
+    o.y := 100;
 }
 
 *** ERROR(9)

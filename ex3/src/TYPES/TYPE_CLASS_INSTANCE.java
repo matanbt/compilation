@@ -34,7 +34,7 @@ public class TYPE_CLASS_INSTANCE extends TYPE implements I_INSTANCE_TYPE{
 
     // note: a class can subclass itself
     public boolean isSubClassOf(TYPE_CLASS_INSTANCE potentialFather) {
-        return false; // TODO on class task: IMPLEMENT
+        return this.fromClass.isSubClassOf(potentialFather.fromClass);
     }
 
     @Override

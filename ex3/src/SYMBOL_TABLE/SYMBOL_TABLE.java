@@ -395,6 +395,7 @@ public class SYMBOL_TABLE
 				)
 			);
 
+
 			instance.enter(
 					"PrintString",
 					new TYPE_FUNCTION(
@@ -409,7 +410,7 @@ public class SYMBOL_TABLE
 					new TYPE_FUNCTION(
 							TYPE_VOID.getInstance(),
 							"PrintTrace",
-							new TYPE_LIST()
+							null
 					)
 			);
 
