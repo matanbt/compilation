@@ -212,16 +212,19 @@ void foo(int d) {
 *** OK
 
 /// arrays_87
-array arr1_t = int[];
-array arr2_t = int[];
+array arr1t = int[];
+array arr2t = int[];
 
-void f(arr1_t a) {}
+void f(arr1t a) {
+    int x;
+}
+
 void g() {
-    arr2_t a = new int[10];
+    arr2t a := new int[10];
     f(a);
 }
 
-*** ERROR(7)
+*** ERROR(10)
 
 /// classes_91
 class Base {
@@ -399,9 +402,12 @@ void main() {
 *** ERROR(7)
 
 /// null_119
-array arr_t = int[];
+array arrt = int[];
 
-void foo(arr_t a) {}
+void foo(arrt a) {
+    int x;
+}
+
 
 void main() {
     foo(nil);
@@ -412,7 +418,10 @@ void main() {
 /// null_121
 class A {}
 
-void foo(A a) {}
+void foo(A a) {
+    int x;
+}
+
 
 void main() {
     foo(nil);
