@@ -155,7 +155,7 @@ void foo(int salary)
 }
 *** ERROR(3)
 
-// function_and_method_can_share_name
+/// function_and_method_can_share_name
 // TODO PONDER
 void foo() { return; }
 
@@ -188,7 +188,7 @@ class A {
 *** OK
 
 
-// overshadowing_cfield_variable
+/// overshadowing_cfield_variable
 // TODO PONDER
 class A {
     int z;

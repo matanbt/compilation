@@ -37,6 +37,8 @@ void main() {
     string int := 1;
 }
 
+*** OK
+
 /// return_a_type_symbol_1
 int foo() {
     return int; // we try to return a symbol-type

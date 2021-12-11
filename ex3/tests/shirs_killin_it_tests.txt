@@ -109,14 +109,18 @@ string f(){return "Shir";}
 *** OK
 
 /// NoReturns_when_void
-void f(){}
+void f(){
+    int x;
+}
 
 *** OK
 
 /// NoReturn_when_int
-int f(){}
+int f(){
+    int x;
+}
 
-*** ERROR(1)
+*** OK
 
 /// sMoodle1_1
 int j := 1;
