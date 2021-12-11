@@ -46,7 +46,7 @@ def simple_tester():
                              "\n---> Please check : " + logs_dir + filename[:-4] + "_log_run.txt" +\
                              "\n---> Or rerun : java -jar COMPILER " + filename + " " + output_file
 
-        print("\n============= SUCCESS - SIMPLE_TESTER ==============")
+    print("\n============= SUCCESS - SIMPLE_TESTER ==============")
 
 
 # ------- Logs: ---------
