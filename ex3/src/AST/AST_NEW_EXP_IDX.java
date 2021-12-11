@@ -76,12 +76,13 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 			this.throw_error("undefined type for size of array");
 		}
 
-		Integer value = ((AST_EXP_INT)this.expression).value;
-		if (value <= 0)
-		{
-			this.throw_error("invalid size for array");
+		if (this.expression instanceof AST_EXP_INT) {
+			Integer value = ((AST_EXP_INT) this.expression).value;
+			if (value <= 0) {
+				this.throw_error("invalid size for array");
+			}
+			this.size = value;
 		}
-		this.size = value;
 
 		/* 4. Return type of array instance */
 		TYPE_ARRAY t = new TYPE_ARRAY("", array_type);
