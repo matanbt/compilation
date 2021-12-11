@@ -230,7 +230,7 @@ stmt		::=		varDec: d                                                   {: RESULT
 					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_WHILE(cond, body, parser.getLine()); :}
 					| ID:idName LPAREN RPAREN SEMICOLON                               {: RESULT = new AST_STMT_CALL(idName, parser.getLine()); :}
 					| ID:idName LPAREN expList:eList RPAREN SEMICOLON                 {: RESULT = new AST_STMT_CALL(idName, eList, parser.getLine()); :}
-					| var:v DOT ID:idName LPAREN LBRACE SEMICOLON                     {: RESULT = new AST_STMT_CALL(v, idName, parser.getLine()); :}
+					| var:v DOT ID:idName LPAREN RPAREN SEMICOLON                     {: RESULT = new AST_STMT_CALL(v, idName, parser.getLine()); :}
 					| var:v DOT ID:idName LPAREN expList:eList RPAREN SEMICOLON       {: RESULT = new AST_STMT_CALL(v, idName, eList, parser.getLine()); :}
 					;
 

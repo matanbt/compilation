@@ -310,7 +310,7 @@ class A {
     int x;
 }
 
-class B extends A {}
+class B extends A { int b; }
 
 void main() {
     B o := new B;
@@ -324,7 +324,7 @@ class A {
     int x;
 }
 
-class B extends A {}
+class B extends A { int b; }
 
 void main() {
     B o := new B;

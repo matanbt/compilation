@@ -120,7 +120,7 @@ public abstract class TYPE
 				if(!((TYPE_CLASS_INSTANCE) right).isSubClassOf((TYPE_CLASS_INSTANCE) left)) // TODO after TYPE_CLASS implementation
 				{
 					System.out.format(">> ERROR:  cannot assign to class (%s) is" +
-							" NOT super class of (%s)", left.name, right.name);
+							" NOT super class of (%s)\n", left.name, right.name);
 					return false;
 				}
 			}
