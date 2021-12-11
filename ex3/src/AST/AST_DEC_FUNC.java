@@ -35,7 +35,9 @@ public class AST_DEC_FUNC extends AST_DEC
 		this.funcName = funcName;
 		this.argList = argList;
 		this.body = body;
-		this.lineNumber = lineNumber;
+		/* NOTE: Assumes declaration is in one line!!! */
+		System.out.format("FUCKING FUCKING FUCKING SHIT %d\n", rtnType.lineNumber);
+		this.lineNumber = rtnType.lineNumber;
 	}
 
 	public AST_DEC_FUNC(AST_TYPE rtnType, String funcName, AST_STMT_LIST body, int lineNumber)

@@ -31,7 +31,7 @@ public class AST_CFIELD extends AST_Node
 		/*******************************/
 		// dec MUST BE instance of "limited" DEC_VAR or DEC_FUNC. This is enforced by the grammar (cup file).
 		this.dec = dec;
-		this.lineNumber = lineNumber;
+		this.lineNumber = this.dec.lineNumber;
 	}
 
 	/*********************************************************/

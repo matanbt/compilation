@@ -117,7 +117,7 @@ public class AST_EXP_BINOP extends AST_EXP
 			}
 			return TYPE_INT_INSTANCE.getInstance();
 		}
-		if ((semantic_left == TYPE_STRING.getInstance()) && (semantic_right == TYPE_STRING.getInstance()) && (op.equals("+")))
+		if ((semantic_left == TYPE_STRING_INSTANCE.getInstance()) && (semantic_right == TYPE_STRING_INSTANCE.getInstance()) && (op.equals("+")))
 		{
 			return TYPE_STRING_INSTANCE.getInstance();
 		}
