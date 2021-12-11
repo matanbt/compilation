@@ -314,7 +314,7 @@ class B extends A {}
 
 void main() {
     B o := new B;
-    o.x = 100;
+    o.x := 100;
 }
 
 *** OK
@@ -328,7 +328,7 @@ class B extends A {}
 
 void main() {
     B o := new B;
-    o.y = 100;
+    o.y := 100;
 }
 
 *** ERROR(9)

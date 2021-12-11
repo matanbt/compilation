@@ -29,6 +29,7 @@ def simple_tester():
     for filename in test_files:
         output_file = output_dir + filename[:-4] + "_Output.txt"                       # output/test_Output.txt
         expected_file = expected_output_dir + filename[:-4] + "_Expected_Output.txt"   # expected_output/test_Expected_Output.txt
+        print(output_file)
         with open(output_file, 'r') as f1, open(expected_file, 'r') as f2:
             s1 = f1.read().strip()
             s2 = f2.read().strip()

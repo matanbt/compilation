@@ -116,10 +116,10 @@ public class SYMBOL_TABLE
 		while (!(curr.name.equals("SCOPE-BOUNDARY")
 				&& curr.type.name.equals(TYPE_FOR_SCOPE_BOUNDARIES.FUNC_SCOPE)))
 		{
-			curr = curr.prevtop;
 			if (curr.name.equals(name)) {
 				return curr.type; // FOUND
 			}
+			curr = curr.prevtop;
 		}
 
 		return null; // NOT FOUND
