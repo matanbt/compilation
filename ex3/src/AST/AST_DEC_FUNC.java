@@ -80,6 +80,8 @@ public class AST_DEC_FUNC extends AST_DEC
 		/* Note that semantic analysis for rtnType is special bc it can be void */
 		/*******************/
 		TYPE semantic_rtnType_signature = rtnType.SemantMe(); // the type of the signature (null means 'void')
+		TYPE_CLASS encompassingClass = SYMBOL_TABLE.getInstance().findScopeClass();
+
 
 		TYPE semantic_rtnType = null; // the actual instance-type we expect to get in return statement, although we allow void
 		if(semantic_rtnType_signature != null) {
