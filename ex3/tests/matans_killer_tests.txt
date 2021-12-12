@@ -2,7 +2,7 @@
 int i := 0;
 
 class Foo {
-    string i := "1";
+    string i := "trav";
 }
 
 *** OK
@@ -29,10 +29,10 @@ class Foo {
     int i := 1;
 }
 
-string i := "0";
+string i := "m";
 
 class Bar extends Foo {
-    String func() {
+    string func() {
         return i;  // we expect int!
     }
 }
@@ -67,19 +67,19 @@ void main() {
 
 /// var_resolution_based_on_inheritance_preference
 class Father {
-    String i := "0";
+    string i := "mat";
 }
 
 int i := 1;
-int global_context_var := 2;
+int globalContextVar := 2;
 
 class Son extends Father {
-    String foo(){
+    string foo(){
         return i;  // expected to be inherited
     }
 
-    int foo_2(){
-        return global_context_var;  // can also fetch global context after looking in OOP context
+    int foo2(){
+        return globalContextVar;  // can also fetch global context after looking in OOP context
     }
 }
 *** OK
@@ -94,11 +94,11 @@ int i := 1;
 *** ERROR(2)
 
 /// manipulating_variable_in_inner_scope
-int j := 1
+int j := 1;
 void main() {
     j := 2;
     PrintInt(j);
-    String j := "amilegal";
+    string j := "amilegal";
     PrintString(j);
 }
 *** OK
@@ -113,7 +113,7 @@ class Foo {
 }
 
 void main() {
-    Foo myInstance = new Foo;
+    Foo myInstance := new Foo;
 
     j := 1;
     myInstance.func(); // we expect it to return 1
@@ -130,7 +130,15 @@ void foo() {
     PrintInt(foo);
 }
 
-*** ERROR(1)
+*** ERROR(2)
+
+/// predefined_function_name_3
+int i := 0;
+void foo() {
+    PrintInt(foo);
+}
+
+*** ERROR(3)
 
 /// predefined_function_name_2
 class MyClass {
@@ -150,16 +158,15 @@ void foo(int salary)
 /// cant_declare_2_same-name-vars_in_the_same_scope_2
 void foo(int salary)
 {
-    String salary := "7800";
+    string salary := "low";
     PrintString(salary);
 }
 *** ERROR(3)
 
 /// function_and_method_can_share_name
-// TODO PONDER
 void foo() { return; }
 
-Class MyClass {
+class MyClass {
     void foo() {return;}
 }
 
@@ -169,8 +176,19 @@ Class MyClass {
 /// support_on-the-fly_references_to_CFields_1
 class A {
     void foo() {
-        A obj = new A;
+        A obj := new A;
         o.foo();
+    }
+}
+
+*** ERROR(4)
+
+
+/// support_on-the-fly_references_to_CFields_3
+class A {
+    void foo() {
+        A obj := new A;
+        obj.foo();
     }
 }
 
@@ -180,7 +198,7 @@ class A {
 class A {
     int i := 1;
     int foo() {
-        A obj = new A;
+        A obj := new A;
         return obj.i;
     }
 }
@@ -197,7 +215,7 @@ class B extends A {
     int z; // LEGAL?
 }
 
-*** ERROR(5)
+*** OK
 
 /// overshadowing_function_name_in_its_scope
 // TODO PONDER
@@ -249,7 +267,7 @@ void main {foo := func; }
 /// overshadow_classname_with_its_own_object
 // TODO PONDER - Shir is asking
 class A { int i; }
-void main {
+void main() {
     A A := new A;
 }
 
@@ -257,9 +275,8 @@ void main {
 
 /// overshadow_funcname_with_inner_scope
 // TODO PONDER
-
-int foo { return 0; }
-void main {
+int foo() { return 0; }
+void main() {
     int foo := 1;
 }
 
@@ -268,7 +285,7 @@ void main {
 
 /// assigning_instance_to_a_classname
 class A { int i; }
-void main {
+void main() {
     A := new A; // class should be NOT assignable
 }
 
@@ -276,7 +293,7 @@ void main {
 
 /// assigning_a_class_2
 class A { int i; }
-void main {
+void main() {
     A := nil; // class should be NOT assignable
 }
 
@@ -285,18 +302,20 @@ void main {
 
 /// can_overshadow_classname_and_then_fetch_its_cfields
 class A { int i; }
-void main {
-    A obj := a;
-    String A := "Allowed";
-    PrintInt(a.i);
+void main() {
+    A obj1 := new A;
+    A obj2 := obj1;
+    string A := "Allowed";
+    PrintInt(obj2.i);
+    PrintString(A + "matan");
 }
 
 *** OK
 
 /// cant_assign_nonconst_to_cfields_1
 class A {
-    String s := "legit";
-    String bad := s;
+    string s := "legit";
+    string bad := s;
 }
 *** ERROR(3)
 
@@ -305,7 +324,7 @@ int i := 1;
 class A {
     int j := i;
 }
-*** ERROR(2)
+*** ERROR(3)
 
 
 
@@ -321,9 +340,17 @@ int foo() {return 1;}
 int b;
 class A {
     int b;
-    String foo() {
+    string foo() {
         return "matan";
     }
+}
+
+*** OK
+
+/// forum_test_1
+class MyClass
+{
+    int PrintInt;
 }
 
 *** OK
