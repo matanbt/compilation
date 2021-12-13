@@ -45,4 +45,7 @@ ex1/output/OutputTokens.txt
 # IDEA files
 compilation.iml
 
-### Ex2 additions ###
+### Ex3 additions ###
+ex3/input/*.txt
+ex3/output/*.txt
+ex3/expected_output/*.txt

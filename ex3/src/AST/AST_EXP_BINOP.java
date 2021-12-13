@@ -42,7 +42,7 @@ public class AST_EXP_BINOP extends AST_EXP
 		/*********************************/
 		/* CONVERT OP to a printable sOP */
 		/*********************************/
-		sOP = this.op; // TODO if we'll change the type of "op", we should support conversion to string here
+		sOP = this.op;
 
 		/*************************************/
 		/* AST NODE TYPE = AST BINOP EXP */

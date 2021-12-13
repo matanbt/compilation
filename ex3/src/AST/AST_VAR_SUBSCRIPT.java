@@ -67,7 +67,6 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 
 	public TYPE SemantMe() throws SemanticException {
 		/* 1. Check that var was defined before */
-		/* TODO: Make sure this works when merging with everyone's branches */
 		TYPE var_type = this.var.SemantMe();
 		if (var_type == null)
 		{
@@ -81,7 +80,6 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		}
 
 		/* 3. Check that index of array is integral */
-		/* TODO: Does integral mean constant, or just int? */
 		TYPE index_type = this.subscript.SemantMe();
 		if (index_type == null)
 		{

@@ -178,12 +178,6 @@ public class AST_DEC_FUNC extends AST_DEC
 		return null;  // Return value is irrelevant for declarations
 	}
 
-	// TODO- delete isMethod if not used
-	public boolean isMethod() {
-		// NOTE: only relevant AFTER SemantMe
-		return encompassingClass != null;
-	}
-
 	public TYPE getType() throws SemanticException {
 		// getType() isn't changing the Symbol Table & not entering the function scope
 		if (this.funcType == null)

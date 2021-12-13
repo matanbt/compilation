@@ -25,6 +25,7 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 		this.nType = nType;
 		this.expression = expression;
 		this.lineNumber = lineNumber;
+		this.size = -1;
 	}
 
 	/*********************************************************/
@@ -54,7 +55,6 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 	public TYPE SemantMe() throws SemanticException
 	{
 		/* 1. Check that type was defined before */
-		/* TODO: Make sure this works when merging with everyone's branches */
 		TYPE array_type = this.nType.SemantMe();
 		if (array_type == null)
 		{
@@ -68,8 +68,6 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 		}
 
 		/* 3. Check that size of array is integral */
-		/* TODO: Does integral mean constant, or just int? - looks like int according to the forum.
-		 */
 		TYPE index_type = this.expression.SemantMe();
 		if (index_type == null || !(index_type instanceof TYPE_INT_INSTANCE))
 		{
