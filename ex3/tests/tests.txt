@@ -540,3 +540,333 @@ void main() {
 }
 
 *** OK
+
+/// ex3_table_1_1
+class Son extends Father
+{
+    int bar;
+}
+class Father
+{
+    void foo() { PrintInt(8); }
+}
+
+*** ERROR(1)
+
+/// ex3_table_1_2
+class Edge
+{
+    Vertex u;
+    Vertex v;
+}
+class Vertex
+{
+    int weight;
+}
+
+*** ERROR(3)
+
+/// ex3_table_1_3
+class UseBeforeDef
+{
+    void foo() { bar(8); }
+    void bar(int i) { PrintInt(i); }
+}
+
+*** ERROR(3)
+
+/// ex3_table_1_4
+class UseBeforeDef
+{
+    void foo() { PrintInt(i); }
+    int i;
+}
+
+*** ERROR(3)
+
+/// ex3_table_2_1
+class Father
+{
+    int foo() { return 8; }
+}
+class Son extends Father
+{
+    void foo() { PrintInt(8); }
+}
+
+*** ERROR(7)
+
+/// ex3_table_2_2
+class Father
+{
+    int foo(int i) { return 8; }
+}
+class Son extends Father
+{
+    int foo(int j) { return j; }
+}
+
+*** OK
+
+/// ex3_table_2_3
+class IllegalSameName
+{
+    void foo() { PrintInt(8); }
+    void foo(int i) { PrintInt(i); }
+}
+
+*** ERROR(4)
+
+/// ex3_table_2_4
+class Father
+{
+    int foo;
+}
+class Son extends Father
+{
+    string foo;
+}
+
+*** ERROR(7)
+
+/// ex3_table_2_5
+class Father
+{
+    int foo;
+}
+class Son extends Father
+{
+    void foo() { int i; }
+}
+
+*** ERROR(7)
+
+
+/// ex3_table_3
+class Father { int i; }
+class Son extends Father { int j; }
+void foo(Father f) { PrintInt(f.i); }
+void main() { Son s; foo(s); }
+
+*** OK
+
+/// ex3_table_4
+class Father { int i; }
+void foo(Father f) { PrintInt(f.i); }
+void main() { foo(nil); }
+
+*** OK
+
+/// ex3_table_5
+array IntArray = int[];
+void F(IntArray A) { PrintInt(A[8]); }
+void main() { F(nil); }
+
+*** OK
+
+/// ex3_table_6
+array gradesArray = int[];
+array IDsArray = int[];
+void F(IDsArray ids) { PrintInt(ids[6]); }
+void main()
+{
+    IDsArray ids := new int[8];
+    gradesArray grades := new int[8];
+    F(grades);
+}
+
+*** ERROR(8)
+
+/// ex3_table_7_1
+class Father { int i; }
+Father f := nil;
+
+*** OK
+
+/// ex3_table_7_2
+class Father { int i; }
+class Son extends Father { int j; }
+Father f := new Son;
+
+*** OK
+
+/// ex3_table_7_3
+class Father { int i; }
+class Son extends Father { int j := 8; }
+
+*** OK
+
+/// ex3_table_7_4
+class Father { int i := 9; }
+class Son extends Father { int j := i; }
+
+*** ERROR(2)
+
+/// ex3_table_7_5
+class Father { int foo() { return 90; } }
+class Son extends Father { int j := foo(); }
+
+*** ERROR(2)
+
+/// ex3_table_7_6
+class IntList
+{
+    int head := -1;
+    IntList tail := new IntList;
+}
+
+*** ERROR(4)
+
+/// ex3_table_7_7
+class IntList
+{
+    IntList tail;
+    void Init() { tail := new IntList; }
+    int head;
+}
+
+*** OK
+
+/// ex3_table_7_8
+array gradesArray = int[];
+array IDsArray = int[];
+IDsArray i := new int[8];
+gradesArray g := new int[8];
+void foo() { i := g; }
+
+*** ERROR(5)
+
+/// ex3_table_7_9
+string s := nil;
+
+*** ERROR(1)
+
+/// ex3_table_8_1
+class Father { int i; int j; }
+int Check(Father f)
+{
+    if (f = nil)
+    {
+        return 800;
+    }
+    return 774;
+}
+
+*** OK
+
+/// ex3_table_8_2
+int Check(string s)
+{
+    return s = "LosPollosHermanos";
+}
+
+*** OK
+
+/// ex3_table_8_3
+array gradesArray = int[];
+array IDsArray = int[];
+IDsArray i := new int[8];
+gradesArray g := new int[8];
+int j := i = g;
+
+*** ERROR(5)
+
+/// ex3_table_8_4
+string s1;
+string s2 := "HankSchrader";
+int i := s1 = s2;
+
+*** OK
+
+/// ex3_table_9_1
+class Father
+{
+    int foo() { return 8/0; }
+}
+
+*** ERROR(3)
+
+/// ex3_table_9_2
+class Father { string s1; string s2; }
+void foo(Father f)
+{
+    f.s1 := f.s1 + f.s2;
+}
+
+*** OK
+
+/// ex3_table_9_3
+class Father { string s1; string s2; }
+void foo(Father f)
+{
+    int i := f.s1 < f.s2;
+}
+
+*** ERROR(4)
+
+/// ex3_table_9_4
+class Father { int j; int k; }
+int foo(Father f)
+{
+    int i := 620;
+    return i < f.j;
+}
+
+*** OK
+
+/// ex3_table_10_1
+int salary := 7800;
+void foo()
+{
+    string salary := "six";
+}
+
+*** OK
+
+/// ex3_table_10_2
+int salary := 7800;
+void foo(string salary)
+{
+    PrintString(salary);
+}
+
+*** OK
+
+/// ex3_table_10_3
+void foo(string salary)
+{
+    int salary := 7800;
+    PrintString(salary);
+}
+
+*** ERROR(3)
+
+/// ex3_table_10_4
+string myvar := "ab";
+class Father
+{
+    Father myvar := nil;
+    void foo()
+    {
+        int myvar := 100;
+        PrintInt(myvar);
+    }
+}
+
+*** OK
+
+/// ex3_table_10_5
+int foo(string s) { return 800; }
+class Father
+{
+    string foo(string s)
+    {
+        return s;
+    }
+    void Print()
+    {
+        PrintString(foo("Jerry"));
+    }
+}
+
+*** OK

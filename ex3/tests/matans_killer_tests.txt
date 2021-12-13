@@ -2,7 +2,7 @@
 int i := 0;
 
 class Foo {
-    string i := "trav";
+    string i := "cool";
 }
 
 *** OK

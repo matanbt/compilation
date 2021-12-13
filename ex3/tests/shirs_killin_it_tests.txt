@@ -278,3 +278,13 @@ class A {
 }
 
 *** ERROR(2)
+
+/// function_call_not_catch_return_val
+int f() { return 1; }
+class A {
+    void g() {
+        f();
+    }
+}
+
+*** OK
