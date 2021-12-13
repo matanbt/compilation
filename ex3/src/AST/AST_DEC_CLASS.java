@@ -13,7 +13,7 @@ public class AST_DEC_CLASS extends AST_DEC
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_DEC_CLASS(AST_CFIELD_LIST cfield_lst, String className, String superClassName, int lineNumber)
+	public AST_DEC_CLASS(AST_CFIELD_LIST cfield_lst, AST_DEC_CLASS_SIG sig, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -32,15 +32,9 @@ public class AST_DEC_CLASS extends AST_DEC
 		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.cfield_lst = cfield_lst;
-		this.className = className;
-		this.superClassName = superClassName;
-		this.lineNumber = lineNumber;
-	}
-
-
-	public AST_DEC_CLASS(AST_CFIELD_LIST cfield_lst, String className, int lineNumber)
-	{
-		this(cfield_lst, className, null, lineNumber);
+		this.className = sig.className;
+		this.superClassName = sig.superClassName;
+		this.lineNumber = sig.lineNumber;
 	}
 
 	/*************************************************/

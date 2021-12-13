@@ -22,7 +22,7 @@ def run_on_test_files():
     for i, filename in enumerate(test_files):
         input_file =  input_dir + filename                        # input/test.txt
         output_file = output_dir + filename[:-4] + "_Output.txt"  # output/test_Output.txt
-        print("---- #" + str(i) + " / " + str(len(test_files)) + " | Running: " + filename + " ----")
+        print("---- #" + str(i + 1) + " / " + str(len(test_files)) + " | Running: " + filename + " ----")
         result = subprocess.run(['java', '-jar', 'COMPILER', input_file, output_file],
                                 capture_output=True, text=True)
         save_log(filename, result.stdout)
@@ -33,7 +33,7 @@ def simple_tester():
     print("\n\n=============== SIMPLE_TESTER ================")
 
     for i, filename in enumerate(test_files):
-        print("---- #" + str(i) + " / " + str(len(test_files)) + " | Checking: " + filename + " ----")
+        print("---- #" + str(i + 1) + " / " + str(len(test_files)) + " | Checking: " + filename + " ----")
         input_file =  input_dir + filename                                             # input/test.txt
         output_file = output_dir + filename[:-4] + "_Output.txt"                       # output/test_Output.txt
         expected_file = expected_output_dir + filename[:-4] + "_Expected_Output.txt"   # expected_output/test_Expected_Output.txt

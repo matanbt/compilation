@@ -35,7 +35,8 @@ public class AST_DEC_FUNC extends AST_DEC
 		this.funcName = funcName;
 		this.argList = argList;
 		this.body = body;
-		this.lineNumber = lineNumber;
+		/* NOTE: Assumes declaration is in one line!!! */
+		this.lineNumber = rtnType.lineNumber;
 	}
 
 	public AST_DEC_FUNC(AST_TYPE rtnType, String funcName, AST_STMT_LIST body, int lineNumber)
@@ -78,6 +79,8 @@ public class AST_DEC_FUNC extends AST_DEC
 		/* Note that semantic analysis for rtnType is special bc it can be void */
 		/*******************/
 		TYPE semantic_rtnType_signature = rtnType.SemantMe(); // the type of the signature (null means 'void')
+		TYPE_CLASS encompassingClass = SYMBOL_TABLE.getInstance().findScopeClass();
+
 
 		TYPE semantic_rtnType = null; // the actual instance-type we expect to get in return statement, although we allow void
 		if(semantic_rtnType_signature != null) {
@@ -148,8 +151,6 @@ public class AST_DEC_FUNC extends AST_DEC
 			// each argument is also a local variable in the function scope
 			// must be done AFTER creating the function scope
 			SYMBOL_TABLE.getInstance().enter(arg.argName, argType);
-
-			list_argTypes = list_argTypes.next;
 		}
 
 		/*******************/
@@ -174,12 +175,6 @@ public class AST_DEC_FUNC extends AST_DEC
 	public TYPE SemantMe() throws SemanticException {
 		SemantMe_FuncBody((TYPE_FUNCTION) getType());
 		return null;  // Return value is irrelevant for declarations
-	}
-
-	// TODO- delete isMethod if not used
-	public boolean isMethod() {
-		// NOTE: only relevant AFTER SemantMe
-		return encompassingClass != null;
 	}
 
 	public TYPE getType() throws SemanticException {

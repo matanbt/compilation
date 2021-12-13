@@ -42,7 +42,7 @@ public class AST_EXP_BINOP extends AST_EXP
 		/*********************************/
 		/* CONVERT OP to a printable sOP */
 		/*********************************/
-		sOP = this.op; // TODO if we'll change the type of "op", we should support conversion to string here
+		sOP = this.op;
 
 		/*************************************/
 		/* AST NODE TYPE = AST BINOP EXP */
@@ -117,7 +117,7 @@ public class AST_EXP_BINOP extends AST_EXP
 			}
 			return TYPE_INT_INSTANCE.getInstance();
 		}
-		if ((semantic_left == TYPE_STRING.getInstance()) && (semantic_right == TYPE_STRING.getInstance()) && (op.equals("+")))
+		if ((semantic_left == TYPE_STRING_INSTANCE.getInstance()) && (semantic_right == TYPE_STRING_INSTANCE.getInstance()) && (op.equals("+")))
 		{
 			return TYPE_STRING_INSTANCE.getInstance();
 		}

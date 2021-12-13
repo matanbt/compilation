@@ -57,6 +57,7 @@ def generate_all_tests():
 
 def main():
     generate_tests(TEST_GENERATOR_FILE_PATH, TEST_INPUT_DIR, TEST_OUTPUT_DIR)
+    generate_all_tests()
 
 
 if __name__ == '__main__':

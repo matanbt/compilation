@@ -135,6 +135,7 @@ non terminal AST_DEC_VAR varDec;
 non terminal AST_NEW_EXP newExp;
 non terminal String binop;
 non terminal AST_DEC_CLASS classDec;
+non terminal AST_DEC_CLASS_SIG classDecSignature;
 non terminal AST_CFIELD_LIST cFieldList;
 non terminal AST_CFIELD cField;
 non terminal AST_DEC_ARRAY_TYPE_DEF arrayTypedef;
@@ -191,9 +192,12 @@ arrayTypedef    ::=     ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON   {: RESULT
 
 /** classDec **/
 
-classDec    ::=     CLASS ID:className EXTENDS ID:superName LBRACE cFieldList:l RBRACE   {: RESULT = new AST_DEC_CLASS(l, className, superName, parser.getLine());    :}
-                    |  CLASS ID:className LBRACE cFieldList:l RBRACE                     {: RESULT = new AST_DEC_CLASS(l, className, parser.getLine());    :}
+classDec    ::=     classDecSignature:sig LBRACE cFieldList:l RBRACE            {: RESULT = new AST_DEC_CLASS(l, sig, parser.getLine()); :}
                     ;
+
+classDecSignature ::=   CLASS ID:className EXTENDS ID:superName         {: RESULT = new AST_DEC_CLASS_SIG(className, superName, parser.getLine()); :}
+                        | CLASS ID:className                            {: RESULT = new AST_DEC_CLASS_SIG(className, parser.getLine()); :}
+                        ;
 
 cFieldList	::=		cField:s	cFieldList:l		        {: RESULT = new AST_CFIELD_LIST(s, l, parser.getLine());    :}
 					| cField:s				                {: RESULT = new AST_CFIELD_LIST(s, null, parser.getLine()); :}
@@ -206,6 +210,7 @@ cField    ::=       cFieldVarDec:varDec                             {: RESULT = 
 // Enforces the limitations of CField var-declaration syntactically
 cFieldVarDec ::=    type:t ID:id SEMICOLON                        {: RESULT = new AST_DEC_VAR(t, id, parser.getLine()); :}
                     | type:t ID:id ASSIGN INT:i SEMICOLON         {: RESULT = new AST_DEC_VAR(t, id, new AST_EXP_INT( Integer.parseInt(i), parser.getLine()), parser.getLine()); :}
+                    | type:t ID:id ASSIGN MINUS INT:i SEMICOLON         {: RESULT = new AST_DEC_VAR(t, id, new AST_EXP_INT( -Integer.parseInt(i), parser.getLine()), parser.getLine()); :}
                     | type:t ID:id ASSIGN STRING:s SEMICOLON      {: RESULT = new AST_DEC_VAR(t, id, new AST_EXP_STRING(s, parser.getLine()), parser.getLine()); :}
                     | type:t ID:id ASSIGN NIL SEMICOLON           {: RESULT = new AST_DEC_VAR(t, id, new AST_EXP_NIL(parser.getLine()), parser.getLine()); :}
                     ;

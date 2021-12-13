@@ -2,13 +2,14 @@
 array IntArr = int[];
 array Mat = IntArr[];
 class Father {
-    Mat mat = new Mat[8];
+    Mat mat := nil;
 }
 class Son extends Father {int i := 1;}
 class GSon extends Son{int j:= 1;}
 void main() {
     GSon obj := new GSon;
-    int i := obj.mat[0][2]
+    obj.mat := new IntArr[8];
+    int i := obj.mat[0][2];
 }
 
 *** OK
@@ -24,18 +25,9 @@ var varname := 1;
 
 class A { int i := 1;}
 A obj := new A;
-obj some_var;
+obj someVar;
 
 *** ERROR(3)
-
-/// over_shadowing_type_is_allowed
-
-int int := 1;
-int string := 1;
-
-void main() {
-    string int := 1;
-}
 
 /// return_a_type_symbol_1
 int foo() {
@@ -43,23 +35,6 @@ int foo() {
 }
 
 *** ERROR(2)
-
-
-/// return_a_type_symbol_2
-int main() {
-    int int := 1;
-    return int; // 'int' is now a number, not a type-symbol
-}
-
-*** OK
-
-/// overshadow_type_symbol
-void main() {
-    int int := 1;
-    int i; // cant declare with variable name!
-}
-
-*** ERROR(3)
 
 /// abusing_class_name_1
 class A {
@@ -73,14 +48,14 @@ class A {
     A A;
 
     A foo () { // cant have instance in signature function
-        return A
+        return A;
     }
 }
 
 *** ERROR(4)
 
 
-/// polymophysem_in_arrays
+/// polymorphysm_in_arrays
 class Father {int i;}
 class Son extends Father {int j;}
 
@@ -92,7 +67,7 @@ FathersArray main() {
         return arr;
 }
 
-*** ERROR(8)
+*** ERROR(9)
 
 
 /// cant_compare_classes
@@ -106,15 +81,15 @@ int main() {
 
 
 /// array_is_not_class_1
-array IntArr arr = int[];
+array IntArr = int[];
 IntArr arr := new IntArr;
 
 *** ERROR(2)
 
 
 /// renaming_array
-array IntArr arr = int[];
-IntArr arr := new IntArr;
+array IntArr = int[];
+IntArr arr := new int[5];
 IntArr arrOtherName := arr;
 
 *** OK

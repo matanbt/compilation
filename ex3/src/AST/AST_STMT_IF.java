@@ -29,7 +29,7 @@ public class AST_STMT_IF extends AST_STMT
 		/*******************************/
 		this.cond = cond;
 		this.body = body;
-		this.lineNumber = lineNumber;
+		this.lineNumber = cond.lineNumber;
 	}
 
 	/*********************************************************/
