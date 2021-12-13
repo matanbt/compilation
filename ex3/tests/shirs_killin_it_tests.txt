@@ -1,12 +1,8 @@
 /// predefined_id
 int shir := 12;
-class shir(){};
-
-*** ERROR(2)
-
-/// return_statements_only_inside_functions
-int x := 3;
-return x;
+class shir(){
+    int x;
+};
 
 *** ERROR(2)
 
@@ -20,7 +16,7 @@ void f(){
 
 /// override_in_global
 int salary := 7800;
-string salary := "7800";
+string salary := "abcd";
 
 *** ERROR(2)
 
@@ -30,30 +26,41 @@ int y := new x;
 
 *** ERROR(2)
 
-
 /// class_func_inheritance_and_override_f
 class A{
-	void f(){}
+	void f(){
+	    int x;
+	}
 }
-class B extends A{}
-A b := new B();
+class B extends A{
+    int y;
+}
+A b := new B;
 void f(){ 
-b.f();
+    b.f();
 }
 
 *** OK
 
 /// call_non_method_func_by_instance
-void f(){}
-class A{}
-class B extends A{}
-A b := new B();
+void f(){
+    int x;
+}
+class A{
+    int x;
+}
+class B extends A{
+    int y;
+}
+A b := new B;
 b.f();
 
-*** ERROR(5)
+*** ERROR(11)
 
 /// glob_function_call_inside_class
-void f(){}
+void f(){
+    int x;
+}
 class A{
 void g(){f();}
 }
@@ -61,49 +68,55 @@ void g(){f();}
 *** OK
 
 /// function_override_in_class
-void f(){}
+void f(){
+    int x;
+}
 class A{
-void f(){}
+    void f(){
+        int y;
+    }
 }
 
 *** OK 
 
 /// f_call_more_arg_1
-void f(int x, int y){}
-void g{
-f(1,2,3);
+void f(int x, int y){ int z := x + y; }
+void g() {
+    f(1,2,3);
 }
 
 *** ERROR(3)
 
 /// f_call_more_arg_2
-void f(){}
-void g{
-f(1);
+void f(){ int x; }
+void g() {
+    f(1);
 }
 
 *** ERROR(3)
 
 /// f_call_less_arg_1
-void f(int x, int y){}
-void g{
-f(1);
+void f(int x, int y){ int z := x + y; }
+void g() {
+    f(1);
 }
 
 *** ERROR(3)
 
 /// f_call_less_arg_2
-void f(int x, int y){}
-void g{
-f();
+void f(int x, int y){ int z := x + y; }
+void g() {
+    f();
 }
 
 *** ERROR(3)
 
 /// override_f_in_class
-void f(){}
+void f(){
+    int x;
+}
 class Person{
-string f(){return "Shir";}
+    string f() {return "Shir";}
 }
 
 *** OK
@@ -124,32 +137,36 @@ int f(){
 
 /// sMoodle1_1
 int j := 1;
-void main(){
-j := 2;
-string j;
+void main() {
+    j := 2;
+    string j;
 }
 
 *** OK
 
 /// sMoodle1_2
-class Shir{int f(){return 1;}}
+class Shir { int f() { return 1; } }
 int i := Shir.f();
 
 *** ERROR(2)
 
 /// sMoodle1_3
-class Shir{void f()};
+class Shir {
+    void f() {
+        int x;
+    }
+}
 Shir s;
-void main(){
-s.f(); //notInitialized
+void main() {
+    s.f(); //notInitialized
 }
 
 *** OK
 
 /// sMoodle1_4
-class A {}
-void main(){
-A A := new A;
+class A { int x; }
+void main() {
+    A A := new A;
 }
 
 *** OK
@@ -157,125 +174,107 @@ A A := new A;
 /// s_moodle_33394
 class A 
 {
-int a;
+    int a;
 }
 class B extends A
 {
-void a()
-{
-return;
-}
+    void a()
+    {
+        return;
+    }
 }
 
 *** ERROR(7)
 
 /// func_call_with_override
-void f(){
-int f;
-f();
+void f() {
+    int f;
+    f();
 }
 
 *** ERROR(3)
 
 /// recursive_call
 void f(){
-f();
+    f();
 }
 
 *** OK
 
 /// return_expected_type
-int f(){
-return "d";}
+int f() {
+    return "d";
+}
 
-*** ERROR(1)
+*** ERROR(2)
 
 /// arr_equality_testing
 array IDsArray = int[];
-IDsArray i:= NEW int[8];
-IDsArray g:= NEW int[7];
+IDsArray i:= new int[8];
+IDsArray g:= new int[7];
 int j := i = g;
 
 *** OK
 
 /// class_recursive_method
-class Shir{
-void f(){
-int x;
-f();
-}
+class Shir {
+    void f() {
+        int x;
+        f();
+    }
 }
 
 *** OK
 
 /// class_recursive_method_with_if
 class A{
-void f(){
-if (1){
-f();
+    void f() {
+        if (1) {
+            f();
+        }
+    }
 }
-}
-}
-
-*** OK
-
-/// no_cfields
-class E{}
 
 *** OK
 
 /// class_illegal_override
-class A{}
-class B extends A{}
+class A { int x; }
+class B extends A { int y; }
 
-class C{A a;}
-class D extends C{B a;}
+class C{ A a; }
+class D extends C{ B a; }
 
 *** ERROR(5)
 
 /// assign_with_void_func_call
-void f(){}
+void f(){ int x; }
 int i := f();
 
 *** ERROR(2)
 
 /// class_invalid_overshadowing
-class A{String s;}
+class A { string s; }
 class B extends A{
-int s := unknownId;
+    int s := 0;
 }
 
 *** ERROR(3)
 
 /// class_invalid_father
 int B;
-class A extends B{}
+class A extends B{ int x; }
 
 *** ERROR(2)
 
-/// function_call_not_catch_return_val
-int f(){return 1;}
-class A{
-f();
-}
-
-*** OK
-
 /// void_exp_call
-void f(){}
+void f() { int x; }
 int i := f();
 
 *** ERROR(2)
 
 /// class_implicit_dec
-class A{
-int i := 3+3;
+class A {
+    int i := 3+3;
 }
 
 *** ERROR(2)
-
-
-
-
-
-

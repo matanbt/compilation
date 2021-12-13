@@ -49,3 +49,4 @@ compilation.iml
 ex3/input/*.txt
 ex3/output/*.txt
 ex3/expected_output/*.txt
+ex3/logs

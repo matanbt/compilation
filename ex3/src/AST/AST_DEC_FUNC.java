@@ -36,7 +36,6 @@ public class AST_DEC_FUNC extends AST_DEC
 		this.argList = argList;
 		this.body = body;
 		/* NOTE: Assumes declaration is in one line!!! */
-		System.out.format("FUCKING FUCKING FUCKING SHIT %d\n", rtnType.lineNumber);
 		this.lineNumber = rtnType.lineNumber;
 	}
 
