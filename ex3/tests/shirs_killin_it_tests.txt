@@ -288,3 +288,26 @@ class A {
 }
 
 *** OK
+
+/// not_really_an_override
+class A {
+void f(){return;}
+}
+class B{
+void f(){return;}
+A a = new A();
+a.f();
+}
+
+*** OK
+
+/// override_inside_method_and_then_call
+class A{
+void f(){return;}
+void g(){
+int f;
+f();
+}
+}
+
+*** ERROR(5)
