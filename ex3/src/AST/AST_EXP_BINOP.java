@@ -84,14 +84,15 @@ public class AST_EXP_BINOP extends AST_EXP
 					this.throw_error(String.format("Trying to check for equality for 2 not related classes %s %s", class_e1, class_e2));
 				}
 			}
-			else if (e1.canBeAssignedNil() && e2 != TYPE_NIL_INSTANCE.getInstance())
+			else if (!e1.canBeAssignedNil() && e2 == TYPE_NIL_INSTANCE.getInstance())
 			{
 				this.throw_error(String.format(message, e1, e2));
 			}
-			else if (e2.canBeAssignedNil() && e1 != TYPE_NIL_INSTANCE.getInstance())
+			else if (!e2.canBeAssignedNil() && e1 == TYPE_NIL_INSTANCE.getInstance())
 			{
 				this.throw_error(String.format(message, e1, e2));
 			}
+
 		}
 	}
 

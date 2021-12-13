@@ -10,7 +10,6 @@ public abstract class TYPE
 	/*************/
 	/* The following methods SHOULD NOT be overridden
 	 (I mean they could, but it's redundant) */
-	// TODO make sure we obeyed this before merging to master
 	/*************/
 	/*************/
 	/* isClass() */
@@ -71,14 +70,8 @@ public abstract class TYPE
 	/* Can this type be assigned with 'nil'?
 	   EXAMPLE: TYPE_INT.getInstance().canBeAssignedNil == false
 	 */
-	public boolean canBeAssignedNil() { return isInstanceOfSomeClass() || isInstanceOfSomeArray(); }
+	public boolean canBeAssignedNil() { return this instanceof TYPE_CLASS_INSTANCE || this instanceof TYPE_ARRAY_INSTANCE; }
 
-	/*************/
-	/* can an expression of this type be preceded with 'new' keyword? */
-	/*************/
-	public boolean isNewable() {
-		return (isArraySymbol() || isClassSymbol());
-	}
 
 
 	//****************************************************************
@@ -103,6 +96,12 @@ public abstract class TYPE
 	 */
 	public static boolean checkAssignment(TYPE left, TYPE right) {
 
+		if(left == null || right == null) {
+			// null usually represent void, and we do not allow void assignment in both sides
+			System.out.format(">> ERROR cannot assign void / to void \n");
+			return false;
+		}
+
 		if(!left.canBeAssigned()) {
 			// we note that canBeVarType holds for 'left' IFF it can be assigned with some value
 			System.out.format(">> ERROR type (%s) cannot be used as an assignee\n", left.name);
@@ -113,11 +112,10 @@ public abstract class TYPE
 			System.out.format(">> ERROR cannot assign NIL to type (%s)\n", left.name);
 			return false;
 		}
-		// TODO assignments of arrays?
 		else if ((left != right) && (right != TYPE_NIL_INSTANCE.getInstance())) {
 			if (right.isInstanceOfSomeClass() && left.isInstanceOfSomeClass()) {
 				// in OOP we allow assignment of different types
-				if(!((TYPE_CLASS_INSTANCE) right).isSubClassOf((TYPE_CLASS_INSTANCE) left)) // TODO after TYPE_CLASS implementation
+				if(!((TYPE_CLASS_INSTANCE) right).isSubClassOf((TYPE_CLASS_INSTANCE) left))
 				{
 					System.out.format(">> ERROR:  cannot assign to class (%s) is" +
 							" NOT super class of (%s)\n", left.name, right.name);

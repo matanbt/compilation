@@ -84,7 +84,7 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 		/***************************************************/
 		/* [3] Check for the given value is from expected type */
 		/***************************************************/
-		boolean valid;
+		boolean valid = true;
 		if (rightType instanceof TYPE_ARRAY_INSTANCE) {
 			// Special case of creating a new array instance
 			valid = TYPE.checkNewArrayAssignment(leftType, (TYPE_ARRAY_INSTANCE) rightType);

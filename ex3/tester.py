@@ -25,6 +25,7 @@ def run_on_test_files():
         print("---- #" + str(i + 1) + " / " + str(len(test_files)) + " | Running: " + filename + " ----")
         result = subprocess.run(['java', '-jar', 'COMPILER', input_file, output_file],
                                 capture_output=True, text=True)
+        assert result.stderr == '', "Got error while running: /n"+ result.stderr
         save_log(filename, result.stdout)
 
 
@@ -43,7 +44,7 @@ def simple_tester():
             assert s1 == s2, "\n---> Test failed on: " + filename +\
                              "\n---> Got: " + s1 + "   Expected: " + s2 +\
                              "\n---> Please check : " + logs_dir + filename[:-4] + "_log_run.txt" +\
-                             "\n---> Or rerun : java -jar COMPILER " + filename + " " + output_file
+                             "\n---> Or rerun : java -jar COMPILER " + input_file + " " + output_file
 
     print("\n============= SUCCESS - SIMPLE_TESTER ==============")
 
