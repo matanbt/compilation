@@ -288,3 +288,71 @@ class A {
 }
 
 *** OK
+
+/// null_in_EXP_var_dec
+void f(){return;}
+int i := f();
+
+*** ERROR(2)
+
+/// null_in_EXP_var_dec_new
+void f(){return;}
+array arr = int[];
+arr i := new int[f()];
+
+*** ERROR(3)
+
+/// null_in_EXP_1
+void f(){return;}
+int i := f() + 1;
+
+*** ERROR(2)
+
+/// null_in_EXP_2
+void f(){return;}
+int i := f() + f();
+
+*** ERROR(2)
+
+/// null_in_EXP_3
+void f(){return;}
+int i := f() = f();
+
+*** OK
+
+/// null_in_f_call
+void f(){return;}
+void g(){
+f(f());
+}
+
+*** ERROR(3)
+
+/// null_in_f_call_2
+void f(){return;}
+void k(int i){return;}
+void g(){
+k(f());
+}
+
+*** ERROR(4)
+
+/// null_in_method_call_2
+class A{void f(){return;}}
+A a := new A;
+void k(int i){return;}
+void g(){
+k(a.f());
+}
+
+*** ERROR(5)
+
+/// null_in_method_call_3
+class A{void f(){return;}}
+A a := new A;
+void k(){return;}
+void g(){
+k(a.f());
+}
+
+*** ERROR(5)

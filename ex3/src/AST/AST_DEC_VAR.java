@@ -155,7 +155,7 @@ public class AST_DEC_VAR extends AST_DEC
             if (new_exp != null && valueType instanceof TYPE_ARRAY_INSTANCE) {
                 // Special case of creating a new array instance
                 valid = TYPE.checkNewArrayAssignment(semantic_type, (TYPE_ARRAY_INSTANCE) valueType);
-                int array_len = ((AST_NEW_EXP_IDX)new_exp).size; // TODO-EX4 use it in the future - insert it as a property ot the symbol table
+                int array_len = ((AST_NEW_EXP_IDX)new_exp).size;  // TODO-EX4 use it in the future - insert it as a property ot the symbol table
             } else {
                 // regular assignment check
                 valid = TYPE.checkAssignment(semantic_type, valueType);

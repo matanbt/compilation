@@ -91,7 +91,7 @@ public abstract class AST_Node
 			exp_node = exp_node.next, i++) {
 
 			TYPE expected_arg_type = expected_args.get(i);
-			TYPE arg_type = exp_node.head.SemantMe();
+			TYPE arg_type = exp_node.head.SemantMe();  // Notice: can return null
 
 			boolean valid = TYPE.checkAssignment(expected_arg_type, arg_type);
 			if(!valid) {
