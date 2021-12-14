@@ -136,25 +136,31 @@ public abstract class TYPE
 		Checks assignments of sort 'IntArray arr := new int[5]'.
 	 */
 	public static boolean checkNewArrayAssignment(TYPE left, TYPE_ARRAY_INSTANCE right) {
-		TYPE rightElementType = right.getElementType();
+		TYPE rightElementTypeIns = right.getElementType().convertSymbolToInstance();
 
 		if(!(left instanceof TYPE_ARRAY_INSTANCE)) {
 			System.out.println("Can't assign new array to non-array type");
 			return false;
 		}
 
-		TYPE leftElementType = ((TYPE_ARRAY_INSTANCE)left).getElementType();
-		if (leftElementType instanceof TYPE_CLASS_INSTANCE
-				&& rightElementType instanceof TYPE_CLASS_INSTANCE)
+		TYPE leftElementTypeIns = ((TYPE_ARRAY_INSTANCE)left).getElementType().convertSymbolToInstance();
+		if (leftElementTypeIns instanceof TYPE_CLASS_INSTANCE
+				&& rightElementTypeIns instanceof TYPE_CLASS_INSTANCE)
 		{
-			// allows inheritance when assigning new array
 			// forbid any case in which inheritance doesn't hold.
-			return ((TYPE_CLASS_INSTANCE) rightElementType).isSubClassOf((TYPE_CLASS_INSTANCE) leftElementType);
+			if (!((TYPE_CLASS_INSTANCE) rightElementTypeIns).isSubClassOf((TYPE_CLASS_INSTANCE) leftElementTypeIns)) {
+				System.out.format("No inheritance relation between (%s) and (%s)\n",
+						leftElementTypeIns, rightElementTypeIns);
+				return false;
+			}
+
+			// allows inheritance when assigning new array
+			return true;
 		}
 
-		if (leftElementType != rightElementType) {
+		if (leftElementTypeIns != rightElementTypeIns) {
 			System.out.format("Expected new array of (%s), but got (%s)\n",
-					leftElementType, rightElementType);
+					leftElementTypeIns, rightElementTypeIns);
 			return false;
 		}
 		return true;

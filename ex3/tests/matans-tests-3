@@ -9,6 +9,7 @@ class B extends A {
 
 array ArrA = A[];
 ArrA arr := new B[5]; // legal
+int endIt := 1;
 
 ***OK
 
@@ -28,6 +29,8 @@ class C extends B {
 
 array ArrA = A[];
 ArrA arr := new C[5]; // legal
+int endIt := 1;
+
 
 ***OK
 
@@ -39,6 +42,7 @@ class A {
 
 array ArrA = A[];
 ArrA arr := new A[5]; // legal
+int endIt := 1;
 
 ***OK
 
@@ -56,6 +60,8 @@ class B {
 
 array ArrA = A[];
 ArrA arr := new B[5]; // illegal
+int endIt := 1;
+
 
 ***ERROR(10)
 
@@ -88,6 +94,7 @@ ArrB b := new B[5];
 int booli1 := (a = a);
 int booli2 := (a = aOrig);
 int booli3 := (a = b);  // illegal
+int endIt := 1;
 
 ***ERROR(17)
 

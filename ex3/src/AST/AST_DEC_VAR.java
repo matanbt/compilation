@@ -147,7 +147,7 @@ public class AST_DEC_VAR extends AST_DEC
         else if (new_exp != null) {
             valueType = new_exp.SemantMe();
         }
-        if (valueType == null && exp != null && new_exp != null) {
+        if (valueType == null && (exp != null || new_exp != null)) {
             // got null from semantMe
             this.throw_error("illegal assignment for the var-declaration");
         }
