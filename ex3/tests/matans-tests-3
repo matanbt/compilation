@@ -109,3 +109,10 @@ int i;
 int k := foo(i, j);
 
 ***ERROR(6)
+
+/// error_comparing_func
+int foo() {
+    return 1;
+}
+
+int booli := (foo = foo);
