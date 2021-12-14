@@ -54,7 +54,8 @@ public class AST_EXP_LIST extends AST_Node
 
 	@Override
 	public TYPE SemantMe() throws SemanticException {
-		return null; // TODO
+		// this is actually never being called (we only use EXP_LIST in functionCallSemantMe), so we return null
+		return null;
 	}
 
 }
