@@ -96,7 +96,7 @@ int booli2 := (a = aOrig);
 int booli3 := (a = b);  // illegal
 int endIt := 1;
 
-***ERROR(17)
+***ERROR(19)
 
 
 
@@ -122,10 +122,24 @@ int booli := (foo = foo);
 
 /// valid_comparing_void
 
-void foo {return;}
-void bar {return;}
+void foo() {return;}
+void bar() {return;}
 
 int booli1 := foo() = bar();
 int booli2 := foo() = foo();
 
 *** OK
+
+
+/// void_stuff_1
+void foo() {return;}
+int bar(void arg) {return 1;}
+
+*** ERROR(2)
+
+
+/// void_stuff_2
+void foo() {return;}
+void bar() {return foo();}
+
+*** ERROR(2)
