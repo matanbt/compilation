@@ -116,3 +116,16 @@ int foo() {
 }
 
 int booli := (foo = foo);
+
+ *** ERROR(5)
+
+
+/// valid_comparing_void
+
+void foo {return;}
+void bar {return;}
+
+int booli1 := foo() = bar();
+int booli2 := foo() = foo();
+
+*** OK
