@@ -144,7 +144,15 @@ public abstract class TYPE
 		}
 
 		TYPE leftElementType = ((TYPE_ARRAY_INSTANCE)left).getElementType();
-		if(leftElementType != rightElementType) {
+		if (leftElementType instanceof TYPE_CLASS_INSTANCE
+				&& rightElementType instanceof TYPE_CLASS_INSTANCE)
+		{
+			// allows inheritance when assigning new array
+			// forbid any case in which inheritance doesn't hold.
+			return ((TYPE_CLASS_INSTANCE) rightElementType).isSubClassOf((TYPE_CLASS_INSTANCE) leftElementType);
+		}
+
+		if (leftElementType != rightElementType) {
 			System.out.format("Expected new array of (%s), but got (%s)\n",
 					leftElementType, rightElementType);
 			return false;

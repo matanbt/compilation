@@ -111,7 +111,6 @@ public class AST_DEC_VAR extends AST_DEC
         if (semantic_type == null)
         {
             this.throw_error(String.format("non existing type (%s)\n", this.type));
-
         }
 
         semantic_type = semantic_type.convertSymbolToInstance();
@@ -147,6 +146,10 @@ public class AST_DEC_VAR extends AST_DEC
         }
         else if (new_exp != null) {
             valueType = new_exp.SemantMe();
+        }
+        if (valueType == null && exp != null && new_exp != null) {
+            // got null from semantMe
+            this.throw_error("illegal assignment for the var-declaration");
         }
 
         if (valueType != null) { // means there is an assignment
