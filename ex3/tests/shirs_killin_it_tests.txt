@@ -354,7 +354,8 @@ A a := new A;
 void k(){return;}
 void g(){
 k(a.f());
-
+}
+*** ERROR(5)
 
 /// not_really_an_override
 class A {

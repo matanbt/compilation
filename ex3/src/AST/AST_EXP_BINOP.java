@@ -123,7 +123,7 @@ public class AST_EXP_BINOP extends AST_EXP
 		{
 			return TYPE_STRING_INSTANCE.getInstance();
 		}
-		this.throw_error(String.format("binary operations between invalid/unmatching types: left = (%s), right = (%s)", semantic_left.name, semantic_right.name));
+		this.throw_error("binary operations between invalid/unmatching types");
 		return null;
 	}
 
