@@ -870,3 +870,64 @@ class Father
 }
 
 *** OK
+
+/// equality_void_comparison
+int foo() { int x; }
+
+int y := foo() = foo();
+
+*** OK
+
+/// equality_int_nil_comparison_1
+int y := 1 = nil;
+
+*** ERROR(1)
+
+/// equality_int_nil_comparison_2
+int x := 5;
+int y := x = nil;
+
+*** ERROR(2)
+
+/// equality_string_nil_comparison_1
+int y := "abc" = nil;
+
+*** ERROR(1)
+
+/// equality_string_nil_comparison_2
+string x := "abcdefu";
+int y := x = nil;
+
+*** ERROR(2)
+
+/// equality_arrays_different_static_type
+array Arr1 = int[];
+array Arr2 = int[];
+
+Arr1 x := new int[5];
+Arr2 y := new int[6];
+int z := x = y;
+
+*** ERROR(6)
+
+/// equality_arrays_same_static_type
+array Arr1 = int[];
+
+Arr1 x := new int[5];
+Arr1 y := new int[6];
+int z := x = y;
+
+*** OK
+
+/// equality_arrays_inheritance
+class A { int x; }
+class B extends A { int y; }
+
+array Arr1 = A[];
+array Arr2 = B[];
+
+Arr1 x := new A[3];
+Arr2 y := new B[3];
+int z := x = y;
+
+*** ERROR(9)
