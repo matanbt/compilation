@@ -362,10 +362,11 @@ class A {
 void f(){return;}
 }
 class B {
-void f(string s){
-   A a = new A;
-   a.f();
-   return;
+    void f(string s){
+       A a = new A;
+       a.f();
+       return;
+    }
 }
 
 *** OK
