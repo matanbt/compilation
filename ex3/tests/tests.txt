@@ -931,3 +931,23 @@ Arr2 y := new B[3];
 int z := x = y;
 
 *** ERROR(9)
+
+/// while_with_void_cond
+void foo() { int x; }
+
+void main() {
+    while (foo()) {
+        PrintTrace();
+    }
+}
+
+*** ERROR(4)
+
+/// invalid_void_return
+void foo() { int x; }
+
+void bar() {
+    return foo();
+}
+
+*** ERROR(4)
