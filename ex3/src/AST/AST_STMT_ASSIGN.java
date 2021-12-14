@@ -1,19 +1,20 @@
 package AST;
 
-import TYPES.*;
+import EXCEPTIONS.SemanticException;
+import TYPES.TYPE;
 
 public class AST_STMT_ASSIGN extends AST_STMT
 {
 	/***************/
 	/*  var := exp */
 	/***************/
-	public AST_EXP_VAR var;
+	public AST_VAR var;
 	public AST_EXP exp;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_ASSIGN(AST_EXP_VAR var,AST_EXP exp)
+	public AST_STMT_ASSIGN(AST_VAR var, AST_EXP exp, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -26,10 +27,11 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		System.out.print("====================== stmt -> var ASSIGN exp SEMICOLON\n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.var = var;
 		this.exp = exp;
+		this.lineNumber = lineNumber;
 	}
 
 	/*********************************************************/
@@ -61,18 +63,40 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
 	}
-	public TYPE SemantMe()
-	{
-		TYPE t1 = null;
-		TYPE t2 = null;
-		
-		if (var != null) t1 = var.SemantMe();
-		if (exp != null) t2 = exp.SemantMe();
-		
-		if (t1 != t2)
+
+	public TYPE SemantMe() throws SemanticException {
+		TYPE leftType, rightType;
+
+		/****************************/
+		/* [1] Check If Type exists */
+		/****************************/
+		leftType = this.var.SemantMe();
+		rightType = this.exp.SemantMe();
+
+		if (leftType == null || rightType == null)
 		{
-			System.out.format(">> ERROR [%d:%d] type mismatch for var := exp\n",6,6);				
+			if (leftType == null)
+			{
+				this.throw_error("Trying to assign to void");
+			}
+			else
+			{
+				this.throw_error("Trying to assign void to variable");
+			}
 		}
+
+
+		/***************************************************/
+		/* [3] Check for the given value is from expected type */
+		/***************************************************/
+		boolean valid = TYPE.checkAssignment(leftType, rightType);
+		if(!valid) {
+			this.throw_error("Variable assignment statement");
+		}
+
+		/*********************************************************/
+		/* [5] Return value is irrelevant for statements */
+		/*********************************************************/
 		return null;
 	}
 }

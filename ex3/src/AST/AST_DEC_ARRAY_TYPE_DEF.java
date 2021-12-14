@@ -1,5 +1,9 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
+import TYPES.*;
+import SYMBOL_TABLE.*;
+
 public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 {
 	public AST_TYPE type;
@@ -8,7 +12,7 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_DEC_ARRAY_TYPE_DEF(AST_TYPE type, String id)
+	public AST_DEC_ARRAY_TYPE_DEF(AST_TYPE type, String id, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -21,10 +25,11 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 		System.out.format("====================== arrayTypedef -> ARRAY ID(%s) = type [];\n",id);
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.type = type;
 		this.id = id;
+		this.lineNumber = lineNumber;
 	}
 
 	/*************************************************/
@@ -54,5 +59,29 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (type != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
+	}
+
+	public TYPE SemantMe() throws SemanticException
+	{
+		SYMBOL_TABLE table = SYMBOL_TABLE.getInstance();
+
+		/* 1. Check that the identifier name is valid (AKA not used) */
+		if (table.find(this.id) != null)
+		{
+			this.throw_error("identifier already used");
+		}
+
+		/* 2. Check that the type is valid (AKA defined before) */
+		TYPE array_type = this.type.SemantMe();
+		if (array_type == null || array_type.canBeAssigned())
+		{
+			this.throw_error("Invalid type for array");
+		}
+
+		/* 3. Update symbol table with this new type */
+		TYPE_ARRAY array = new TYPE_ARRAY(this.id, array_type);
+		table.enter(this.id, array);
+
+		return null;
 	}
 }

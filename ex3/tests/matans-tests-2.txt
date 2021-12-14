@@ -1,0 +1,189 @@
+/// accessing_nested_vars_pos
+array IntArr = int[];
+array Mat = IntArr[];
+class Father {
+    Mat mat := nil;
+}
+class Son extends Father {int i := 1;}
+class GSon extends Son{int j:= 1;}
+void main() {
+    GSon obj := new GSon;
+    int i := obj.mat[0][2];
+    obj.mat := new IntArr[8];
+    i := obj.mat[0][2];
+}
+
+*** OK
+
+/// nonconst_field_in_class
+array IntArr = int[];
+array Mat = IntArr[];
+class Father {
+    Mat mat := new Mat[8];
+}
+
+*** ERROR(4)
+
+
+/// type_error_array_1
+array IntArr = int[];
+array Mat = IntArr[];
+class Father {
+    IntArr arr := 1;
+}
+*** ERROR(4)
+
+
+/// type_error_array_2
+array IntArr = int[];
+array Mat = IntArr[];
+class Father {
+    IntArr arr;
+    Mat mat := arr;
+}
+*** ERROR(5)
+
+/// regular_identifier_tries_to_be_type_1
+
+int var := 1;
+var varname := 1;
+
+*** ERROR(2)
+
+/// regular_identifier_tries_to_be_type_2
+class A { int i := 1;}
+A obj := new A;
+obj someVar;
+
+*** ERROR(3)
+
+/// over_shadowing_type_is_allowed
+class A {int i:=1;}
+class B {int j:=1;}
+
+void main() {
+    A B := new A;
+}
+
+*** OK
+
+/// hardcore_scoping
+void main(int i) {
+    int j := 1;
+    if(1) {
+        int j := i;
+        int i := j;
+        int k;
+    }
+    int k;
+    while(0) {
+        int k;
+    }
+}
+
+int k;
+string i;
+
+*** OK
+
+
+/// return_a_type_symbol_1
+int foo() {
+    return int; // we try to return a symbol type
+}
+
+*** ERROR(2)
+
+
+/// abusing_class_name_1
+class A {
+    A A;
+}
+
+*** OK
+
+/// abusing_class_name_2
+class A {
+    A A;
+
+    A foo () { // cant have instance in signature function
+        return A;
+    }
+}
+
+*** ERROR(4)
+
+
+/// polymorphysm_in_arrays
+class Father {int i;}
+class Son extends Father {int j;}
+
+array FathersArray = Father[];
+array SonsArray = Son[];
+
+FathersArray main() {
+        SonsArray arr := new Son[5];
+        return arr;
+}
+
+*** ERROR(9)
+
+
+/// cant_compare_classes
+class A {int i;}
+
+int main() {
+    return (A = A);
+}
+
+*** ERROR(4)
+
+
+/// array_is_not_class_1
+array IntArr = int[];
+IntArr arr := new IntArr;
+
+*** ERROR(2)
+
+
+/// renaming_array
+array IntArr = int[];
+IntArr arr := new int[5];
+IntArr arrOtherName := arr;
+
+*** OK
+
+/// array_must_have_len_1
+array IntArr = int[];
+IntArr arr := new IntArr;
+
+*** ERROR(2)
+
+/// array_must_have_len_2
+array IntArr = int[];
+
+IntArr arr := new int[];
+
+*** ERROR(3)
+
+
+/// array_must_have_pos_len
+array IntArr = int[];
+
+IntArr arr := new int[0];
+
+*** ERROR(3)
+
+/// array_must_have_mightve_neg_len
+array IntArr = int[];
+int i := -1;
+IntArr arr := new int[i];
+
+***OK
+
+/// cant_assign_array_type_to_array
+array IntArr = int[];
+IntArr arr := new IntArr[9];
+
+***ERROR(2)
+

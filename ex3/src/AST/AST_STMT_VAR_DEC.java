@@ -1,5 +1,8 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
+import TYPES.TYPE;
+
 // basically a class to wrap varDec, when it is a statement (=inside func)
 public class AST_STMT_VAR_DEC extends AST_STMT
 {
@@ -9,7 +12,7 @@ public class AST_STMT_VAR_DEC extends AST_STMT
     /* CONSTRUCTOR(S) */
     /******************/
 
-    public AST_STMT_VAR_DEC(AST_DEC_VAR d)
+    public AST_STMT_VAR_DEC(AST_DEC_VAR d, int lineNumber)
     {
         /******************************/
         /* SET A UNIQUE SERIAL NUMBER */
@@ -22,6 +25,7 @@ public class AST_STMT_VAR_DEC extends AST_STMT
         System.out.format("====================== stmt -> varDec ");
 
         this.d = d;
+        this.lineNumber = lineNumber;
     }
 
 
@@ -54,5 +58,10 @@ public class AST_STMT_VAR_DEC extends AST_STMT
         /* PRINT Edges to AST GRAPHVIZ DOT file */
         /****************************************/
         AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, d.SerialNumber);
+    }
+
+    @Override
+    public TYPE SemantMe() throws SemanticException {
+        return this.d.SemantMe();
     }
 }

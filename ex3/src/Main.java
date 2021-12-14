@@ -1,6 +1,8 @@
    
 import java.io.*;
 import java.io.PrintWriter;
+
+import EXCEPTIONS.SemanticException;
 import java_cup.runtime.Symbol;
 import AST.*;
 
@@ -37,7 +39,7 @@ public class Main
 			/*******************************/
 			/* [4] Initialize a new parser */
 			/*******************************/
-			p = new Parser(l);
+			p = new Parser(l, file_writer);
 
 			/***********************************/
 			/* [5] 3 ... 2 ... 1 ... Parse !!! */
@@ -47,12 +49,21 @@ public class Main
 			/*************************/
 			/* [6] Print the AST ... */
 			/*************************/
-			AST.PrintMe();
+//			AST.PrintMe();
 
 			/**************************/
 			/* [7] Semant the AST ... */
 			/**************************/
-			AST.SemantMe();
+			try
+			{
+				AST.SemantMe();
+				file_writer.println("OK");
+			}
+			catch (SemanticException e)
+			{
+				System.out.println(e.getMessage());
+				file_writer.println(String.format("ERROR(%d)", e.lineNumber));
+			}
 			
 			/*************************/
 			/* [8] Close output file */

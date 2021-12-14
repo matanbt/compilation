@@ -1,0 +1,145 @@
+/// new_array__test_1
+class A {
+	int i;
+}
+
+class B extends A {
+	int i;
+}
+
+array ArrA = A[];
+ArrA arr := new B[5]; // legal
+int endIt := 1;
+
+***OK
+
+
+/// new_array__test_2
+class A {
+	int i;
+}
+
+class B extends A {
+	int i;
+}
+
+class C extends B {
+	int i;
+}
+
+array ArrA = A[];
+ArrA arr := new C[5]; // legal
+int endIt := 1;
+
+
+***OK
+
+
+/// new_array__test_3
+class A {
+	int i;
+}
+
+array ArrA = A[];
+ArrA arr := new A[5]; // legal
+int endIt := 1;
+
+***OK
+
+
+
+
+/// new_array__test_4
+class A {
+	int i;
+}
+
+class B {
+	int i;
+}
+
+array ArrA = A[];
+ArrA arr := new B[5]; // illegal
+int endIt := 1;
+
+
+***ERROR(10)
+
+
+/// illegal_inheritence
+class A extends A {
+	int i;
+}
+
+***ERROR(1)
+
+
+/// illegal_array_comparing
+class A {
+	int i;
+}
+
+class B extends A {
+	int i;
+}
+
+array ArrA = A[];
+array ArrB = B[];
+
+ArrA a := new B[5];
+ArrA aOrig := new A[5];
+
+ArrB b := new B[5];
+
+int booli1 := (a = a);
+int booli2 := (a = aOrig);
+int booli3 := (a = b);  // illegal
+int endIt := 1;
+
+***ERROR(19)
+
+
+
+/// error_when_trying_to_assign_void
+void foo(int i, string j) {
+	return;
+}
+string j;
+int i;
+int k := foo(i, j);
+
+***ERROR(6)
+
+/// error_comparing_func
+int foo() {
+    return 1;
+}
+
+int booli := (foo = foo);
+
+ *** ERROR(5)
+
+
+/// valid_comparing_void
+
+void foo() {return;}
+void bar() {return;}
+
+int booli1 := foo() = bar();
+int booli2 := foo() = foo();
+
+*** OK
+
+
+/// void_stuff_1
+void foo() {return;}
+int bar(void arg) {return 1;}
+
+*** ERROR(2)
+
+
+/// void_stuff_2
+void foo() {return;}
+void bar() {return foo();}
+
+*** ERROR(2)

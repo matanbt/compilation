@@ -1,0 +1,953 @@
+/// example_17
+void foo(int x) {
+    int a := 1;
+    int b := 2;
+    if (x) {
+        string a := "abc";
+    }
+}
+
+*** OK
+
+/// assignments_41
+void main() {
+    int j := 0;
+}
+
+*** OK
+
+/// assignments_43
+void main() {
+    j := 0;
+}
+
+*** ERROR(2)
+
+/// assignments_45
+void main() {
+    int j := "abc";
+}
+
+*** ERROR(2)
+
+/// assignments_47
+void main() {
+    int x := 10;
+    int y := x;
+}
+
+*** OK
+
+/// assignments_49
+void main() {
+    int x := 10;
+    string y := x;
+}
+
+*** ERROR(3)
+
+/// binops_51
+void main() {
+    int x := 1;
+    int y := 2;
+    int z := x + y;
+}
+
+*** OK
+
+/// binops_53
+void main() {
+    int x := 1;
+    string y := "A";
+    int z := x < y;
+}
+
+*** ERROR(4)
+
+/// binops_55
+void main() {
+    string x := "A";
+    string y := "B";
+    string z := x * y;
+}
+
+*** ERROR(4)
+
+/// binops_57
+void main() {
+    int x := 7 / 0;
+}
+
+*** ERROR(2)
+
+/// binops_59
+void main() {
+    int k := 0;
+    int x := 7 / k;
+}
+
+*** OK
+
+/// control_flow_61
+void main() {
+    int x := 1;
+    if (x + 1) {
+        int z := 2;
+    }
+}
+
+*** OK
+
+/// control_flow_63
+void main() {
+    string x := "A";
+    while (x + "B") {
+        int z := 2;
+    }
+}
+
+*** ERROR(3)
+
+/// return_65
+int main() {
+    return 17;
+}
+
+*** OK
+
+/// return_67
+int main() {
+    string s := "foo";
+    return s + "bar";
+}
+
+*** ERROR(3)
+
+/// return_69
+void main() {
+    int x := 1;
+    return x + 1;
+}
+
+*** ERROR(3)
+
+/// return_71
+string g() {
+    return "abc";
+}
+
+int main() {
+    return g() + "d";
+}
+
+*** ERROR(6)
+
+/// function_calls_73
+int g(int x) {
+    return x + 1;
+}
+
+int main() {
+    return g(42);
+}
+
+*** OK
+
+/// function_calls_75
+int g(int x) {
+    return x + 1;
+}
+
+int main() {
+    string z := "aaa";
+    return g(z);
+}
+
+*** ERROR(7)
+
+/// function_calls_77
+int foo(int k) {
+    int a := k * 10;
+    return foo(a, a);
+}
+
+*** ERROR(3)
+
+/// function_calls_79
+int foo(int k) {
+    int a := k * 10;
+    return bar(a, a);
+}
+
+*** ERROR(3)
+
+/// function_calls_81
+array stringArray = string[];
+
+int main(int argc, stringArray argv) {
+    main(2, argv);
+    return 0;
+}
+
+*** OK
+
+/// arrays_83
+array intArray = int[];
+
+void foo() {
+    intArray arr := new int["z"];
+}
+
+*** ERROR(4)
+
+/// arrays_85
+array intArray = int[];
+
+void foo(int d) {
+    int k := 3;
+    intArray arr := new int[10];
+    arr[k] := 17;
+}
+
+*** OK
+
+/// arrays_87
+array arr1t = int[];
+array arr2t = int[];
+
+void f(arr1t a) {
+    int x;
+}
+
+void g() {
+    arr2t a := new int[10];
+    f(a);
+}
+
+*** ERROR(10)
+
+/// classes_91
+class Base {
+    int x;
+}
+
+void main() {
+    Base o := new Base;
+    o.y := 1;
+}
+
+*** ERROR(7)
+
+/// classes_93
+class Base {
+    int x;
+}
+
+void main() {
+    Base o := new Base;
+    o.x := 1;
+}
+
+*** OK
+
+/// classes_95
+class Base {
+    int a;
+    
+    int foo() {
+        return a;
+    }
+}
+
+*** OK
+
+/// classes_97
+class Base {
+    int bar() {
+        return 17;
+    }
+    
+    int foo() {
+        return bar();
+    }
+}
+
+*** OK
+
+/// classes_99
+class Base {
+    int foo() {
+        return a;
+    }
+    
+    int a;
+}
+
+*** ERROR(3)
+
+/// classes_101
+class Base {
+    int foo() {
+        return bar();
+    }
+    
+    int bar() {
+        return 17;
+    }
+}
+
+*** ERROR(3)
+
+/// classes_103
+class A {
+    void foo() {
+        A o := new A;
+        o.foo();
+    }
+}
+
+*** OK
+
+/// inheritance_105
+class A {
+    int x;
+}
+
+class B extends A { int b; }
+
+void main() {
+    B o := new B;
+    o.x := 100;
+}
+
+*** OK
+
+/// inheritance_107
+class A {
+    int x;
+}
+
+class B extends A { int b; }
+
+void main() {
+    B o := new B;
+    o.y := 100;
+}
+
+*** ERROR(9)
+
+/// inheritance_109
+class A {
+    int foo() {
+        return 17;
+    }
+}
+
+class B extends A {
+    int foo() {
+        return 18;
+    }
+}
+
+*** OK
+
+/// inheritance_111
+class A {
+    int foo() {
+        return 17;
+    }
+}
+
+class B extends A {
+    int foo(int x) {
+        return x + 1;
+    }
+}
+
+*** ERROR(8)
+
+/// inheritance_113
+class A {
+    int data;
+}
+
+class B extends A {
+    string data;
+}
+
+*** ERROR(6)
+
+/// inheritance_115
+class A {
+    int x;
+}
+
+class B extends A {
+    int y;
+}
+
+void foo(A a) {
+    return;
+}
+
+void main() {
+    B o := new B;
+    foo(o);
+}
+
+*** OK
+
+/// inheritance_117
+class A {
+    int x;
+}
+
+class B extends A {
+    int y;
+}
+void foo(B b) {
+    return;
+}
+
+void main() {
+    A o := new A;
+    foo(o);
+}
+
+*** ERROR(14)
+
+/// null_119
+array arrt = int[];
+
+void foo(arrt a) {
+    int x;
+}
+
+
+void main() {
+    foo(nil);
+}
+
+*** OK
+
+/// null_121
+class A {
+    int x;
+}
+
+void foo(A a) {
+    int x;
+}
+
+
+void main() {
+    foo(nil);
+}
+
+*** OK
+
+/// scopes_123
+void foo() {
+    string a := "A";
+    if (7) {
+        int a := 1;
+        int b := a + 1;
+    }
+}
+
+*** OK
+
+/// scopes_125
+void foo() {
+    int a := 1;
+    if (7) {
+        string a := "A";
+        int b := a + 1;
+    }
+}
+
+*** ERROR(5)
+
+/// scopes_127
+int z := 1000;
+void foo(int z) {
+    if (7) {
+        int b := z + 1;
+    }
+}
+
+*** OK
+
+/// scopes_129
+int z := 1000;
+class A {
+    int z;
+    int foo() {
+        return z;
+    }
+}
+
+*** OK
+
+/// scopes_131
+int z := 1000;
+class A {
+    int z;
+}
+
+class B extends A {
+    int foo() {
+        return z;
+    }
+}
+
+*** OK
+
+/// library_functions_133
+void main() {
+    int z := 1000;
+    PrintInt(z + 1);
+}
+
+*** OK
+
+/// library_functions_extra_1
+void main() {
+    PrintInt(nil);
+}
+
+*** ERROR(2)
+
+/// library_functions_extra_2
+void main() {
+    string z := "A";
+    PrintString("A" + "B");
+}
+
+*** OK
+
+/// library_functions_extra_3
+void main() {
+    int z := 1000;
+    PrintString(z + 1);
+}
+
+*** ERROR(3)
+
+/// library_functions_extra_4
+void main() {
+    PrintTrace();
+}
+
+*** OK
+
+/// ex3_table_1_1
+class Son extends Father
+{
+    int bar;
+}
+class Father
+{
+    void foo() { PrintInt(8); }
+}
+
+*** ERROR(1)
+
+/// ex3_table_1_2
+class Edge
+{
+    Vertex u;
+    Vertex v;
+}
+class Vertex
+{
+    int weight;
+}
+
+*** ERROR(3)
+
+/// ex3_table_1_3
+class UseBeforeDef
+{
+    void foo() { bar(8); }
+    void bar(int i) { PrintInt(i); }
+}
+
+*** ERROR(3)
+
+/// ex3_table_1_4
+class UseBeforeDef
+{
+    void foo() { PrintInt(i); }
+    int i;
+}
+
+*** ERROR(3)
+
+/// ex3_table_2_1
+class Father
+{
+    int foo() { return 8; }
+}
+class Son extends Father
+{
+    void foo() { PrintInt(8); }
+}
+
+*** ERROR(7)
+
+/// ex3_table_2_2
+class Father
+{
+    int foo(int i) { return 8; }
+}
+class Son extends Father
+{
+    int foo(int j) { return j; }
+}
+
+*** OK
+
+/// ex3_table_2_3
+class IllegalSameName
+{
+    void foo() { PrintInt(8); }
+    void foo(int i) { PrintInt(i); }
+}
+
+*** ERROR(4)
+
+/// ex3_table_2_4
+class Father
+{
+    int foo;
+}
+class Son extends Father
+{
+    string foo;
+}
+
+*** ERROR(7)
+
+/// ex3_table_2_5
+class Father
+{
+    int foo;
+}
+class Son extends Father
+{
+    void foo() { int i; }
+}
+
+*** ERROR(7)
+
+
+/// ex3_table_3
+class Father { int i; }
+class Son extends Father { int j; }
+void foo(Father f) { PrintInt(f.i); }
+void main() { Son s; foo(s); }
+
+*** OK
+
+/// ex3_table_4
+class Father { int i; }
+void foo(Father f) { PrintInt(f.i); }
+void main() { foo(nil); }
+
+*** OK
+
+/// ex3_table_5
+array IntArray = int[];
+void F(IntArray A) { PrintInt(A[8]); }
+void main() { F(nil); }
+
+*** OK
+
+/// ex3_table_6
+array gradesArray = int[];
+array IDsArray = int[];
+void F(IDsArray ids) { PrintInt(ids[6]); }
+void main()
+{
+    IDsArray ids := new int[8];
+    gradesArray grades := new int[8];
+    F(grades);
+}
+
+*** ERROR(8)
+
+/// ex3_table_7_1
+class Father { int i; }
+Father f := nil;
+
+*** OK
+
+/// ex3_table_7_2
+class Father { int i; }
+class Son extends Father { int j; }
+Father f := new Son;
+
+*** OK
+
+/// ex3_table_7_3
+class Father { int i; }
+class Son extends Father { int j := 8; }
+
+*** OK
+
+/// ex3_table_7_4
+class Father { int i := 9; }
+class Son extends Father { int j := i; }
+
+*** ERROR(2)
+
+/// ex3_table_7_5
+class Father { int foo() { return 90; } }
+class Son extends Father { int j := foo(); }
+
+*** ERROR(2)
+
+/// ex3_table_7_6
+class IntList
+{
+    int head := -1;
+    IntList tail := new IntList;
+}
+
+*** ERROR(4)
+
+/// ex3_table_7_7
+class IntList
+{
+    IntList tail;
+    void Init() { tail := new IntList; }
+    int head;
+}
+
+*** OK
+
+/// ex3_table_7_8
+array gradesArray = int[];
+array IDsArray = int[];
+IDsArray i := new int[8];
+gradesArray g := new int[8];
+void foo() { i := g; }
+
+*** ERROR(5)
+
+/// ex3_table_7_9
+string s := nil;
+
+*** ERROR(1)
+
+/// ex3_table_8_1
+class Father { int i; int j; }
+int Check(Father f)
+{
+    if (f = nil)
+    {
+        return 800;
+    }
+    return 774;
+}
+
+*** OK
+
+/// ex3_table_8_2
+int Check(string s)
+{
+    return s = "LosPollosHermanos";
+}
+
+*** OK
+
+/// ex3_table_8_3
+array gradesArray = int[];
+array IDsArray = int[];
+IDsArray i := new int[8];
+gradesArray g := new int[8];
+int j := i = g;
+
+*** ERROR(5)
+
+/// ex3_table_8_4
+string s1;
+string s2 := "HankSchrader";
+int i := s1 = s2;
+
+*** OK
+
+/// ex3_table_9_1
+class Father
+{
+    int foo() { return 8/0; }
+}
+
+*** ERROR(3)
+
+/// ex3_table_9_2
+class Father { string s1; string s2; }
+void foo(Father f)
+{
+    f.s1 := f.s1 + f.s2;
+}
+
+*** OK
+
+/// ex3_table_9_3
+class Father { string s1; string s2; }
+void foo(Father f)
+{
+    int i := f.s1 < f.s2;
+}
+
+*** ERROR(4)
+
+/// ex3_table_9_4
+class Father { int j; int k; }
+int foo(Father f)
+{
+    int i := 620;
+    return i < f.j;
+}
+
+*** OK
+
+/// ex3_table_10_1
+int salary := 7800;
+void foo()
+{
+    string salary := "six";
+}
+
+*** OK
+
+/// ex3_table_10_2
+int salary := 7800;
+void foo(string salary)
+{
+    PrintString(salary);
+}
+
+*** OK
+
+/// ex3_table_10_3
+void foo(string salary)
+{
+    int salary := 7800;
+    PrintString(salary);
+}
+
+*** ERROR(3)
+
+/// ex3_table_10_4
+string myvar := "ab";
+class Father
+{
+    Father myvar := nil;
+    void foo()
+    {
+        int myvar := 100;
+        PrintInt(myvar);
+    }
+}
+
+*** OK
+
+/// ex3_table_10_5
+int foo(string s) { return 800; }
+class Father
+{
+    string foo(string s)
+    {
+        return s;
+    }
+    void Print()
+    {
+        PrintString(foo("Jerry"));
+    }
+}
+
+*** OK
+
+/// equality_void_comparison
+int foo() { int x; }
+
+int y := foo() = foo();
+
+*** OK
+
+/// equality_int_nil_comparison_1
+int y := 1 = nil;
+
+*** ERROR(1)
+
+/// equality_int_nil_comparison_2
+int x := 5;
+int y := x = nil;
+
+*** ERROR(2)
+
+/// equality_string_nil_comparison_1
+int y := "abc" = nil;
+
+*** ERROR(1)
+
+/// equality_string_nil_comparison_2
+string x := "abcdefu";
+int y := x = nil;
+
+*** ERROR(2)
+
+/// equality_arrays_different_static_type
+array Arr1 = int[];
+array Arr2 = int[];
+
+Arr1 x := new int[5];
+Arr2 y := new int[6];
+int z := x = y;
+
+*** ERROR(6)
+
+/// equality_arrays_same_static_type
+array Arr1 = int[];
+
+Arr1 x := new int[5];
+Arr1 y := new int[6];
+int z := x = y;
+
+*** OK
+
+/// equality_arrays_inheritance
+class A { int x; }
+class B extends A { int y; }
+
+array Arr1 = A[];
+array Arr2 = B[];
+
+Arr1 x := new A[3];
+Arr2 y := new B[3];
+int z := x = y;
+
+*** ERROR(9)
+
+/// while_with_void_cond
+void foo() { int x; }
+
+void main() {
+    while (foo()) {
+        PrintTrace();
+    }
+}
+
+*** ERROR(4)
+
+/// invalid_void_return
+void foo() { int x; }
+
+void bar() {
+    return foo();
+}
+
+*** ERROR(4)

@@ -1,5 +1,12 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
+import SYMBOL_TABLE.SYMBOL_TABLE;
+import TYPES.TYPE;
+import TYPES.TYPE_ARRAY_INSTANCE;
+import TYPES.TYPE_INT;
+import TYPES.TYPE_INT_INSTANCE;
+
 public class AST_VAR_SUBSCRIPT extends AST_VAR
 {
 	public AST_VAR var;
@@ -8,7 +15,7 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_VAR_SUBSCRIPT(AST_VAR var,AST_EXP subscript)
+	public AST_VAR_SUBSCRIPT(AST_VAR var,AST_EXP subscript, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -21,10 +28,11 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		System.out.print("====================== var -> var [ exp ]\n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.var = var;
 		this.subscript = subscript;
+		this.lineNumber = lineNumber;
 	}
 
 	/*****************************************************/
@@ -55,5 +63,35 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		/****************************************/
 		if (var       != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 		if (subscript != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,subscript.SerialNumber);
+	}
+
+	public TYPE SemantMe() throws SemanticException {
+		/* 1. Check that var was defined before */
+		TYPE var_type = this.var.SemantMe();
+		if (var_type == null)
+		{
+			this.throw_error("unknown variable");
+		}
+
+		/* 2. Make sure var is indeed TYPE_ARRAY_INSTANCE */
+		if (!(var_type instanceof TYPE_ARRAY_INSTANCE))
+		{
+			this.throw_error("trying to index something that isn't an array");
+		}
+
+		/* 3. Check that index of array is integral */
+		TYPE index_type = this.subscript.SemantMe();
+		if (index_type == null)
+		{
+			this.throw_error("undefined type for index of array");
+		}
+
+		if (!(index_type instanceof TYPE_INT_INSTANCE))
+		{
+			this.throw_error("trying to access array not using an integer");
+		}
+
+		/* 4. Return type of array instance */
+		return ((TYPE_ARRAY_INSTANCE) var_type).getElementType().convertSymbolToInstance();
 	}
 }

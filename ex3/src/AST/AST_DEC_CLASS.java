@@ -1,83 +1,114 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
 public class AST_DEC_CLASS extends AST_DEC
 {
-	/********/
-	/* NAME */
-	/********/
-	public String name;
-
-	/****************/
-	/* DATA MEMBERS */
-	/****************/
-	public AST_TYPE_NAME_LIST data_members;
+	public AST_CFIELD_LIST cfield_lst;
+	public String className;
+	public String superClassName;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_DEC_CLASS(String name,AST_TYPE_NAME_LIST data_members)
+	public AST_DEC_CLASS(AST_CFIELD_LIST cfield_lst, AST_DEC_CLASS_SIG sig, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
-	
-		this.name = name;
-		this.data_members = data_members;
+
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
+		if (superClassName != null)
+		    System.out.format("====================== classDec -> CLASS ID EXTENDS %s {cField [ cField ]*}\n",superClassName);
+		else
+		    System.out.format("====================== classDec -> CLASS ID {cField [ cField ]*}\n");
+
+		/*******************************/
+		/* COPY INPUT DATA MEMBERS ... */
+		/*******************************/
+		this.cfield_lst = cfield_lst;
+		this.className = sig.className;
+		this.superClassName = sig.superClassName;
+		this.lineNumber = sig.lineNumber;
 	}
 
-	/*********************************************************/
-	/* The printing message for a class declaration AST node */
-	/*********************************************************/
+	/*************************************************/
+	/* The printing message for a class dec AST node */
+	/*************************************************/
 	public void PrintMe()
 	{
-		/*************************************/
-		/* RECURSIVELY PRINT HEAD + TAIL ... */
-		/*************************************/
-		System.out.format("CLASS DEC = %s\n",name);
-		if (data_members != null) data_members.PrintMe();
-		
+		/*********************************/
+		/* AST NODE TYPE = AST CLASSDEC */
+		/*********************************/
+		System.out.print("AST NODE CLASSDEC\n");
+
+		/**********************************************/
+		/* RECURSIVELY PRINT AST_CFIELD_LIST, then SUPER CLASS NAME ... */
+		/**********************************************/
+		if (cfield_lst != null) cfield_lst.PrintMe();
+		if (superClassName != null) System.out.format("SUPER CLASS NAME( %s )\n",superClassName);
+
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
-		AST_GRAPHVIZ.getInstance().logNode(
-			SerialNumber,
-			String.format("CLASS\n%s",name));
+		if (superClassName != null)
+            AST_GRAPHVIZ.getInstance().logNode(
+                SerialNumber,
+                String.format("DEC CLASS(%s)\nextends(%s)",className, superClassName));
+        else
+            AST_GRAPHVIZ.getInstance().logNode(
+                SerialNumber,
+                String.format("DEC CLASS(%s)", className));
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,data_members.SerialNumber);		
+		if (cfield_lst != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,cfield_lst.SerialNumber);
 	}
-	
-	public TYPE SemantMe()
-	{	
-		/*************************/
-		/* [1] Begin Class Scope */
-		/*************************/
-		SYMBOL_TABLE.getInstance().beginScope();
 
-		/***************************/
-		/* [2] Semant Data Members */
-		/***************************/
-		TYPE_CLASS t = new TYPE_CLASS(null,name,data_members.SemantMe());
+	public TYPE SemantMe() throws SemanticException {
+		// We are in the global scope (forced syntactically)
 
-		/*****************/
-		/* [3] End Scope */
-		/*****************/
-		SYMBOL_TABLE.getInstance().endScope();
+		SYMBOL_TABLE table = SYMBOL_TABLE.getInstance();
 
-		/************************************************/
-		/* [4] Enter the Class Type to the Symbol Table */
-		/************************************************/
-		SYMBOL_TABLE.getInstance().enter(name,t);
+		/* Check that the class name is valid (AKA not used) */
+		if (table.find(this.className) != null)
+		{
+			this.throw_error("class declaration- class name already used");
+		}
 
-		/*********************************************************/
-		/* [5] Return value is irrelevant for class declarations */
-		/*********************************************************/
-		return null;		
+		/* Get father class */
+		TYPE father = null;
+		if (superClassName != null) {
+			father = table.find(this.superClassName);
+			if (father == null)
+				this.throw_error("class declaration- father class name is not defined");
+			if (! (father instanceof TYPE_CLASS)){
+				this.throw_error("class declaration- father class name is not a class");
+			}
+		}
+
+		/* Create the declared class's TYPE_CLASS */
+		TYPE_CLASS declared_class_type = new TYPE_CLASS((TYPE_CLASS) father, this.className, null);
+
+		/* Enter the Class Type to the Symbol Table */
+		table.enter(this.className, declared_class_type);
+
+		/* Begin Class Scope */
+		table.beginScope(TYPE_FOR_SCOPE_BOUNDARIES.CLASS_SCOPE, this, declared_class_type);
+
+		/* Semant the class's AST_CFIELD_LIST */
+		this.cfield_lst.SemantMe();
+
+		/* End Scope */
+		table.endScope();
+
+		/* Return value is irrelevant for class declarations */
+		return null;
 	}
 }

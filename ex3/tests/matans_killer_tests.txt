@@ -1,0 +1,359 @@
+/// same_name_glob_and_cfield_1
+int i := 0;
+
+class Foo {
+    string i := "cool";
+}
+
+*** OK
+
+
+/// same_name_glob_and_cfield_2
+class Foo {
+    int i := 1;
+}
+
+string i := "something";
+
+class Bar extends Foo {
+    int func() {
+        return i;  // we expect 1
+    }
+}
+
+*** OK
+
+
+/// same_name_glob_and_cfield_3
+class Foo {
+    int i := 1;
+}
+
+string i := "m";
+
+class Bar extends Foo {
+    string func() {
+        return i;  // we expect int!
+    }
+}
+
+*** ERROR(9)
+
+
+/// variables_can_have_names_of_types_1
+// TODO PONDER
+array myIntArr = int[];
+
+class Foo {
+    int myIntArr := 0;
+}
+
+void foo() {
+    int myIntArr := 0;
+}
+
+*** OK
+
+/// variables_can_have_names_of_types_2
+// TODO PONDER
+class Foo {
+    string i := "mashu";
+}
+
+void main() {
+    int Foo := 1;
+}
+*** OK
+
+/// var_resolution_based_on_inheritance_preference
+class Father {
+    string i := "mat";
+}
+
+int i := 1;
+int globalContextVar := 2;
+
+class Son extends Father {
+    string foo(){
+        return i;  // expected to be inherited
+    }
+
+    int foo2(){
+        return globalContextVar;  // can also fetch global context after looking in OOP context
+    }
+}
+*** OK
+
+/// trying_forward_resolution
+void foo() {
+    i := 2;
+    return;
+}
+int i := 1;
+
+*** ERROR(2)
+
+/// manipulating_variable_in_inner_scope
+int j := 1;
+void main() {
+    j := 2;
+    PrintInt(j);
+    string j := "amilegal";
+    PrintString(j);
+}
+*** OK
+
+/// manipulating_var_from_global_context_in_a_class___for_ex4
+int j := 0;
+
+class Foo {
+    int func(){
+            return j;  // we can fetch from global context
+    }
+}
+
+void main() {
+    Foo myInstance := new Foo;
+
+    j := 1;
+    myInstance.func(); // we expect it to return 1
+
+    int j := 2;
+    myInstance.func(); // what should we expect? I think still 1
+}
+
+*** OK
+
+/// predefined_function_name_1
+int foo := 0;
+void foo() {
+    PrintInt(foo);
+}
+
+*** ERROR(2)
+
+/// predefined_function_name_3
+int i := 0;
+void foo() {
+    PrintInt(foo);
+}
+
+*** ERROR(3)
+
+/// predefined_function_name_2
+class MyClass {
+    int bar;
+    void bar() { return; }
+}
+*** ERROR(3)
+
+/// cant_declare_2_same-name-vars_in_the_same_scope
+void foo(int salary)
+{
+    int salary := 7800; // ERROR
+    PrintInt(salary);
+}
+*** ERROR(3)
+
+/// cant_declare_2_same-name-vars_in_the_same_scope_2
+void foo(int salary)
+{
+    string salary := "low";
+    PrintString(salary);
+}
+*** ERROR(3)
+
+/// function_and_method_can_share_name
+void foo() { return; }
+
+class MyClass {
+    void foo() {return;}
+}
+
+*** OK
+
+
+/// support_on-the-fly_references_to_CFields_1
+class A {
+    void foo() {
+        A obj := new A;
+        o.foo();
+    }
+}
+
+*** ERROR(4)
+
+
+/// support_on-the-fly_references_to_CFields_3
+class A {
+    void foo() {
+        A obj := new A;
+        obj.foo();
+    }
+}
+
+*** OK
+
+/// support_on-the-fly_references_to_CFields_2
+class A {
+    int i := 1;
+    int foo() {
+        A obj := new A;
+        return obj.i;
+    }
+}
+
+*** OK
+
+
+/// overshadowing_cfield_variable
+// TODO PONDER
+class A {
+    int z;
+}
+class B extends A {
+    int z; // LEGAL?
+}
+
+*** OK
+
+/// overshadowing_function_name_in_its_scope
+// TODO PONDER
+void func() {
+    int func := 0;
+    PrintInt(func);
+}
+
+*** OK
+
+
+/// nil_return_type
+nil func() {
+    int func := 0;
+    PrintInt(func);
+}
+***ERROR(1)
+
+/// nil_declaration_type
+nil i := nil;
+int l := 1;
+
+*** ERROR(1)
+
+
+/// function_cant_be_a_type
+void func() {
+    return;
+}
+func i;
+*** ERROR(4)
+
+/// we_cant_return_functions
+void foo() { return; }
+foo func() {
+    return foo;
+}
+
+*** ERROR(2)
+
+/// we_cant_assign_to_function
+
+void foo() { return;}
+void func() { return;}
+void main {foo := func; }
+
+*** ERROR(3)
+
+/// overshadow_classname_with_its_own_object
+// TODO PONDER - Shir is asking
+class A { int i; }
+void main() {
+    A A := new A;
+}
+
+*** OK
+
+/// overshadow_funcname_with_inner_scope
+// TODO PONDER
+int foo() { return 0; }
+void main() {
+    int foo := 1;
+}
+
+*** OK
+
+
+/// assigning_instance_to_a_classname
+class A { int i; }
+void main() {
+    A := new A; // class should be NOT assignable
+}
+
+*** ERROR(3)
+
+/// assigning_a_class_2
+class A { int i; }
+void main() {
+    A := nil; // class should be NOT assignable
+}
+
+*** ERROR(3)
+
+
+/// can_overshadow_classname_and_then_fetch_its_cfields
+class A { int i; }
+void main() {
+    A obj1 := new A;
+    A obj2 := obj1;
+    string A := "Allowed";
+    PrintInt(obj2.i);
+    PrintString(A + "matan");
+}
+
+*** OK
+
+/// cant_assign_nonconst_to_cfields_1
+class A {
+    string s := "legit";
+    string bad := s;
+}
+*** ERROR(3)
+
+/// cant_assign_nonconst_to_cfields_2
+int i := 1;
+class A {
+    int j := i;
+}
+*** ERROR(3)
+
+
+
+/// array_of_funcs
+int foo() {return 1;}
+array foos = foo[];
+
+*** ERROR(2)
+
+
+/// declaring_same-name_method_as_global_func
+int foo() {return 1;}
+int b;
+class A {
+    int b;
+    string foo() {
+        return "matan";
+    }
+}
+
+*** OK
+
+/// forum_test_1
+class MyClass
+{
+    int PrintInt;
+}
+
+*** OK
+
+
+
