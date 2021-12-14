@@ -363,7 +363,7 @@ void f(){return;}
 }
 class B {
     void f(string s){
-       A a = new A;
+       A a := new A;
        a.f();
        return;
     }
