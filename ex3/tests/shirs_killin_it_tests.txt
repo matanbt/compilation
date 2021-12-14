@@ -289,6 +289,7 @@ class A {
 
 *** OK
 
+
 /// null_in_EXP_var_dec
 void f(){return;}
 int i := f();
@@ -353,6 +354,28 @@ A a := new A;
 void k(){return;}
 void g(){
 k(a.f());
+
+
+/// not_really_an_override
+class A {
+void f(){return;}
+}
+class B {
+void f(string s){
+   A a = new A;
+   a.f();
+   return;
+}
+
+*** OK
+
+/// override_inside_method_and_then_call
+class A {
+void f(){return;}
+void g() {
+   int f;
+   f();
+  }
 }
 
 *** ERROR(5)

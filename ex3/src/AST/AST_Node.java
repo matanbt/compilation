@@ -50,15 +50,19 @@ public abstract class AST_Node
 			TYPE_CLASS type_class_of_scope = SYMBOL_TABLE.getInstance().findScopeClass();
 			if (type_class_of_scope == null){
 				// this function call is not inside a class scope
-				type_func = SYMBOL_TABLE.getInstance().find(func);  // find func in the closest scope  TODO- change to type_func = SYMBOL_TABLE.findInGlobalScope(func);
+				type_func = SYMBOL_TABLE.getInstance().find(func);  // find func in the closest scope  TODO- (enhancement) change to type_func = SYMBOL_TABLE.findInGlobalScope(func);
 			}
 			else {
 				// this function call is inside a class scope
-				// search for func in the closest class scope
-				type_func = type_class_of_scope.findInClassAndSuperClasses(func);
+				// search for func in most local scope
+				type_func = SYMBOL_TABLE.getInstance().findInCurrentScope(func);
+				if (type_func == null){
+					// search for func in the closest class scope
+					type_func = type_class_of_scope.findInClassAndSuperClasses(func);
+				}
 				if (type_func == null){
 					// search for func in the global scope
-					type_func = SYMBOL_TABLE.getInstance().find(func);  // TODO- change to type_func = SYMBOL_TABLE.findInGlobalScope(func);
+					type_func = SYMBOL_TABLE.getInstance().find(func);  // TODO- (enhancement) change to type_func = SYMBOL_TABLE.findInGlobalScope(func);
 				}
 			}
 		}
