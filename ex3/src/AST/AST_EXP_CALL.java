@@ -98,9 +98,6 @@ public class AST_EXP_CALL extends AST_EXP
     }
 
     public TYPE SemantMe() throws SemanticException {
-        TYPE return_type = this.functionCallSemantMe(caller, func, args);  // instance-type. null if it's a void function call
-        if (return_type == null)
-            this.throw_error("void function was called but a return value is expected (EXP_CALL)");
-        return return_type;
+        return this.functionCallSemantMe(caller, func, args);  // instance-type. null if it's a void function call
     }
 }
