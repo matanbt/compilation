@@ -74,8 +74,15 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		rightType = this.exp.SemantMe();
 
 		if (leftType == null || rightType == null)
-		{ // shouldn't be here, should return an error way before
-			this.throw_error(String.format("failed when typing var-assign-statement (SHOULDN'T GET HERE)"));
+		{
+			if (leftType == null)
+			{
+				this.throw_error("Trying to assign to void");
+			}
+			else
+			{
+				this.throw_error("Trying to assign void to variable");
+			}
 		}
 
 

@@ -53,7 +53,16 @@ public class AST_STMT_RETURN extends AST_STMT
 		inFunc.isReturnExists = true;
 
 		TYPE expectedReturnType = inFunc.rtnType;
-		TYPE actualReturnType = exp != null ? exp.SemantMe(): null;
+
+		TYPE actualReturnType = null;
+		if (exp != null)
+		{
+			actualReturnType = exp.SemantMe();
+			if (actualReturnType == null)
+			{
+				this.throw_error("Illegal return statement: Can't return a void value");
+			}
+		}
 
 		// We can look at validating return type as assignment check...
 		// The only exception here is that we allow expectedReturnType (=assignee) to be void, which we'll take care separately

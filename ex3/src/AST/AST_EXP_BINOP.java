@@ -79,20 +79,21 @@ public class AST_EXP_BINOP extends AST_EXP
 				TYPE_CLASS class_e1 = (TYPE_CLASS) ((TYPE_CLASS_INSTANCE)e1).getSymbolType();
 				TYPE_CLASS class_e2 = (TYPE_CLASS) ((TYPE_CLASS_INSTANCE)e2).getSymbolType();
 
-				if (!(class_e1.isSubClassOf(class_e2) || class_e2.isSubClassOf(class_e1)))
+				if (class_e1.isSubClassOf(class_e2) || class_e2.isSubClassOf(class_e1))
 				{
-					this.throw_error(String.format("Trying to check for equality for 2 not related classes %s %s", class_e1, class_e2));
+					return;
 				}
 			}
-			else if (!e1.canBeAssignedNil() && e2 == TYPE_NIL_INSTANCE.getInstance())
+			else if (e1.canBeAssignedNil() && e2 == TYPE_NIL_INSTANCE.getInstance())
 			{
-				this.throw_error(String.format(message, e1, e2));
+				return;
 			}
-			else if (!e2.canBeAssignedNil() && e1 == TYPE_NIL_INSTANCE.getInstance())
+			else if (e2.canBeAssignedNil() && e1 == TYPE_NIL_INSTANCE.getInstance())
 			{
-				this.throw_error(String.format(message, e1, e2));
+				return;
 			}
 
+			this.throw_error(String.format(message, e1, e2));
 		}
 	}
 
