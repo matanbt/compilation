@@ -1,6 +1,6 @@
 package TYPES;
 
-public class TYPE_STRING extends TYPE
+public class TYPE_STRING extends TYPE implements I_SYMBOL_TYPE
 {
 	/**************************************/
 	/* USUAL SINGLETON IMPLEMENTATION ... */
@@ -23,5 +23,10 @@ public class TYPE_STRING extends TYPE
 			instance.name = "string";
 		}
 		return instance;
+	}
+
+	@Override
+	public TYPE getInstanceType() {
+		return TYPE_STRING_INSTANCE.getInstance();
 	}
 }
