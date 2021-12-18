@@ -1,5 +1,6 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 import TEMP.*;
@@ -8,109 +9,151 @@ import MIPS.*;
 
 public class AST_DEC_FUNC extends AST_DEC
 {
-	/****************/
-	/* DATA MEMBERS */
-	/****************/
-	public String returnTypeName;
-	public String name;
-	public AST_TYPE_NAME_LIST params;
+	public AST_TYPE rtnType;
+	public String funcName;
 	public AST_STMT_LIST body;
-	
-	/******************/
-	/* CONSTRUCTOR(S) */
-	/******************/
-	public AST_DEC_FUNC(
-		String returnTypeName,
-		String name,
-		AST_TYPE_NAME_LIST params,
-		AST_STMT_LIST body)
+	public AST_DEC_FUNC_ARG_LIST argList; // could be null
+
+	// -------------------- Semantic Additions --------------------
+	// non-null means method of 'encompassingClass', and null means it's global function
+	public TYPE_CLASS encompassingClass = null;
+	public TYPE funcType = null;  // gets real value when calling getType
+
+	/*******************/
+	/*  CONSTRUCTOR(S) */
+	/*******************/
+	public AST_DEC_FUNC(AST_TYPE rtnType, String funcName, AST_DEC_FUNC_ARG_LIST argList, AST_STMT_LIST body, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
-		this.returnTypeName = returnTypeName;
-		this.name = name;
-		this.params = params;
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
+		System.out.format("====================== dec -> function declaration %s %s\n", rtnType, funcName);
+
+		this.rtnType = rtnType;
+		this.funcName = funcName;
+		this.argList = argList;
 		this.body = body;
+		/* NOTE: Assumes declaration is in one line!!! */
+		this.lineNumber = rtnType.lineNumber;
 	}
 
-	public TEMP IRme()
+	public AST_DEC_FUNC(AST_TYPE rtnType, String funcName, AST_STMT_LIST body, int lineNumber)
 	{
-		IR.
-		getInstance().
-		Add_IRcommand(new IRcommand_Label("main"));		
-		if (body != null) body.IRme();
-
-		return null;
+		this(rtnType, funcName, null, body, lineNumber);
 	}
-	
-	/************************************************************/
-	/* The printing message for a function declaration AST node */
-	/************************************************************/
+
+
+	/*********************************************************/
+	/* The printing message for an assign statement AST node */
+	/*********************************************************/
 	public void PrintMe()
 	{
-		/*************************************************/
-		/* AST NODE TYPE = AST NODE FUNCTION DECLARATION */
-		/*************************************************/
-		System.out.format("FUNC(%s):%s\n",name,returnTypeName);
+		System.out.format("AST NODE FUNCTION-DECLARATION (%s) \n", funcName);
 
-		/***************************************/
-		/* RECURSIVELY PRINT params + body ... */
-		/***************************************/
-		if (params != null) params.PrintMe();
-		if (body   != null) body.PrintMe();
-		
+		if (rtnType != null) rtnType.PrintMe();
+		if (argList != null) argList.PrintMe();
+		if (body != null)    body.PrintMe();
+
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-			SerialNumber,
-			String.format("FUNC(%s)\n:%s\n",name,returnTypeName));
-		
+				SerialNumber,
+				"DEC-FUNC(" + funcName + ")");
+
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (params != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,params.SerialNumber);		
-		if (body   != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,body.SerialNumber);		
+
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, rtnType.SerialNumber);
+		if (argList != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, argList.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, body.SerialNumber);
 	}
 
-	public TYPE SemantMe()
-	{
-		TYPE t;
-		TYPE returnType = null;
-		TYPE_LIST type_list = null;
+	// SemantMe Part 1: Analyze the signature of the function
+	private TYPE_FUNCTION SemantMe_FuncSignature() throws SemanticException {
+		/*******************/
+		/* Semant return type */
+		/* Note that semantic analysis for rtnType is special bc it can be void */
+		/*******************/
+		TYPE semantic_rtnType_signature = rtnType.SemantMe(); // the type of the signature (null means 'void')
+		TYPE_CLASS encompassingClass = SYMBOL_TABLE.getInstance().findScopeClass();
 
-		/*******************/
-		/* [0] return type */
-		/*******************/
-		returnType = SYMBOL_TABLE.getInstance().find(returnTypeName);
-		if (returnType == null)
-		{
-			System.out.format(">> ERROR [%d:%d] non existing return type %s\n",6,6,returnType);				
+
+		TYPE semantic_rtnType = null; // the actual instance-type we expect to get in return statement, although we allow void
+		if(semantic_rtnType_signature != null) {
+			semantic_rtnType = semantic_rtnType_signature.convertSymbolToInstance();
 		}
-	
-		/****************************/
-		/* [1] Begin Function Scope */
-		/****************************/
-		SYMBOL_TABLE.getInstance().beginScope();
+
+		/*******************/
+		/* Check that func name is valid */
+		/*******************/
+		if(encompassingClass == null) {
+			// we're in global context, so we make sure no same-name declaration
+			if(SYMBOL_TABLE.getInstance().find(funcName) != null) {
+				this.throw_error(String.format( "identifier (%s) is previously declared, " +
+						"can't declare global-function", funcName));
+			}
+		}
+		// else: it's a method, will be checked as a CFIELD
+
 
 		/***************************/
-		/* [2] Semant Input Params */
+		/* [2] Semant Arguments */
 		/***************************/
-		for (AST_TYPE_NAME_LIST it = params; it  != null; it = it.tail)
+		TYPE_LIST list_argTypes = new TYPE_LIST(); // lists of the semantic types of arguments
+		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next)
 		{
-			t = SYMBOL_TABLE.getInstance().find(it.head.type);
-			if (t == null)
+			// find the TYPE of each
+			AST_DEC_FUNC_ARG arg = it.head; // the arg of the iterator
+			TYPE semantic_argType = arg.SemantMe();
+			if (semantic_argType == null)
 			{
-				System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,it.head.type);				
+				this.throw_error(String.format("non existing type %s",arg.argType));
 			}
-			else
-			{
-				type_list = new TYPE_LIST(t,type_list);
-				SYMBOL_TABLE.getInstance().enter(it.head.name,t);
-			}
+			// each argument has a type that we'll want to verify when it'll be called
+			semantic_argType = semantic_argType.convertSymbolToInstance(); // we convert to the instance-type
+			list_argTypes.add(semantic_argType);
+		}
+
+		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes);
+	}
+
+	// SemantMe Part 2: Update Symbol Table & analyze the inner scope of the function
+	private void SemantMe_FuncBody(TYPE_FUNCTION result_SemantMe) throws SemanticException {
+		/***************************************************/
+		/* Enter the Function Type to the Symbol Table  */
+		/* - We SHOULD first enter the function as a symbol, and only then create its scope */
+		/* - This insertion must be done before body.SemantMe inorder to allow recursive calls */
+		/* - This insertion must be done after AST_CFIELD name and signature check (in the method-cfield case) */
+		/***************************************************/
+		SYMBOL_TABLE.getInstance().enter(funcName, result_SemantMe);
+
+		/****************************/
+		/* Begin Function Scope */
+		/****************************/
+		// this result is kept in the current scope for the use of STMTs analyzed in the function body
+		SYMBOL_TABLE.getInstance().beginScope(TYPE_FOR_SCOPE_BOUNDARIES.FUNC_SCOPE, this, result_SemantMe);
+
+		/***************************/
+		/* [2] Add Arguments as local Arguments */
+		/***************************/
+		TYPE_LIST list_argTypes = result_SemantMe.args;
+		int i = 0;
+		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next, i++)
+		{
+			// find the TYPE of each
+			AST_DEC_FUNC_ARG arg = it.head; // the arg of the iterator
+			TYPE argType = list_argTypes.get(i); // the corresponding type of the arg
+
+			// each argument is also a local variable in the function scope
+			// must be done AFTER creating the function scope
+			SYMBOL_TABLE.getInstance().enter(arg.argName, argType);
 		}
 
 		/*******************/
@@ -118,20 +161,45 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*******************/
 		body.SemantMe();
 
+		// --- Check for return is currently commented-out due to change in instructions ---
+		// forces non-void-functions to contain at least one RETURN
+		// Must be checked only after body.semantMe;
+//		if (!result_SemantMe.isReturnExists && (result_SemantMe.rtnType != null)) {
+//			this.throw_error(String.format(">> ERROR no return statement exists, when declared-return is (%s) " +
+//					"for function (%s) ", rtnType.type_name, funcName));
+//		}
+
 		/*****************/
 		/* [4] End Scope */
 		/*****************/
 		SYMBOL_TABLE.getInstance().endScope();
-
-		/***************************************************/
-		/* [5] Enter the Function Type to the Symbol Table */
-		/***************************************************/
-		SYMBOL_TABLE.getInstance().enter(name,new TYPE_FUNCTION(returnType,name,type_list));
-
-		/*********************************************************/
-		/* [6] Return value is irrelevant for class declarations */
-		/*********************************************************/
-		return null;		
 	}
-	
+
+	public TYPE SemantMe() throws SemanticException {
+		SemantMe_FuncBody((TYPE_FUNCTION) getType());
+		return null;  // Return value is irrelevant for declarations
+	}
+
+	public TYPE getType() throws SemanticException {
+		// getType() isn't changing the Symbol Table & not entering the function scope
+		if (this.funcType == null)
+			this.funcType = SemantMe_FuncSignature();
+		return this.funcType;
+	}
+
+	public String getName(){
+		return this.funcName;
+	}
+
+
+	public TEMP IRme()
+	{
+		IR.
+		getInstance().
+		Add_IRcommand(new IRcommand_Label("main"));
+		if (body != null) body.IRme();
+
+		return null;
+	}
+
 }

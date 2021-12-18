@@ -1,20 +1,22 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
+import TYPES.TYPE_ARRAY_INSTANCE;
 
-public class AST_STMT_ASSIGN extends AST_STMT
+public class AST_STMT_ASSIGN_NEW extends AST_STMT
 {
 	/***************/
 	/*  var := exp */
 	/***************/
 	public AST_VAR var;
-	public AST_EXP exp;
+	public AST_NEW_EXP new_exp;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_ASSIGN(AST_VAR var, AST_EXP exp, int lineNumber)
+	public AST_STMT_ASSIGN_NEW(AST_VAR var, AST_NEW_EXP new_exp, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -24,13 +26,13 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== stmt -> var ASSIGN exp SEMICOLON\n");
+		System.out.print("====================== stmt -> var ASSIGN newExp SEMICOLON  \n");
 
 		/*******************************/
 		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.var = var;
-		this.exp = exp;
+		this.new_exp = new_exp;
 		this.lineNumber = lineNumber;
 	}
 
@@ -48,7 +50,7 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		/* RECURSIVELY PRINT VAR + EXP ... */
 		/***********************************/
 		if (var != null) var.PrintMe();
-		if (exp != null) exp.PrintMe();
+		if (new_exp != null) new_exp.PrintMe();
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
@@ -61,7 +63,7 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,new_exp.SerialNumber);
 	}
 
 	public TYPE SemantMe() throws SemanticException {
@@ -71,42 +73,35 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		/* [1] Check If Type exists */
 		/****************************/
 		leftType = this.var.SemantMe();
-		rightType = this.exp.SemantMe();
-
+		rightType = this.new_exp.SemantMe();
 		if (leftType == null || rightType == null)
-		{
-			if (leftType == null)
-			{
-				this.throw_error("Trying to assign to void");
-			}
-			else
-			{
-				this.throw_error("Trying to assign void to variable");
-			}
+		{ // shouldn't be here, should return an error way before
+			System.out.format(">> ERROR failed when typing var-assign-statement (SHOULDN'T GET HERE) \n");
+			// TODO ERROR HANDLING
+			System.exit(0);
 		}
+
 
 
 		/***************************************************/
 		/* [3] Check for the given value is from expected type */
 		/***************************************************/
-		boolean valid = TYPE.checkAssignment(leftType, rightType);
+		boolean valid;
+		if (rightType instanceof TYPE_ARRAY_INSTANCE) {
+			// Special case of creating a new array instance
+			valid = TYPE.checkNewArrayAssignment(leftType, (TYPE_ARRAY_INSTANCE) rightType);
+		} else {
+			// must be case of creating a class instance
+			valid = TYPE.checkAssignment(leftType, rightType);
+		}
+
 		if(!valid) {
-			this.throw_error("Variable assignment statement");
+			this.throw_error("Variable Assignment NEW Statement");
 		}
 
 		/*********************************************************/
 		/* [5] Return value is irrelevant for statements */
 		/*********************************************************/
-		return null;
-	}
-
-	public TEMP IRme()
-	{
-		TEMP src = exp.IRme();
-		IR.
-		getInstance().
-		Add_IRcommand(new IRcommand_Store(((AST_EXP_VAR_SIMPLE) var).name,src));
-
 		return null;
 	}
 }

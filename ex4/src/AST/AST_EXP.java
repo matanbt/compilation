@@ -1,14 +1,15 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import TYPES.*;
-import TEMP.*;
 
 public abstract class AST_EXP extends AST_Node
 {
-	public TYPE SemantMe()
+	public TYPE SemantMe() throws SemanticException
 	{
 		return null;
 	}
+
 	public TEMP IRme()
 	{
 		return null;
