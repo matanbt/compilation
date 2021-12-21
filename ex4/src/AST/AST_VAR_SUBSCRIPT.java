@@ -1,9 +1,11 @@
 package AST;
 
+import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
 import TYPES.TYPE_ARRAY_INSTANCE;
 import TYPES.TYPE_INT;
+import TYPES.TYPE_INT_INSTANCE;
 
 public class AST_VAR_SUBSCRIPT extends AST_VAR
 {
@@ -63,44 +65,33 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		if (subscript != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,subscript.SerialNumber);
 	}
 
-	public TYPE SemantMe()
-	{
+	public TYPE SemantMe() throws SemanticException {
 		/* 1. Check that var was defined before */
-		/* TODO: Make sure this works when merging with everyone's branches */
 		TYPE var_type = this.var.SemantMe();
 		if (var_type == null)
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR unknown variable");
-			System.exit(0);
+			this.throw_error("unknown variable");
 		}
 
 		/* 2. Make sure var is indeed TYPE_ARRAY_INSTANCE */
 		if (!(var_type instanceof TYPE_ARRAY_INSTANCE))
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR trying to index something that isn't an array");
-			System.exit(0);
+			this.throw_error("trying to index something that isn't an array");
 		}
 
 		/* 3. Check that index of array is integral */
-		/* TODO: Does integral mean constant, or just int? */
 		TYPE index_type = this.subscript.SemantMe();
 		if (index_type == null)
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR undefined type for index of array");
-			System.exit(0);
+			this.throw_error("undefined type for index of array");
 		}
 
-		if (!(index_type instanceof TYPE_INT))
+		if (!(index_type instanceof TYPE_INT_INSTANCE))
 		{
-			/* TODO: Errorize */
-			System.out.println(">> ERROR Trying to access array not using an integer");
-			System.exit(0);
+			this.throw_error("trying to access array not using an integer");
 		}
 
 		/* 4. Return type of array instance */
-		return ((TYPE_ARRAY_INSTANCE) var_type).getElementType();
+		return ((TYPE_ARRAY_INSTANCE) var_type).getElementType().convertSymbolToInstance();
 	}
 }

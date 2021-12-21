@@ -20,7 +20,7 @@ public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.format("====================== newExp -> NEW type");
+		System.out.format("====================== newExp -> NEW type\n");
 
 
 

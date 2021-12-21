@@ -1,6 +1,8 @@
    
 import java.io.*;
 import java.io.PrintWriter;
+
+import EXCEPTIONS.SemanticException;
 import java_cup.runtime.Symbol;
 import AST.*;
 import IR.*;
@@ -39,7 +41,7 @@ public class Main
 			/*******************************/
 			/* [4] Initialize a new parser */
 			/*******************************/
-			p = new Parser(l);
+			p = new Parser(l, file_writer);
 
 			/***********************************/
 			/* [5] 3 ... 2 ... 1 ... Parse !!! */
@@ -54,7 +56,18 @@ public class Main
 			/**************************/
 			/* [7] Semant the AST ... */
 			/**************************/
-			AST.SemantMe();
+			// TODO: make sure the following code was migrated properly from ex3,
+			//       as we have new output requirements.
+			try
+			{
+				AST.SemantMe();
+				file_writer.println("OK");
+			}
+			catch (SemanticException e)
+			{
+				System.out.println(e.getMessage());
+				file_writer.println(String.format("ERROR(%d)", e.lineNumber));
+			}
 
 			/**********************/
 			/* [8] IR the AST ... */

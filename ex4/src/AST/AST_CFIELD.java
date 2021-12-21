@@ -31,7 +31,7 @@ public class AST_CFIELD extends AST_Node
 		/*******************************/
 		// dec MUST BE instance of "limited" DEC_VAR or DEC_FUNC. This is enforced by the grammar (cup file).
 		this.dec = dec;
-		this.lineNumber = lineNumber;
+		this.lineNumber = this.dec.lineNumber;
 	}
 
 	/*********************************************************/
@@ -89,7 +89,7 @@ public class AST_CFIELD extends AST_Node
 			/* Verify new declaration is overriding the previous one (has the same signature/type)
 			 * - If both are variables, their TYPE is the same java object
 			 * - if both are functions, TYPE_FUNCTION.equals() is called */
-			if (field_type != pre_defined_type) {
+			if (! field_type.equals(pre_defined_type)) {
 				this.throw_error(String.format("class identifier (%s) overshadowing the super class " +
 						"declaration", field_name));
 			}

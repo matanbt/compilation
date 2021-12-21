@@ -72,7 +72,6 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 		}
 
 		/* 2. Check that the type is valid (AKA defined before) */
-		/* TODO: Make sure this works when merging with everyone's branches */
 		TYPE array_type = this.type.SemantMe();
 		if (array_type == null || array_type.canBeAssigned())
 		{
