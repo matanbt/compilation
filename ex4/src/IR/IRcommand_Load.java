@@ -10,25 +10,24 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+
 import TEMP.*;
 import MIPS.*;
 
-public class IRcommand_Load extends IRcommand
-{
-	TEMP dst;
-	String var_name;
-	
-	public IRcommand_Load(TEMP dst,String var_name)
-	{
-		this.dst      = dst;
-		this.var_name = var_name;
-	}
-	
-	/***************/
-	/* MIPS me !!! */
-	/***************/
-	public void MIPSme()
-	{
-		MIPSGenerator.getInstance().load(dst,var_name);
-	}
+public class IRcommand_Load extends IRcommand {
+    TEMP dst;
+    IDVariable var;
+
+    public IRcommand_Load(TEMP dst, IDVariable var) {
+        this.dst = dst;
+        this.var = var;
+    }
+
+    /***************/
+    /* MIPS me !!! */
+    /***************/
+    public void MIPSme() {
+        // TODO: load should be handles differently depends on var.mRole
+        MIPSGenerator.getInstance().load(dst, var);
+    }
 }
