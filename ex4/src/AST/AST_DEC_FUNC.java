@@ -19,6 +19,10 @@ public class AST_DEC_FUNC extends AST_DEC
 	public TYPE_CLASS encompassingClass = null;
 	public TYPE funcType = null;  // gets real value when calling getType
 
+	// -------------------- IR Additions --------------------
+	private int argsCount = 0;
+	private int localsCount = 0;
+
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
@@ -144,6 +148,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		/* [2] Add Arguments as local Arguments */
 		/***************************/
 		TYPE_LIST list_argTypes = result_SemantMe.args;
+		IDVariable.resetIndexCounter(); // starting arguments count
 		int i = 0;
 		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next, i++)
 		{
@@ -153,13 +158,20 @@ public class AST_DEC_FUNC extends AST_DEC
 
 			// each argument is also a local variable in the function scope
 			// must be done AFTER creating the function scope
-			SYMBOL_TABLE.getInstance().enter(arg.argName, argType);
+			SYMBOL_TABLE.getInstance().enter(arg.argName, argType, new IDVariable(arg.argName, VarRole.ARG));
 		}
+		// gets the amount of arguments
+		this.argsCount = IDVariable.getIndexCounter();
 
 		/*******************/
 		/* [3] Semant Body */
 		/*******************/
+		IDVariable.resetIndexCounter(); // starting locals count
 		body.SemantMe();
+
+		// gets the amount of local variables (excluding arguments)
+		// TODO this reasonably assumes each STMT_VAR_DEC creates IDVariable (and only these statements do)
+		this.localsCount = IDVariable.getIndexCounter();
 
 		// --- Check for return is currently commented-out due to change in instructions ---
 		// forces non-void-functions to contain at least one RETURN
@@ -194,11 +206,23 @@ public class AST_DEC_FUNC extends AST_DEC
 
 	public TEMP IRme()
 	{
-		IR.
-		getInstance().
-		Add_IRcommand(new IRcommand_Label("main"));
+		/* IR speaking - I assume the functions arguments are loaded
+		 * if thinking about MIPS - This means I assume the caller pushed the arguments to the stack */
+
+		/* 1. Put a label */
+		mIR.Add_IRcommand(new IRcommand_Label(funcName));
+
+		/* 2. Prologue (Will be used for MIPS, meaningless in IR) */
+		mIR.Add_IRcommand(new IRcommand_Func_Prologue(this.argsCount, this.localsCount));
+
+		/* 3. Function body */
 		if (body != null) body.IRme();
 
+		/* 4. Epilogue (Will be used for MIPS, meaningless in IR) */
+		mIR.Add_IRcommand(new IRcommand_Label(String.format("%s_epilogue", funcName)));
+		mIR.Add_IRcommand(new IRcommand_Func_Epilogue());
+
+		// No temporary in function declaration
 		return null;
 	}
 
