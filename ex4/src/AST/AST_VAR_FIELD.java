@@ -1,6 +1,7 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import TEMP.TEMP;
 import TYPES.TYPE;
 import TYPES.TYPE_CLASS;
 import TYPES.TYPE_CLASS_INSTANCE;
@@ -9,7 +10,12 @@ public class AST_VAR_FIELD extends AST_VAR
 {
 	public AST_VAR var;
 	public String fieldName;
-	
+
+	/************************************/
+	/* TEMPORARY TO BE USED EXTERNALLY */
+	/***********************************/
+	TEMP objectPointer = null;
+
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
@@ -95,5 +101,11 @@ public class AST_VAR_FIELD extends AST_VAR
 		}
 
 		return field_type;
+	}
+
+	@Override
+	public TEMP IRme() {
+		// TODO
+		return null;
 	}
 }

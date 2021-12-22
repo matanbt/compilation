@@ -2,6 +2,7 @@ package AST;
 
 import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
+import TEMP.TEMP;
 import TYPES.TYPE;
 import TYPES.TYPE_ARRAY_INSTANCE;
 import TYPES.TYPE_INT;
@@ -11,6 +12,12 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 {
 	public AST_VAR var;
 	public AST_EXP subscript;
+
+	/************************************/
+	/* TEMPORARY TO BE USED EXTERNALLY */
+	/***********************************/
+	public TEMP arrPointer = null;
+	public TEMP subscriptIndex = null;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -93,5 +100,12 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 
 		/* 4. Return type of array instance */
 		return ((TYPE_ARRAY_INSTANCE) var_type).getElementType().convertSymbolToInstance();
+	}
+
+	@Override
+	public TEMP IRme() {
+		// TODO
+		// should fill arrPointer, subscriptIndex on the way
+		return null;
 	}
 }

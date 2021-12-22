@@ -1,7 +1,10 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import IR.IDVariable;
+import IR.IRcommand_Load;
 import SYMBOL_TABLE.SYMBOL_TABLE;
+import TEMP.TEMP;
 import TYPES.TYPE;
 import TYPES.TYPE_CLASS;
 
@@ -11,6 +14,8 @@ public class AST_VAR_SIMPLE extends AST_VAR
 	/* simple variable name */
 	/************************/
 	public String name;
+
+	public IDVariable idVar;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -74,6 +79,8 @@ public class AST_VAR_SIMPLE extends AST_VAR
 		}
 
 		resolved_type = SYMBOL_TABLE.getInstance().find(this.name);
+		this.idVar = SYMBOL_TABLE.getInstance().findIdVar(this.name);
+
 		if (resolved_type == null) {
 			this.throw_error(String.format(">> ERROR:  Failed to resolve variable (%s) ", this.name));
 		}
@@ -88,7 +95,7 @@ public class AST_VAR_SIMPLE extends AST_VAR
 	public TEMP IRme()
 	{
 		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
-		IR.getInstance().Add_IRcommand(new IRcommand_Load(t,name));
+		IR.getInstance().Add_IRcommand(new IRcommand_Load(t, this.idVar));
 		return t;
 	}
 }
