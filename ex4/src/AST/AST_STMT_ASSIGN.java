@@ -1,6 +1,11 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import IR.IDVariable;
+import IR.IRcommand_Array_set;
+import IR.IRcommand_Field_set;
+import IR.IRcommand_Store;
+import TEMP.TEMP;
 import TYPES.TYPE;
 
 public class AST_STMT_ASSIGN extends AST_STMT
@@ -102,10 +107,45 @@ public class AST_STMT_ASSIGN extends AST_STMT
 
 	public TEMP IRme()
 	{
+		/*
+		 * TODO: we should think how we think of AST_VARs IRme, as these ASTs are used both as right-values and left-values,
+		 *       here, of course, I treat this.var as left-value (i.e. a pointer).
+		 *
+		 * TODO: The solution I suggest for handling left-values:
+		 *       Add inner members to each AST_VAR that will be fields (e.g. arrPointer inside AST_VAR_SUBSCRIPT)
+		 *       and we'll use them when assigning to a var. (e.g. it will prepare the parameters of IRcommand_Array_set)
+		 *       IRme will return the *right-value* of the variable (e.g. it will invoke IRcommand_Array_access)
+		 */
+
+		/* We assign differently to each AST_VAR class */
 		TEMP src = exp.IRme();
-		IR.
-		getInstance().
-		Add_IRcommand(new IRcommand_Store(((AST_EXP_VAR_SIMPLE) var).name,src));
+		var.IRme(); // not necessarily interesting
+
+		/* The statement is of sort: var := (y + 2) */
+		if (var instanceof AST_VAR_SIMPLE) {
+			// We do not need to invoke var.IRme, as there is no need to its temp
+			IDVariable dst = ((AST_VAR_SIMPLE) var).idVar;
+			IR.getInstance().Add_IRcommand(new IRcommand_Store(dst, src));
+		}
+
+		/* The statement is of sort: obj.otherObj.member := (y + 2) */
+		else if (var instanceof AST_VAR_FIELD) {
+			TEMP objectPointer = ((AST_VAR_FIELD) var).objectPointer;
+			String fieldName = ((AST_VAR_FIELD) var).fieldName;
+			IR.getInstance().Add_IRcommand(new IRcommand_Field_set(objectPointer, fieldName, src));
+		}
+
+		/* The statement is of sort: arrPointer[subscriptIndex] := src */
+		else if (var instanceof AST_VAR_SUBSCRIPT) {
+			TEMP arrPointer = ((AST_VAR_SUBSCRIPT) var).arrPointer;
+			TEMP subscriptIndex = ((AST_VAR_SUBSCRIPT) var).subscriptIndex;
+			IR.getInstance().Add_IRcommand(new IRcommand_Array_set(arrPointer, subscriptIndex, src));
+		}
+
+		/* Shouldn't get here */
+		else {
+			System.out.print("[DEBUG] Warning: unexpected var in AST_STMT_ASSIGN.IRme()\n");
+		}
 
 		return null;
 	}
