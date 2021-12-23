@@ -98,7 +98,8 @@ public class AST_STMT_RETURN extends AST_STMT
 		}
 
 		/* 2. Return */
-		mIR.Add_IRcommand(new IRcommand_Func_Return(rtnTemporary, this.inFunc.name));
+		mIR.Add_IRcommand(new IRcommand_Func_Return(rtnTemporary, this.inFunc.name,
+				this.inFunc.funcASTNode.funcEpilogueLabel));
 
 		// no temporary created return statements
 		return null;

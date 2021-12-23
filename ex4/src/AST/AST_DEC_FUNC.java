@@ -22,6 +22,8 @@ public class AST_DEC_FUNC extends AST_DEC
 	// -------------------- IR Additions --------------------
 	private int argsCount = 0;
 	private int localsCount = 0;
+	public String funcStartingLabel;
+	public String funcEpilogueLabel;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
@@ -125,7 +127,7 @@ public class AST_DEC_FUNC extends AST_DEC
 			list_argTypes.add(semantic_argType);
 		}
 
-		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes);
+		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes, this);
 	}
 
 	// SemantMe Part 2: Update Symbol Table & analyze the inner scope of the function
@@ -148,7 +150,6 @@ public class AST_DEC_FUNC extends AST_DEC
 		/* [2] Add Arguments as local Arguments */
 		/***************************/
 		TYPE_LIST list_argTypes = result_SemantMe.args;
-		IDVariable.resetIndexCounter(); // starting arguments count
 		int i = 0;
 		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next, i++)
 		{
@@ -158,20 +159,20 @@ public class AST_DEC_FUNC extends AST_DEC
 
 			// each argument is also a local variable in the function scope
 			// must be done AFTER creating the function scope
-			SYMBOL_TABLE.getInstance().enter(arg.argName, argType, new IDVariable(arg.argName, VarRole.ARG));
+			SYMBOL_TABLE.getInstance().enter(arg.argName, argType,
+					new IDVariable(arg.argName, VarRole.ARG, i));
 		}
+
 		// gets the amount of arguments
-		this.argsCount = IDVariable.getIndexCounter();
+		this.argsCount = list_argTypes.size();
 
 		/*******************/
 		/* [3] Semant Body */
 		/*******************/
-		IDVariable.resetIndexCounter(); // starting locals count
-		body.SemantMe();
+		this.localsCount = 0; // locals will be count by body.semantMe()
+		// TODO this reasonably assumes each STMT_VAR_DEC invokes this.localsCount++ (and only these statements do)
 
-		// gets the amount of local variables (excluding arguments)
-		// TODO this reasonably assumes each STMT_VAR_DEC creates IDVariable (and only these statements do)
-		this.localsCount = IDVariable.getIndexCounter();
+		body.SemantMe();
 
 		// --- Check for return is currently commented-out due to change in instructions ---
 		// forces non-void-functions to contain at least one RETURN
@@ -209,17 +210,19 @@ public class AST_DEC_FUNC extends AST_DEC
 		/* IR speaking - I assume the functions arguments are loaded
 		 * if thinking about MIPS - This means I assume the caller pushed the arguments to the stack */
 
-		/* 1. Put a label */
-		mIR.Add_IRcommand(new IRcommand_Label(funcName));
+		/* 1. Put a starting label */
+		this.funcStartingLabel = mIR.getFreshLabel(funcName);
+		mIR.Add_IRcommand(new IRcommand_Label(func_label));
 
 		/* 2. Prologue (Will be used for MIPS, meaningless in IR) */
-		mIR.Add_IRcommand(new IRcommand_Func_Prologue(this.argsCount, this.localsCount));
+		mIR.Add_IRcommand(new IRcommand_Func_Prologue(this.localsCount));
 
 		/* 3. Function body */
 		if (body != null) body.IRme();
 
 		/* 4. Epilogue (Will be used for MIPS, meaningless in IR) */
-		mIR.Add_IRcommand(new IRcommand_Label(String.format("%s_epilogue", funcName)));
+		this.funcEpilogueLabel = mIR.getFreshLabel(String.format("%s_epilogue", funcName));
+		mIR.Add_IRcommand(new IRcommand_Label(funcEpilogueLabel));
 		mIR.Add_IRcommand(new IRcommand_Func_Epilogue());
 
 		// No temporary in function declaration

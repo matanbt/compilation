@@ -1,5 +1,7 @@
 package TYPES;
 
+import AST.AST_DEC_FUNC;
+
 public class TYPE_FUNCTION extends TYPE
 {
 	/***********************************/
@@ -16,15 +18,22 @@ public class TYPE_FUNCTION extends TYPE
 	// verify there exist a return (if needed)
 	public boolean isReturnExists;
 
+	public AST_DEC_FUNC funcASTNode;
+
 	/****************/
 	/* CTROR(S) ... */
 	/****************/
-	public TYPE_FUNCTION(TYPE rtnType,String name,TYPE_LIST args)
+	public TYPE_FUNCTION(TYPE rtnType,String name,TYPE_LIST args, AST_DEC_FUNC funcASTNode)
 	{
 		this.name = name;
 		this.rtnType = rtnType;
 		this.args = args;
 		this.isReturnExists = false;
+		this.funcASTNode = funcASTNode;
+	}
+
+	public TYPE_FUNCTION(TYPE rtnType,String name,TYPE_LIST args) {
+		this(rtnType, name, args, null);
 	}
 
 	public boolean equals(Object other) {

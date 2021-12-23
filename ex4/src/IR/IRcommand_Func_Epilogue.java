@@ -24,7 +24,7 @@ public class IRcommand_Func_Epilogue extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		// MIPSGenerator.getInstance().calleeRestore(); // callee responsibility backup
+		// MIPSGenerator.getInstance().calleeRestore(); // callee responsibility restore
 		// MIPSGenerator.getInstance().epilogue();
 	}
 }

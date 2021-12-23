@@ -22,11 +22,13 @@ public class IRcommand_Func_Return extends IRcommand
 	public TEMP rtnTemporary;
 
 	public String funcName;
+	public String epilogueLabel;
 
-	public IRcommand_Func_Return(TEMP rtnTemporary, String funcName)
+	public IRcommand_Func_Return(TEMP rtnTemporary, String funcName, String epilogueLabel)
 	{
 		this.rtnTemporary = rtnTemporary;
 		this.funcName = funcName;
+		this.epilogueLabel = epilogueLabel;
 	}
 	
 	/***************/
@@ -38,6 +40,6 @@ public class IRcommand_Func_Return extends IRcommand
 		if (rtnTemporary != null) {
 			// move $v0, $rtnTemporary
 		}
-		//j funcName_epilogue
+		//j epilogueLabel
 	}
 }
