@@ -3,6 +3,7 @@ package AST;
 import EXCEPTIONS.SemanticException;
 
 import SYMBOL_TABLE.SYMBOL_TABLE;
+import TEMP.TEMP;
 import TYPES.*;
 
 public abstract class AST_Node
