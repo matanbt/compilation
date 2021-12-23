@@ -1,6 +1,7 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import IR.IR;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TEMP.TEMP;
 import TYPES.TYPE;
@@ -12,12 +13,6 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 {
 	public AST_VAR var;
 	public AST_EXP subscript;
-
-	/************************************/
-	/* TEMPORARY TO BE USED EXTERNALLY */
-	/***********************************/
-	public TEMP arrPointer = null;
-	public TEMP subscriptIndex = null;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -102,10 +97,24 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		return ((TYPE_ARRAY_INSTANCE) var_type).getElementType().convertSymbolToInstance();
 	}
 
-	@Override
+
+	/* returns the right-value of the array element */
 	public TEMP IRme() {
-		// TODO
-		// should fill arrPointer, subscriptIndex on the way
-		return null;
+		TEMP arrayPointer = getArrayPointer();
+		TEMP subscriptIndex = getSubscriptIndex();
+		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
+
+		IR.getInstance().Add_IRcommand(new IRcommand_Array_access(dst, arrayPointer, subscriptIndex));
+
+		return dst;
+	}
+
+	/* the following can be used externally with array_set, when left-value is needed */
+	public TEMP getArrayPointer() {
+		return this.var.IRme();
+	}
+
+	public TEMP getSubscriptIndex() {
+		return this.subscript.IRme();
 	}
 }
