@@ -7,7 +7,6 @@ package SYMBOL_TABLE;
 /* GENERAL IMPORTS */
 /*******************/
 import java.io.PrintWriter;
-import java.lang.reflect.Type;
 
 /*******************/
 /* PROJECT IMPORTS */
