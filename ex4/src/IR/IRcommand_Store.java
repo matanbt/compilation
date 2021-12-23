@@ -27,6 +27,16 @@ public class IRcommand_Store extends IRcommand {
     /* MIPS me !!! */
     /***************/
     public void MIPSme() {
-        MIPSGenerator.getInstance().store(var, src);
+        if (var.mRole == VarRole.GLOBAL) {
+            MIPSGenerator.getInstance().storeGlobal(var.mVarName, src);
+        }
+
+        else if (var.mRole == VarRole.LOCAL || var.mRole == VarRole.ARG) {
+            MIPSGenerator.getInstance().storeToStack(var.getOffset(), src);
+        }
+
+        /*
+         *  TODO - deal with classes, when implementing their IR
+         */
     }
 }

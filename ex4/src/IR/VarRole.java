@@ -7,5 +7,8 @@ public enum VarRole {
     GLOBAL,
     ARG,
     LOCAL,
-    FIELD
+
+    // TODO rethink about the following two when implementing classes
+    CFIELD_VAR,
+    CFIELD_FUNC
 }

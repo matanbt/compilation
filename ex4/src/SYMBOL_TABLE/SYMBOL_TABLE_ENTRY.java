@@ -57,13 +57,7 @@ public class SYMBOL_TABLE_ENTRY
 		SYMBOL_TABLE_ENTRY prevtop,
 		int prevtop_index)
 	{
-		this.index = index;
-		this.name = name;
-		this.type = type;
-		this.next = next;
-		this.prevtop = prevtop;
-		this.prevtop_index = prevtop_index;
-		this.idVar = null;
+		this(name, type, index, next, prevtop, prevtop_index, null);
 	}
 
 	public SYMBOL_TABLE_ENTRY(
