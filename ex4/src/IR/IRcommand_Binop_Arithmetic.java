@@ -56,7 +56,7 @@ public class IRcommand_Binop_Arithmetic extends IRcommand {
 		} else if (arithmetic_op.equals("/")) {
 			/* Runtime check - division by zero */
 			mips.li(zero, 0);
-			mips.beq(this.right_t, zero, "Label_string_access_violation");
+			mips.beq(this.right_t, zero, MIPSGenerator.LABEL_STRING_ILLEGAL_DIV_BY_0);
 
 			mips.div(this.dst, this.left_t, this.right_t);
 		}

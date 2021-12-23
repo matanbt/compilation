@@ -15,6 +15,10 @@ import TEMP.*;
 
 public class MIPSGenerator
 {
+	public static String LABEL_STRING_ACCESS_VIOLATION = "Label_string_access_violation";
+	public static String LABEL_STRING_ILLEGAL_DIV_BY_0 = "Label_string_illegal_div_by_zero";
+	public static String LABEL_STRING_INVALID_PTR_DREF = "Label_string_invalid_ptr_dref";
+
 	private int WORD_SIZE=4;
 	/***********************/
 	/* The file writer ... */
@@ -37,7 +41,7 @@ public class MIPSGenerator
 		fileWriter.format("\tmove $a0,Temp_%d\n",idx);
 		fileWriter.format("\tli $v0,1\n");
 		fileWriter.format("\tsyscall\n");
-		fileWriter.format("\tli $a0,32\n");  // space char, TODO- do we need this? and if so, do we need it in print_string too?
+		fileWriter.format("\tli $a0,32\n");  // space char
 		fileWriter.format("\tli $v0,11\n");
 		fileWriter.format("\tsyscall\n");
 	}
@@ -222,13 +226,13 @@ public class MIPSGenerator
 			/* global labels */
 			instance.fileWriter.format(".text\n");
 
-			instance.label("Label_string_access_violation");
+			instance.label(LABEL_STRING_ACCESS_VIOLATION);
 			instance.exit_due_to_runtime_check("string_access_violation");
 
-			instance.label("Label_string_illegal_div_by_0");
+			instance.label(LABEL_STRING_ILLEGAL_DIV_BY_0);
 			instance.exit_due_to_runtime_check("string_illegal_div_by_0");
 
-			instance.label("Label_string_invalid_ptr_dref");
+			instance.label(LABEL_STRING_INVALID_PTR_DREF);
 			instance.exit_due_to_runtime_check("string_invalid_ptr_dref");
 		}
 		return instance;

@@ -174,7 +174,7 @@ public class AST_EXP_BINOP extends AST_EXP
 		else{
 			if (op.equals("+")) {
 				// type_of_expressions == TYPE_STRING_INSTANCE.getInstance()
-				//ir.Add_IRcommand(new IRcommand_Binop_Add_Strings(dst, left_t, right_t));  // TODO IRcommand_Binop_Add_Strings
+				ir.Add_IRcommand(new IRcommand_Binop_Add_Strings(dst, left_t, right_t));
 			}
 			else{
 				// op.equals("=")
