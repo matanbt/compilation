@@ -1,7 +1,9 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import IR.IR;
 import SYMBOL_TABLE.SYMBOL_TABLE;
+import TEMP.TEMP;
 import TYPES.TYPE;
 import TYPES.TYPE_ARRAY_INSTANCE;
 import TYPES.TYPE_INT;
@@ -93,5 +95,25 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 
 		/* 4. Return type of array instance */
 		return ((TYPE_ARRAY_INSTANCE) var_type).getElementType().convertSymbolToInstance();
+	}
+
+
+	/* returns the right-value of the array element  */
+	public TEMP IRme() {
+		TEMP arrayPointer = this.var.IRme();
+		TEMP subscriptIndex = this.subscript.IRme();
+		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
+
+		IR.getInstance().Add_IRcommand(new IRcommand_Array_access(dst, arrayPointer, subscriptIndex));
+
+		return dst;
+	}
+
+	/* performs a set on the array element (treating it as a left-value)  */
+	/* The statement is of sort: arrPointer[subscriptIndex] := src */
+	public void IRmeAsLeftValue(TEMP src) {
+		TEMP arrPointer = this.var.IRme();
+		TEMP subscriptIndex = this.subscript.IRme();
+		mIR.Add_IRcommand(new IRcommand_Array_set(arrPointer, subscriptIndex, src));
 	}
 }

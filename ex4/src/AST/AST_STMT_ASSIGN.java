@@ -1,6 +1,11 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import IR.IDVariable;
+import IR.IRcommand_Array_set;
+import IR.IRcommand_Field_set;
+import IR.IRcommand_Store;
+import TEMP.TEMP;
 import TYPES.TYPE;
 
 public class AST_STMT_ASSIGN extends AST_STMT
@@ -102,10 +107,9 @@ public class AST_STMT_ASSIGN extends AST_STMT
 
 	public TEMP IRme()
 	{
+		/* We assign differently to each AST_VAR class */
 		TEMP src = exp.IRme();
-		IR.
-		getInstance().
-		Add_IRcommand(new IRcommand_Store(((AST_EXP_VAR_SIMPLE) var).name,src));
+		var.IRmeAsLeftValue(src);
 
 		return null;
 	}
