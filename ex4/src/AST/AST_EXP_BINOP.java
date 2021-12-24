@@ -110,10 +110,6 @@ public class AST_EXP_BINOP extends AST_EXP
 		if (right != null) semantic_right = right.SemantMe();
 
 		this.type_of_expressions = semantic_left;  // annotation for IRme, can be null
-//		// TODO- maybe need to add the following code:
-//		if (type_of_expressions == null){
-//			this.type_of_expressions = semantic_right;
-//		}
 
 		/* Equality testing */
 		if (op.equals("="))
@@ -148,12 +144,21 @@ public class AST_EXP_BINOP extends AST_EXP
 		if (left  != null) left_t = left.IRme();
 		if (right != null) right_t = right.IRme();
 
-
-		if (type_of_expressions == TYPE_INT_INSTANCE.getInstance()){
-
-			if (op.equals("=")) {
-				ir.Add_IRcommand(new IRcommand_Binop_EQ_Integers(dst,left_t,right_t));
+		if (type_of_expressions == TYPE_STRING_INSTANCE.getInstance()) {
+			if (op.equals("+")) {
+				ir.Add_IRcommand(new IRcommand_Binop_Add_Strings(dst, left_t, right_t));
 			}
+			else if (op.equals("=")) {
+				ir.Add_IRcommand(new IRcommand_Binop_EQ_Strings(dst, left_t, right_t));  // TODO IRcommand_Binop_EQ_Strings
+			}
+		}
+
+		else {
+			if (op.equals("=")) {
+				ir.Add_IRcommand(new IRcommand_Binop_EQ(dst, left_t, right_t));
+			}
+
+			// else --> type_of_expressions == TYPE_INT_INSTANCE.getInstance()
 
 			else if (op.equals("<"))
 			{
@@ -168,17 +173,6 @@ public class AST_EXP_BINOP extends AST_EXP
 			else{
 				// op can be: "+", "-", "*", "/"
 				ir.Add_IRcommand(new IRcommand_Binop_Arithmetic(dst,left_t,right_t, op));
-			}
-		}
-
-		else{
-			if (op.equals("+")) {
-				// type_of_expressions == TYPE_STRING_INSTANCE.getInstance()
-				ir.Add_IRcommand(new IRcommand_Binop_Add_Strings(dst, left_t, right_t));
-			}
-			else{
-				// op.equals("=")
-				// TODO- equals for non-integers: null, string, array, class
 			}
 		}
 

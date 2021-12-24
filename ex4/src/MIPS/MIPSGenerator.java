@@ -71,7 +71,7 @@ public class MIPSGenerator
 		int idxdst=dst.getSerialNumber();
 		fileWriter.format("\tlw Temp_%d,global_%s\n",idxdst,var_name);
 	}
-	public void load_address(TEMP dst,String full_var_name)
+	public void load_by_var_name(TEMP dst,String full_var_name)
 	{
 		int idxdst=dst.getSerialNumber();
 		fileWriter.format("\tlw Temp_%d,%s\n",idxdst,full_var_name);
@@ -170,7 +170,7 @@ public class MIPSGenerator
 	{
 		/* msg_name = "string_illegal_div_by_0" or "string_access_violation" or "string_invalid_ptr_dref" */
 		TEMP temp_print_msg = TEMP_FACTORY.getInstance().getFreshTEMP();
-		load_address(temp_print_msg, msg_name);
+		load_by_var_name(temp_print_msg, msg_name);
 		this.print_string(temp_print_msg);
 		this.finalizeFile();
 	}
