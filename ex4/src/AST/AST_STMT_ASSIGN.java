@@ -107,40 +107,9 @@ public class AST_STMT_ASSIGN extends AST_STMT
 
 	public TEMP IRme()
 	{
-		/*
-		 * TODO: we should think how we think of AST_VARs IRme, as these ASTs are used both as right-values and left-values,
-		 *       here, of course, I treat this.var as left-value (i.e. a pointer).
-		 *
-		 * TODO: The solution I suggest for handling left-values:
-		 *       Add inner members to each AST_VAR that will be fields (e.g. arrPointer inside AST_VAR_SUBSCRIPT)
-		 *       and we'll use them when assigning to a var. (e.g. it will prepare the parameters of IRcommand_Array_set)
-		 *       IRme will return the *right-value* of the variable (e.g. it will invoke IRcommand_Array_access)
-		 */
-
 		/* We assign differently to each AST_VAR class */
 		TEMP src = exp.IRme();
-
-		/* The statement is of sort: var := (y + 2) */
-		if (var instanceof AST_VAR_SIMPLE) {
-			// We do not need to invoke var.IRme, as there is no need to its temp
-			IDVariable dst = ((AST_VAR_SIMPLE) var).idVar;
-			IR.getInstance().Add_IRcommand(new IRcommand_Store(dst, src));
-		}
-
-		/* The statement is of sort: obj.otherObj.member := (y + 2) */
-		else if (var instanceof AST_VAR_FIELD) {
-			((AST_VAR_FIELD) var).IRmeFieldSet(src);
-		}
-
-		/* The statement is of sort: arrPointer[subscriptIndex] := src */
-		else if (var instanceof AST_VAR_SUBSCRIPT) {
-			((AST_VAR_SUBSCRIPT) var).IRmeArraySet(src);
-		}
-
-		/* Shouldn't get here */
-		else {
-			System.out.print("[DEBUG] Warning: unexpected var in AST_STMT_ASSIGN.IRme()\n");
-		}
+		var.IRmeAsLeftValue(src);
 
 		return null;
 	}

@@ -100,8 +100,8 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 
 	/* returns the right-value of the array element  */
 	public TEMP IRme() {
-		TEMP arrayPointer = getArrayPointer();
-		TEMP subscriptIndex = getSubscriptIndex();
+		TEMP arrayPointer = this.var.IRme();
+		TEMP subscriptIndex = this.subscript.IRme();
 		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
 
 		IR.getInstance().Add_IRcommand(new IRcommand_Array_access(dst, arrayPointer, subscriptIndex));
@@ -110,18 +110,10 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 	}
 
 	/* performs a set on the array element (treating it as a left-value)  */
-	public TEMP IRmeArraySet(TEMP src) {
-		TEMP arrPointer = this.getArrayPointer();
-		TEMP subscriptIndex = this.getSubscriptIndex();
+	/* The statement is of sort: arrPointer[subscriptIndex] := src */
+	public void IRmeAsLeftValue(TEMP src) {
+		TEMP arrPointer = this.var.IRme();
+		TEMP subscriptIndex = this.subscript.IRme();
 		mIR.Add_IRcommand(new IRcommand_Array_set(arrPointer, subscriptIndex, src));
-	}
-
-	/* the following can be used externally with array_set, when left-value is needed */
-	private TEMP getArrayPointer() {
-		return this.var.IRme();
-	}
-
-	private TEMP getSubscriptIndex() {
-		return this.subscript.IRme();
 	}
 }

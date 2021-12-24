@@ -3,6 +3,7 @@ package AST;
 import EXCEPTIONS.SemanticException;
 import IR.IDVariable;
 import IR.IRcommand_Load;
+import IR.IRcommand_Store;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TEMP.TEMP;
 import TYPES.TYPE;
@@ -97,5 +98,10 @@ public class AST_VAR_SIMPLE extends AST_VAR
 		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
 		IR.getInstance().Add_IRcommand(new IRcommand_Load(t, this.idVar));
 		return t;
+	}
+
+	/* The statement is of sort: var := (y + 2) */
+	public void IRmeAsLeftValue(TEMP src) {
+		mIR.Add_IRcommand(new IRcommand_Store(this.idVar, src));
 	}
 }
