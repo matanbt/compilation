@@ -101,17 +101,22 @@ public class AST_VAR_FIELD extends AST_VAR
 
 	/* returns the right-value of the field */
 	public TEMP IRme() {
-		TEMP objectPointer = getObjectPointer();
+		TEMP objectPointer = this.getObjectPointer();
 		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
 
 		// TODO pass to IRCommand offset of fieldName, after implementing class
-		IR.getInstance().Add_IRcommand(new IRcommand_Field_access(dst, objectPointer, fieldName));
+		mIR.Add_IRcommand(new IRcommand_Field_access(dst, objectPointer, fieldName));
 
 		return dst;
 	}
 
+	public void IRmeFieldSet(TEMP src) {
+		TEMP objectPointer = this.getObjectPointer();
+		mIR.Add_IRcommand(new IRcommand_Field_set(objectPointer, fieldName, src));
+	}
+
 	/* can be used externally with field_set, when left-value is needed */
-	public TEMP getObjectPointer() {
+	private TEMP getObjectPointer() {
 		return this.var.IRme();
 	}
 }

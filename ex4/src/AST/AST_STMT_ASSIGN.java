@@ -129,16 +129,12 @@ public class AST_STMT_ASSIGN extends AST_STMT
 
 		/* The statement is of sort: obj.otherObj.member := (y + 2) */
 		else if (var instanceof AST_VAR_FIELD) {
-			TEMP objectPointer = ((AST_VAR_FIELD) var).getObjectPointer();
-			String fieldName = ((AST_VAR_FIELD) var).fieldName;
-			IR.getInstance().Add_IRcommand(new IRcommand_Field_set(objectPointer, fieldName, src));
+			((AST_VAR_FIELD) var).IRmeFieldSet(src);
 		}
 
 		/* The statement is of sort: arrPointer[subscriptIndex] := src */
 		else if (var instanceof AST_VAR_SUBSCRIPT) {
-			TEMP arrPointer = ((AST_VAR_SUBSCRIPT) var).getArrayPointer();
-			TEMP subscriptIndex = ((AST_VAR_SUBSCRIPT) var).getSubscriptIndex();
-			IR.getInstance().Add_IRcommand(new IRcommand_Array_set(arrPointer, subscriptIndex, src));
+			((AST_VAR_SUBSCRIPT) var).IRmeArraySet(src);
 		}
 
 		/* Shouldn't get here */
