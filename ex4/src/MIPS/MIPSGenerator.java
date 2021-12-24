@@ -15,9 +15,19 @@ import TEMP.*;
 
 public class MIPSGenerator
 {
+
+
+	/*******************************/
+	/* Constants for our usage ... */
+	/******************************/
+	/* How many temporary we backup and restore inside a function? */
+	public static final int TEMP_TO_BACKUP_COUNT = 10;
+  
 	public static String LABEL_STRING_ACCESS_VIOLATION = "Label_string_access_violation";
 	public static String LABEL_STRING_ILLEGAL_DIV_BY_0 = "Label_string_illegal_div_by_zero";
 	public static String LABEL_STRING_INVALID_PTR_DREF = "Label_string_invalid_ptr_dref";
+
+
 
 	private int WORD_SIZE=4;
 	/***********************/
@@ -66,21 +76,38 @@ public class MIPSGenerator
 		fileWriter.format(".data\n");
 		fileWriter.format("\tglobal_%s: .word 721\n",var_name);
 	}
-	public void load(TEMP dst,String var_name)
+
+	/* Loads variable from .data segment by given name */
+	public void loadGlobal(TEMP dst, String var_name)
 	{
 		int idxdst=dst.getSerialNumber();
-		fileWriter.format("\tlw Temp_%d,global_%s\n",idxdst,var_name);
+		fileWriter.format("\tlw Temp_%d,global_%s\n", idxdst, var_name);
 	}
-	public void load_by_var_name(TEMP dst,String full_var_name)
+
+	/* Loads variable from the stack by given offset (relative to $fp) */
+	public void loadFromStack(TEMP dst, int offset) {
+		int idxdst=dst.getSerialNumber();
+		fileWriter.format("\tlw Temp_%d,%d(fp)\n", idxdst, offset);
+	}
+
+  public void load_by_var_name(TEMP dst,String full_var_name)
 	{
 		int idxdst=dst.getSerialNumber();
 		fileWriter.format("\tlw Temp_%d,%s\n",idxdst,full_var_name);
 	}
-	public void store(String var_name,TEMP src)
+
+	public void storeGlobal(String var_name,TEMP src)
 	{
 		int idxsrc=src.getSerialNumber();
 		fileWriter.format("\tsw Temp_%d,global_%s\n",idxsrc,var_name);		
 	}
+
+	public void storeToStack(int offset,TEMP src)
+	{
+		int idxsrc=src.getSerialNumber();
+		fileWriter.format("\tsw Temp_%d,%d(fp)\n",idxsrc, offset);
+	}
+
 	public void li(TEMP t,int value)
 	{
 		int idx=t.getSerialNumber();
