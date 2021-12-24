@@ -148,6 +148,7 @@ public class AST_EXP_BINOP extends AST_EXP
 			if (op.equals("+")) {
 				ir.Add_IRcommand(new IRcommand_Binop_Add_Strings(dst, left_t, right_t));
 			}
+
 			else if (op.equals("=")) {
 				ir.Add_IRcommand(new IRcommand_Binop_EQ_Strings(dst, left_t, right_t));  // TODO IRcommand_Binop_EQ_Strings
 			}
