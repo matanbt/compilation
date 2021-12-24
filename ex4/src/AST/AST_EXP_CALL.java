@@ -1,7 +1,6 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
-import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.*;
 
 public class AST_EXP_CALL extends AST_EXP
