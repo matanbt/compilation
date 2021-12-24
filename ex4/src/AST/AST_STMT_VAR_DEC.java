@@ -1,6 +1,7 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import TEMP.*;
 import TYPES.TYPE;
 
 // basically a class to wrap varDec, when it is a statement (=inside func)
@@ -65,8 +66,8 @@ public class AST_STMT_VAR_DEC extends AST_STMT
         return this.d.SemantMe();
     }
 
-    //public TEMP IRme()
-    //{
-    //	return d.IRme();
-    //}
+    public TEMP IRme()
+    {
+    	return d.IRme();
+    }
 }

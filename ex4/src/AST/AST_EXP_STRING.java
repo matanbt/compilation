@@ -1,5 +1,7 @@
 package AST;
 
+import TEMP.*;
+import IR.*;
 import TYPES.TYPE;
 import TYPES.TYPE_STRING_INSTANCE;
 
@@ -52,5 +54,16 @@ public class AST_EXP_STRING extends AST_EXP
     public TYPE SemantMe()
     {
         return TYPE_STRING_INSTANCE.getInstance();
+    }
+
+    public TEMP IRme()
+    {
+        TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
+        IRcommand ir1 = new IRcommand_Allocate_String(this.value, t.getSerialNumber());
+        IRcommand ir2 = new IRcommand_Load_String(t, this.value);
+        IR.getInstance().Add_IRcommand(ir1);
+        IR.getInstance().Add_IRcommand(ir2);
+
+        return t;
     }
 }
