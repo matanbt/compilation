@@ -19,8 +19,7 @@ public class AST_DEC_VAR extends AST_DEC
     public TYPE varType = null;  // gets real value when calling getType
     private IDVariable idVariable;
     // if this is a class var dec, this.idVariable is initialized in (//TODO-choose where) SemantMe()
-    // if this is a func/method var dec, this.idVariable is initialized in (//TODO-choose where) SemantMe()
-    // if this is a global var dec, this.idVariable is initialized in this.SemantMe()
+    // if this is a global or func/method var dec, this.idVariable is initialized in this.SemantMe()
 
 
     /******************/
@@ -178,14 +177,23 @@ public class AST_DEC_VAR extends AST_DEC
         /*****************************************************************/
         /* [2] Enter the new var to the Symbol Table */
         /*****************************************************************/
+        SYMBOL_TABLE symbol_table = SYMBOL_TABLE.getInstance();
+
         if (this.idVariable == null){
             // if this is a class var dec, this.idVariable is initialized in (//TODO-choose where) SemantMe
-            // if this is a func/method var dec, this.idVariable is initialized in (//TODO-choose where) SemantMe
-            // --> if this.idVariable == null it means that this dec var is global
-            this.idVariable = new IDVariable(name, VarRole.GLOBAL);
+            // --> if this.idVariable == null it means that this dec var is global or func/method
+
+            if (symbol_table.isGlobalScope()) {
+                this.idVariable = new IDVariable(name, VarRole.GLOBAL);
+            }
+            else {
+                // func/method var dec
+                TYPE_FUNCTION type_func = symbol_table.findScopeFunc();
+                this.idVariable = new IDVariable(name, VarRole.GLOBAL, type_func.localsCount++);
+            }
         }
 
-        SYMBOL_TABLE.getInstance().enter(name, semantic_type, this.idVariable);
+        symbol_table.enter(name, semantic_type, this.idVariable);
 
     }
 
@@ -209,20 +217,22 @@ public class AST_DEC_VAR extends AST_DEC
         IR ir = IR.getInstance();
         VarRole varRole = this.idVariable.mRole;
 
+        TEMP t_val_to_assign = null;
+        if (exp != null)
+            t_val_to_assign = this.exp.IRme();
+        if (new_exp != null)
+            t_val_to_assign = this.new_exp.IRme();
+
         if (varRole == VarRole.GLOBAL) {
             // global var
             // assume that if a global variable is initialized, then the initial value is a constant (i.e., string, integer, nil)
             // --> this.exp instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL
-            ir.Add_IRcommand(new IRcommand_Global_Var_Dec(this.name, this.exp));
+            ir.Add_IRcommand(new IRcommand_Allocate(this.idVariable));
+            ir.Add_IRcommand(new IRcommand_Store(this.idVariable, t_val_to_assign));
         }
 
         else if (varRole == VarRole.LOCAL) {
             // LOCAL (function or method) var dec
-            TEMP t_val_to_assign = null;
-            if (exp != null)
-                t_val_to_assign = this.exp.IRme();
-            if (new_exp != null)
-                t_val_to_assign = this.new_exp.IRme();
             ir.Add_IRcommand(new IRcommand_Store(this.idVariable, t_val_to_assign));
         }
 
