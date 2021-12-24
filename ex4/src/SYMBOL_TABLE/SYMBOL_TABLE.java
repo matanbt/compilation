@@ -15,6 +15,7 @@ import AST.AST_DEC;
 import AST.AST_DEC_CLASS;
 import AST.AST_DEC_FUNC;
 import AST.AST_Node;
+import IR.IDVariable;
 import TYPES.*;
 
 /****************/
@@ -23,14 +24,14 @@ import TYPES.*;
 public class SYMBOL_TABLE
 {
 	private int hashArraySize = 13;
-	
+
 	/**********************************************/
 	/* The actual symbol table data structure ... */
 	/**********************************************/
 	private SYMBOL_TABLE_ENTRY[] table = new SYMBOL_TABLE_ENTRY[hashArraySize];
 	private SYMBOL_TABLE_ENTRY top = null;
 	private int top_index = 0;
-	
+
 	/**************************************************************/
 	/* A very primitive hash function for exposition purposes ... */
 	/**************************************************************/
@@ -51,7 +52,11 @@ public class SYMBOL_TABLE
 	/****************************************************************************/
 	/* Enter a variable, function, class type or array type to the symbol table */
 	/****************************************************************************/
-	public void enter(String name,TYPE t)
+	public void enter(String name,TYPE t) {
+		enter(name, t, null);
+	}
+
+	public void enter(String name, TYPE t, IDVariable idVar)
 	{
 		/*************************************************/
 		/* [1] Compute the hash value for this new entry */
@@ -67,7 +72,7 @@ public class SYMBOL_TABLE
 		/**************************************************************************/
 		/* [3] Prepare a new symbol table entry with name, type, next and prevtop */
 		/**************************************************************************/
-		SYMBOL_TABLE_ENTRY e = new SYMBOL_TABLE_ENTRY(name, t, hashValue, next, top, top_index++);
+		SYMBOL_TABLE_ENTRY e = new SYMBOL_TABLE_ENTRY(name, t, hashValue, next, top, top_index++, idVar);
 		// Note: each entry back-pointer on the last entered entry (used when removing scope)
 		/**********************************************/
 		/* [4] Update the top of the symbol table ... */
@@ -103,6 +108,22 @@ public class SYMBOL_TABLE
 		
 		return null;
 	}
+
+	public IDVariable findIdVar(String name)
+	{
+		SYMBOL_TABLE_ENTRY e;
+
+		for (e = table[hash(name)]; e != null; e = e.next)
+		{
+			if (name.equals(e.name))
+			{
+				return e.idVar;
+			}
+		}
+
+		return null;
+	}
+
 	/**********************************************************************************************/
 	/* Performs find, BUT considering ONLY the scope of the current function */
 	/* VERY USEFUL for resolutions in Classes Methods (before checking class-fields) */

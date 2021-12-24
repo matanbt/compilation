@@ -15,11 +15,11 @@ import MIPS.*;
 
 public class IRcommand_Allocate extends IRcommand
 {
-	String var_name;
+	IDVariable var;
 	
-	public IRcommand_Allocate(String var_name)
+	public IRcommand_Allocate(IDVariable var)
 	{
-		this.var_name = var_name;
+		this.var = var;
 	}
 	
 	/***************/
@@ -27,6 +27,6 @@ public class IRcommand_Allocate extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		MIPSGenerator.getInstance().allocate(var_name);
+		MIPSGenerator.getInstance().allocate(var);
 	}
 }
