@@ -217,29 +217,26 @@ public class AST_DEC_VAR extends AST_DEC
         IR ir = IR.getInstance();
         VarRole varRole = this.idVariable.mRole;
 
-        TEMP t_val_to_assign = null;
-        if (exp != null)
-            t_val_to_assign = this.exp.IRme();
-        if (new_exp != null)
-            t_val_to_assign = this.new_exp.IRme();
-
         if (varRole == VarRole.GLOBAL) {
-            // global var
-            // assume that if a global variable is initialized, then the initial value is a constant (i.e., string, integer, nil)
-            // --> this.exp instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL
             ir.Add_IRcommand(new IRcommand_Allocate(this.idVariable));
-            ir.Add_IRcommand(new IRcommand_Store(this.idVariable, t_val_to_assign));
         }
 
-        else if (varRole == VarRole.LOCAL) {
-            // LOCAL (function or method) var dec
-            ir.Add_IRcommand(new IRcommand_Store(this.idVariable, t_val_to_assign));
-        }
+        if (exp != null || new_exp != null) {
+            // declaration with assignment
+            TEMP t_val_to_assign = null;
+            if (exp != null)
+                t_val_to_assign = this.exp.IRme();
+            if (new_exp != null)
+                t_val_to_assign = this.new_exp.IRme();
 
-        else if (varRole == VarRole.FIELD) {
-            // TODO (after class implementation)- probably won't be here (will new in the instance creation)
-        }
+            if (varRole == VarRole.LOCAL || varRole == VarRole.GLOBAL) {
+                ir.Add_IRcommand(new IRcommand_Store(this.idVariable, t_val_to_assign));
+            }
 
+            else if (varRole == VarRole.FIELD) {
+                // TODO (after class implementation)- probably won't be here (will new in the instance creation)
+            }
+        }
         return null;
     }
 
