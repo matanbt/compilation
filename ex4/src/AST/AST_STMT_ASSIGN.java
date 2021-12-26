@@ -108,8 +108,7 @@ public class AST_STMT_ASSIGN extends AST_STMT
 	public TEMP IRme()
 	{
 		/* We assign differently to each AST_VAR class */
-		TEMP src = exp.IRme();
-		var.IRmeAsLeftValue(src);
+		var.IRmeAsLeftValue(exp);
 
 		return null;
 	}
