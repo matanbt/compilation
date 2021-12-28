@@ -189,7 +189,7 @@ public class AST_DEC_VAR extends AST_DEC
             else {
                 // statement variable declaration
                 TYPE_FUNCTION type_func = symbol_table.findScopeFunc();
-                this.idVariable = new IDVariable(name, VarRole.LOCAL, type_func.localsCount++);  // TODO - get the AST_FUNC (it contains the localsCount field)
+                this.idVariable = new IDVariable(name, VarRole.LOCAL, type_func.funcASTNode.localsCount++);
             }
         }
 
