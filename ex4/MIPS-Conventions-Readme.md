@@ -18,4 +18,5 @@
   - `global_{name}` - a variable named `{name}` declared in the **global** context.
 
 - **Strings:**
-  - TODO @Omer 
+  - `str_global_{string-name}` - contains the string value of the **global** {string-name} variable
+  - `str_{string-name}_{unique-number}` - contains the string value of some **local** {string-name} variable

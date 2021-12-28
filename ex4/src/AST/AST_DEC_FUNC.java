@@ -132,7 +132,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*******************************************/
 		/* [3] Handling the case of global main() */
 		/******************************************/
-		if(encompassingClass != null && funcName.equals("main")) {
+		if(encompassingClass == null && funcName.equals("main")) {
 			if (semantic_rtnType != null)
 			{
 				this.throw_error("Global declared 'main()' must be void");
