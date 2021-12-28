@@ -77,6 +77,18 @@ public class MIPSGenerator
 		fileWriter.format("\t%s: .word 0\n",var_name);
 	}
 
+	public void global_var_init_int(String var_name, int val)
+	{
+		fileWriter.format(".data\n");
+		fileWriter.format("\tglobal_%s: .word %d\n",var_name, val);
+	}
+	public void global_var_init_string(String var_name, String val)
+	{
+		fileWriter.format(".data\n");
+		fileWriter.format("\t%str_global_%s: .asciiz \"%s\"\n",var_name, val);
+		fileWriter.format("\tglobal_%s: .word str_global_%s\n",var_name, var_name);
+	}
+
 	/* Loads variable from .data segment by given name */
 	public void loadGlobal(TEMP dst, String var_name)
 	{
