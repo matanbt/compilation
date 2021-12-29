@@ -7,6 +7,9 @@ import SYMBOL_TABLE.SYMBOL_TABLE;
 import TEMP.TEMP;
 import TYPES.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class AST_Node
 {
 	/*******************************************/
@@ -44,8 +47,8 @@ public abstract class AST_Node
 		throw new SemanticException(String.format("line %d: %s", this.lineNumber, message), this.lineNumber);
 	}
 
-
-	public TYPE functionCallSemantMe(AST_VAR caller, String func, AST_EXP_LIST args) throws SemanticException {
+/* ---------------------------- Function Calls Section ----------------------------*/
+	public TYPE_FUNCTION functionCallSemantMe(AST_VAR caller, String func, AST_EXP_LIST args) throws SemanticException {
 		/* for AST_STMT_CALL, AST_EXP_CALL
 		* Verifies that the function call is semantically valid & returns the TYPE of the returned value
 		* (from the function call)
@@ -59,15 +62,16 @@ public abstract class AST_Node
 
 		if (caller == null) {
 			TYPE_CLASS type_class_of_scope = SYMBOL_TABLE.getInstance().findScopeClass();
-			if (type_class_of_scope == null){
+			if (type_class_of_scope == null) {
 				// this function call is not inside a class scope
 				type_func = SYMBOL_TABLE.getInstance().find(func);  // find func in the closest scope  TODO- (enhancement) change to type_func = SYMBOL_TABLE.findInGlobalScope(func);
 			}
 			else {
 				// this function call is inside a class scope
 				// search for func in most local scope
+				// TODO: this will always return either null or some variable overshadowing the func.. what's the need of it?
 				type_func = SYMBOL_TABLE.getInstance().findInCurrentScope(func);
-				if (type_func == null){
+				if (type_func == null) {
 					// search for func in the closest class scope
 					type_func = type_class_of_scope.findInClassAndSuperClasses(func);
 				}
@@ -114,10 +118,67 @@ public abstract class AST_Node
 			}
 		}
 
-		if (i != expected_args.size() || exp_node != null){
+		if (i != expected_args.size() || exp_node != null) {
 			this.throw_error("function call: unmatching arguments' length");
 		}
 
-		return  ((TYPE_FUNCTION) type_func).rtnType;  // instance-type. null if it's a void function call
+		return  ((TYPE_FUNCTION) type_func);
 	}
+
+	/*
+	 * Inserts the IRcommands of a function / method call
+	 */
+	public void functionCallIRme(AST_VAR caller, String func, AST_EXP_LIST args,
+								 TYPE_FUNCTION funcType, TEMP rtnTemp) {
+		List<TEMP> args_temp_list = null;
+
+		if (funcType.encompassingClass != null) {
+			/* Calling a method */
+
+			// the class-instance that invokes the method
+			TEMP invokingClassObject;
+
+			if (caller == null) {
+				/* calling a method without a caller implies the method was called
+				 * on the `this` of the current runtime context. */
+				invokingClassObject = TEMP_FACTORY.getInstance().getFreshTEMP();
+				IR.getInstance().Add_IRcommand(new IRcommand_Load(invokingClassObject , IDVariable.getThisInstance()));
+			}
+			else {
+				/* there is an explicit class-object caller */
+				/* todo: I assume caller.IRme will provide me with the address of the object.
+				    this depends on new-exp implementation */
+				invokingClassObject = caller.IRme();
+			}
+
+			// evaluating expressions must be AFTER evaluating invokingClassObject (left to right)
+			args_temp_list = this.functionCallGetArgumentsTempList(args);
+			/* TODO Offset - we'll need to pass the method offset in VTable */
+			IR.getInstance().Add_IRcommand(new IRcommand_Virtual_Call(invokingClassObject,
+					funcType.encompassingClass.name,
+					func, args_temp_list, rtnTemp));
+		}
+		else {
+			/* Calling a global function
+			 * By semantic assumption caller is null */
+			args_temp_list = this.functionCallGetArgumentsTempList(args);
+			IR.getInstance().Add_IRcommand(new IRcommand_Call(this.func, args_temp_list, rtnTemp));
+		}
+	}
+
+	public List<TEMP> functionCallGetArgumentsTempList(AST_EXP_LIST args) {
+		AST_EXP_LIST exp_node;
+		List<TEMP> args_temp_list = new ArrayList<TEMP>();
+
+		// IRing the expression from left to right
+		for(exp_node = args; exp_node != null; exp_node = exp_node.next) {
+			AST_EXP arg = exp_node.head;
+			TEMP argTemp = arg.IRme();
+			args_temp_list.add(argTemp);
+		}
+
+		return args_temp_list;
+	}
+	/* ---------------------------- END Function Calls Section ----------------------------*/
+
 }
