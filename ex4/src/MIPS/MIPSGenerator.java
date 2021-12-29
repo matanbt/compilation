@@ -40,6 +40,13 @@ public class MIPSGenerator
 	/***********************/
 	public void finalizeFile()
 	{
+		// TODO .text ?
+		fileWriter.print(".text\n");
+		/* 1. Invokes user_main, i.e. the main() function of the L program */
+		fileWriter.print("main:\n");
+		fileWriter.print("\tjal user_main\n");
+
+		/* 2. Performs exit */
 		fileWriter.print("\tli $v0,10\n");
 		fileWriter.print("\tsyscall\n");
 		fileWriter.close();

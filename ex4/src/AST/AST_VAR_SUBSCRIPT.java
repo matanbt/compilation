@@ -13,6 +13,9 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 {
 	public AST_VAR var;
 	public AST_EXP subscript;
+
+	private TEMP arrPointer = this.var.IRme();
+	private TEMP subscriptIndex = this.subscript.IRme();
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -111,9 +114,10 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 
 	/* performs a set on the array element (treating it as a left-value)  */
 	/* The statement is of sort: arrPointer[subscriptIndex] := src */
-	public void IRmeAsLeftValue(TEMP src) {
+	public void IRmeAsLeftValue(AST_EXP src) {
 		TEMP arrPointer = this.var.IRme();
 		TEMP subscriptIndex = this.subscript.IRme();
-		mIR.Add_IRcommand(new IRcommand_Array_set(arrPointer, subscriptIndex, src));
+		TEMP src_temp = src.IRme();
+		mIR.Add_IRcommand(new IRcommand_Array_set(arrPointer, subscriptIndex, src_temp));
 	}
 }

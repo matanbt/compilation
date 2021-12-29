@@ -101,7 +101,8 @@ public class AST_VAR_SIMPLE extends AST_VAR
 	}
 
 	/* The statement is of sort: var := (y + 2) */
-	public void IRmeAsLeftValue(TEMP src) {
-		mIR.Add_IRcommand(new IRcommand_Store(this.idVar, src));
+	public void IRmeAsLeftValue(AST_EXP src) {
+		TEMP src_temp = src.IRme();
+		mIR.Add_IRcommand(new IRcommand_Store(this.idVar, src_temp));
 	}
 }

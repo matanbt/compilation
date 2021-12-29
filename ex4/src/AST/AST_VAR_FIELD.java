@@ -112,8 +112,9 @@ public class AST_VAR_FIELD extends AST_VAR
 
 	/* performs a set on the object field (treating it as a left-value)  */
 	/* The statement is of sort: obj.otherObj.member := (y + 2) */
-	public void IRmeAsLeftValue(TEMP src) {
+	public void IRmeAsLeftValue(AST_EXP src) {
 		TEMP objectPointer = this.var.IRme();
-		mIR.Add_IRcommand(new IRcommand_Field_set(objectPointer, fieldName, src));
+		TEMP src_temp = src.IRme();
+		mIR.Add_IRcommand(new IRcommand_Field_set(objectPointer, fieldName, src_temp));
 	}
 }
