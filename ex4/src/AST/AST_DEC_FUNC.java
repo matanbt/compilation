@@ -148,7 +148,8 @@ public class AST_DEC_FUNC extends AST_DEC
 			isFoundMain = true;
 		}
 
-		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes, this);
+		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes,
+				this, encompassingClass);
 	}
 
 	// SemantMe Part 2: Update Symbol Table & analyze the inner scope of the function
