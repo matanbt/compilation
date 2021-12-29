@@ -35,15 +35,16 @@ public class IRcommand_Global_Var_Dec extends IRcommand
     public void MIPSme()
     {
         if (this.var_value == null || this.var_value instanceof AST_EXP_NIL) {
-            MIPSGenerator.getInstance().global_var_init_int(var_name, 0);
+            MIPSGenerator.getInstance().allocateWithIntVal(var_name, 0);
         }
 
         else if (this.var_value instanceof AST_EXP_INT) {
-            MIPSGenerator.getInstance().global_var_init_int(var_name, ((AST_EXP_INT)var_value).value);
+            MIPSGenerator.getInstance().allocateWithIntVal(var_name, ((AST_EXP_INT)var_value).value);
         }
 
         else if (this.var_value instanceof AST_EXP_STRING) {
-            MIPSGenerator.getInstance().global_var_init_string(var_name, ((AST_EXP_STRING)var_value).value);
+            MIPSGenerator.getInstance().allocateString("str_global_" + var_name, ((AST_EXP_STRING)var_value).value);
+            MIPSGenerator.getInstance().allocateByReferenceName("global_" + var_name,"str_global_" + var_name);
         }
 
         else {
