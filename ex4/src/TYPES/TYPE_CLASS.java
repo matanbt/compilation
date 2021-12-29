@@ -27,6 +27,7 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 	/* Lists all the method, includes those inherited / overridden
 	 * Will correspond to vtable in runtime. */
 	private final List<AST_DEC_FUNC> methods_list;
+
 	/* Lists all the field, includes those inherited /overridden
 	 * Will correspond to the object-struct in runtime. */
 	// TODO - a note for shir: if you want to access to the initialized value of a field, you can access AST_DEC_VAR.exp
@@ -119,11 +120,11 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 		String methodNameToAdd = methodToAdd.funcName;
 
 		for (int i = 0; i < methods_list.size(); i++) {
-			AST_DEC_VAR existingMethod = fields_list.get(i);
+			AST_DEC_FUNC existingMethod = methods_list.get(i);
 
 			// If the new method-name existed in the father, we'll override this field
 			// by the semantic assumption this is a valid override
-			if (methodNameToAdd.equals(existingMethod.name)) {
+			if (methodNameToAdd.equals(existingMethod.funcName)) {
 				methods_list.set(i, methodToAdd);
 				return;
 			}
