@@ -1,6 +1,7 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import TEMP.TEMP;
 import TYPES.TYPE;
 
 public class AST_DEC_LIST extends AST_Node
@@ -82,7 +83,7 @@ public class AST_DEC_LIST extends AST_Node
 	public TEMP IRme()
 	{
 		if (head != null) head.IRme();
-		if (tail != null) tail.IRme();
+		if (next != null) next.IRme();
 
 		return null;
 	}

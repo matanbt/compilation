@@ -84,6 +84,19 @@ public class MIPSGenerator
 		fileWriter.format("\t%s: .word 0\n",var_name);
 	}
 
+	public void allocateString(String var_name, String val)
+	{
+		fileWriter.format(".data\n");
+		fileWriter.format("\t%s: .asciiz \"%s\"\n", var_name, val);
+		fileWriter.format(".text\n");
+	}
+  
+	public void loadString(TEMP dst, String str_name)
+	{
+		int idxdst=dst.getSerialNumber();
+		fileWriter.format("\tla Temp_%d, %s\n",idxdst, str_name);
+	}
+
 	public void allocateWithIntVal(String name, int val)
 	{
 		// name = val

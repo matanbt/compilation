@@ -2,6 +2,7 @@ package AST;
 
 import EXCEPTIONS.SemanticException;
 import TYPES.*;
+import TEMP.*;
 
 public class AST_STMT_LIST extends AST_Node
 {
@@ -77,7 +78,7 @@ public class AST_STMT_LIST extends AST_Node
 	public TEMP IRme()
 	{
 		if (head != null) head.IRme();
-		if (tail != null) tail.IRme();
+		if (next != null) next.IRme();
 
 		return null;
 	}

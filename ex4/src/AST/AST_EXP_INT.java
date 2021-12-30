@@ -1,5 +1,6 @@
 package AST;
 
+import TEMP.*;
 import TYPES.*;
 import TEMP.TEMP;
 import TEMP.TEMP_FACTORY;

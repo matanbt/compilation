@@ -1,6 +1,7 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import TEMP.*;
 import TYPES.TYPE;
 import TYPES.TYPE_INT;
 
@@ -61,5 +62,10 @@ public class AST_EXP_VAR extends AST_EXP
 
 	public TYPE SemantMe() throws SemanticException {
 		return var.SemantMe();
+	}
+
+	public TEMP IRme()
+	{
+		return var.IRme();
 	}
 }
