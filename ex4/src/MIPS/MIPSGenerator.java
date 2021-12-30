@@ -64,7 +64,7 @@ public class MIPSGenerator
 	public void loadString(TEMP dst, String str_name)
 	{
 		int idxdst=dst.getSerialNumber();
-		fileWriter.format("\tla Temp_%d, %sd\n",idxdst, str_name);
+		fileWriter.format("\tla Temp_%d, %s\n",idxdst, str_name);
 	}
 	public void load(TEMP dst,String var_name)
 	{
