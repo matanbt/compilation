@@ -173,6 +173,10 @@ public class AST_DEC_FUNC extends AST_DEC
 		/***************************/
 		TYPE_LIST list_argTypes = result_SemantMe.args;
 		int i = 0;
+		if (this.encompassingClass != null) {
+			// a method will have `this` as first argument
+			i = 1;
+		}
 		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next, i++)
 		{
 			// find the TYPE of each
@@ -186,7 +190,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		}
 
 		// gets the amount of arguments
-		this.argsCount = list_argTypes.size();
+		this.argsCount = list_argTypes.size() + (this.encompassingClass != null ? 1 : 0);
 
 		/*******************/
 		/* [3] Semant Body */
