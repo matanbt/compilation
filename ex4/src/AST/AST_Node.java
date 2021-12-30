@@ -2,6 +2,7 @@ package AST;
 
 import EXCEPTIONS.SemanticException;
 
+import IR.IR;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TEMP.TEMP;
 import TYPES.*;
@@ -19,6 +20,7 @@ public abstract class AST_Node
 	/* The line the node appeared when parsing */
 	/*******************************************/
 	public int lineNumber;
+	public final IR mIR = IR.getInstance(); // IR instance to be used in IRme-s
 
 	/***********************************************/
 	/* The default message for an unknown AST node */

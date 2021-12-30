@@ -19,6 +19,14 @@ public class AST_DEC_FUNC extends AST_DEC
 	public TYPE_CLASS encompassingClass = null;
 	public TYPE funcType = null;  // gets real value when calling getType
 
+	// -------------------- IR Additions --------------------
+	private int argsCount = 0;
+	private int localsCount = 0;
+	public String funcStartingLabel;
+	public String funcEpilogueLabel;
+	public boolean isMainFunc = false;
+	public static boolean isFoundMain = false;
+
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
@@ -121,7 +129,26 @@ public class AST_DEC_FUNC extends AST_DEC
 			list_argTypes.add(semantic_argType);
 		}
 
-		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes);
+		/*******************************************/
+		/* [3] Handling the case of global main() */
+		/******************************************/
+		if(encompassingClass == null && funcName.equals("main")) {
+			if (semantic_rtnType != null)
+			{
+				this.throw_error("Global declared 'main()' must be void");
+			}
+			if (list_argTypes.size() != 0)
+			{
+				this.throw_error("Global declared 'main()' can't have arguments");
+			}
+
+			// flag the function as the legal "main()" of the program
+			this.isMainFunc = true;
+			// flag that the main function was found
+			isFoundMain = true;
+		}
+
+		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes, this);
 	}
 
 	// SemantMe Part 2: Update Symbol Table & analyze the inner scope of the function
@@ -153,21 +180,20 @@ public class AST_DEC_FUNC extends AST_DEC
 
 			// each argument is also a local variable in the function scope
 			// must be done AFTER creating the function scope
-			SYMBOL_TABLE.getInstance().enter(arg.argName, argType);
+			SYMBOL_TABLE.getInstance().enter(arg.argName, argType,
+					new IDVariable(arg.argName, VarRole.ARG, i));
 		}
+
+		// gets the amount of arguments
+		this.argsCount = list_argTypes.size();
 
 		/*******************/
 		/* [3] Semant Body */
 		/*******************/
-		body.SemantMe();
+		this.localsCount = 0; // locals will be count by body.semantMe()
+		// TODO this reasonably assumes each STMT_VAR_DEC invokes this.localsCount++ (and only these statements do)
 
-		// --- Check for return is currently commented-out due to change in instructions ---
-		// forces non-void-functions to contain at least one RETURN
-		// Must be checked only after body.semantMe;
-//		if (!result_SemantMe.isReturnExists && (result_SemantMe.rtnType != null)) {
-//			this.throw_error(String.format(">> ERROR no return statement exists, when declared-return is (%s) " +
-//					"for function (%s) ", rtnType.type_name, funcName));
-//		}
+		body.SemantMe();
 
 		/*****************/
 		/* [4] End Scope */
@@ -194,11 +220,32 @@ public class AST_DEC_FUNC extends AST_DEC
 
 	public TEMP IRme()
 	{
-		IR.
-		getInstance().
-		Add_IRcommand(new IRcommand_Label("main"));
+		/* IR speaking - I assume the functions arguments are loaded
+		 * if thinking about MIPS - This means I assume the caller pushed the arguments to the stack */
+
+		/* 0. If it's the global main(): Rename it */
+		String _funcName = this.isMainFunc ? "user_main" : this.funcName;
+
+		/* 1. Put a starting label */
+		if (encompassingClass != null) {
+			this.funcStartingLabel = String.format("method_%s_%s", encompassingClass.name, _funcName);
+		} else {
+			this.funcStartingLabel = String.format("func_%s", _funcName);
+		}
+		mIR.Add_IRcommand(new IRcommand_Label(this.funcStartingLabel));
+
+		/* 2. Prologue (Will be used for MIPS, meaningless in IR) */
+		mIR.Add_IRcommand(new IRcommand_Func_Prologue(this.localsCount));
+
+		/* 3. Function body */
 		if (body != null) body.IRme();
 
+		/* 4. Epilogue (Will be used for MIPS, meaningless in IR) */
+		this.funcEpilogueLabel = String.format("%s_epilogue", this.funcStartingLabel);
+		mIR.Add_IRcommand(new IRcommand_Label(this.funcEpilogueLabel));
+		mIR.Add_IRcommand(new IRcommand_Func_Epilogue());
+
+		// No temporary in function declaration
 		return null;
 	}
 

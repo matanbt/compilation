@@ -61,6 +61,12 @@ public class Main
 			try
 			{
 				AST.SemantMe();
+
+				/* Verifies there exist a main global-function */
+				if(!AST_DEC_FUNC.isFoundMain) {
+					AST.throw_error("L-program must contain a 'void main()` global function");
+				}
+				
 				file_writer.println("OK");
 			}
 			catch (SemanticException e)

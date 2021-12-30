@@ -1,6 +1,8 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import IR.IR;
+import TEMP.TEMP;
 import TYPES.TYPE;
 import TYPES.TYPE_CLASS;
 import TYPES.TYPE_CLASS_INSTANCE;
@@ -9,7 +11,7 @@ public class AST_VAR_FIELD extends AST_VAR
 {
 	public AST_VAR var;
 	public String fieldName;
-	
+
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
@@ -95,5 +97,24 @@ public class AST_VAR_FIELD extends AST_VAR
 		}
 
 		return field_type;
+	}
+
+	/* returns the right-value of the field */
+	public TEMP IRme() {
+		TEMP objectPointer = this.var.IRme();
+		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
+
+		// TODO pass to IRCommand offset of fieldName, after implementing class
+		mIR.Add_IRcommand(new IRcommand_Field_access(dst, objectPointer, fieldName));
+
+		return dst;
+	}
+
+	/* performs a set on the object field (treating it as a left-value)  */
+	/* The statement is of sort: obj.otherObj.member := (y + 2) */
+	public void IRmeAsLeftValue(AST_EXP src) {
+		TEMP objectPointer = this.var.IRme();
+		TEMP src_temp = src.IRme();
+		mIR.Add_IRcommand(new IRcommand_Field_set(objectPointer, fieldName, src_temp));
 	}
 }

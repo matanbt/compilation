@@ -15,6 +15,7 @@ import MIPS.*;
 
 public class IRcommand_Binop_LT_Integers extends IRcommand
 {
+	// dst = t1 < t2
 	public TEMP t1;
 	public TEMP t2;
 	public TEMP dst;

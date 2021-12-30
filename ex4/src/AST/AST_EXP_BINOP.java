@@ -1,12 +1,16 @@
 package AST;
 import EXCEPTIONS.SemanticException;
+import TEMP.TEMP;
+import TEMP.TEMP_FACTORY;
 import TYPES.*;
+import IR.*;
 
 public class AST_EXP_BINOP extends AST_EXP
 {
 	public String op;
 	public AST_EXP left;
 	public AST_EXP right;
+	private TYPE type_of_expressions = null;  // TYPE of left,right. annotation for IRme, initiated in SemantMe()
 
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -105,6 +109,8 @@ public class AST_EXP_BINOP extends AST_EXP
 		if (left  != null) semantic_left = left.SemantMe();
 		if (right != null) semantic_right = right.SemantMe();
 
+		this.type_of_expressions = semantic_left;  // annotation for IRme, can be null
+
 		/* Equality testing */
 		if (op.equals("="))
 		{
@@ -130,37 +136,47 @@ public class AST_EXP_BINOP extends AST_EXP
 
 	public TEMP IRme()
 	{
-		TEMP t1 = null;
-		TEMP t2 = null;
+		TEMP left_t = null;
+		TEMP right_t = null;
 		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
+		IR ir = IR.getInstance();
 
-		if (left  != null) t1 = left.IRme();
-		if (right != null) t2 = right.IRme();
+		if (left  != null) left_t = left.IRme();  // the left hand side should be evaluated first
+		if (right != null) right_t = right.IRme();
 
-		if (OP == 0)
-		{
-			IR.
-					getInstance().
-					Add_IRcommand(new IRcommand_Binop_Add_Integers(dst,t1,t2));
+		if (type_of_expressions == TYPE_STRING_INSTANCE.getInstance()) {
+			if (op.equals("+")) {
+				ir.Add_IRcommand(new IRcommand_Binop_Add_Strings(dst, left_t, right_t));
+			}
+
+			else if (op.equals("=")) {
+				ir.Add_IRcommand(new IRcommand_Binop_EQ_Strings(dst, left_t, right_t));  // TODO IRcommand_Binop_EQ_Strings
+			}
 		}
-		if (OP == 2)
-		{
-			IR.
-					getInstance().
-					Add_IRcommand(new IRcommand_Binop_Mul_Integers(dst,t1,t2));
+
+		else {
+			if (op.equals("=")) {
+				ir.Add_IRcommand(new IRcommand_Binop_EQ(dst, left_t, right_t));
+			}
+
+			// else --> type_of_expressions == TYPE_INT_INSTANCE.getInstance()
+
+			else if (op.equals("<"))
+			{
+				ir.Add_IRcommand(new IRcommand_Binop_LT_Integers(dst,left_t,right_t));
+			}
+
+			else if (op.equals(">"))
+			{
+				ir.Add_IRcommand(new IRcommand_Binop_LT_Integers(dst,right_t,left_t));
+			}
+
+			else{
+				// op can be: "+", "-", "*", "/"
+				ir.Add_IRcommand(new IRcommand_Binop_Arithmetic(dst,left_t,right_t, op));
+			}
 		}
-		if (OP == 3)
-		{
-			IR.
-					getInstance().
-					Add_IRcommand(new IRcommand_Binop_EQ_Integers(dst,t1,t2));
-		}
-		if (OP == 4)
-		{
-			IR.
-					getInstance().
-					Add_IRcommand(new IRcommand_Binop_LT_Integers(dst,t1,t2));
-		}
+
 		return dst;
 	}
 }
