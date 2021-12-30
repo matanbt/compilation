@@ -69,7 +69,6 @@ public abstract class AST_Node
 			else {
 				// this function call is inside a class scope
 				// search for func in most local scope
-				// TODO: this will always return either null or some variable overshadowing the func.. what's the need of it?
 				type_func = SYMBOL_TABLE.getInstance().findInCurrentScope(func);
 				if (type_func == null) {
 					// search for func in the closest class scope

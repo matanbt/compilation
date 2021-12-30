@@ -38,6 +38,7 @@ public class TYPE_FUNCTION extends TYPE
 	}
 
 	public TYPE_FUNCTION(TYPE rtnType,String name,TYPE_LIST args) {
+		// This signature will be used only be built-ins function of L
 		this(rtnType, name, args, null, null);
 	}
 
