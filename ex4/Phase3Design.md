@@ -84,8 +84,8 @@ Create new classes: `Vertex` and `Graph`.
 * Return `changed`
 
 **Liveness Analysis(`graph`):**
-* Set `changed` to `false`.
-* while `!changed`:
+* Set `changed` to `true`.
+* while `changed`:
     * Set `changed` to *Liveness Iteration*'s run on `graph`.
 
 # Part 4: Constructing the Interference Graph
