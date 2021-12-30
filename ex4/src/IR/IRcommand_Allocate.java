@@ -27,6 +27,11 @@ public class IRcommand_Allocate extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		MIPSGenerator.getInstance().allocate(var);
+		if (var.mRole == VarRole.GLOBAL) {
+			MIPSGenerator.getInstance().allocate("global_" + var.mVarName);
+		}
+		else {
+			// TODO- do we need more options?
+		}
 	}
 }

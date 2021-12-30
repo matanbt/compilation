@@ -26,6 +26,11 @@ public class IDVariable {
         this.mIndex = index;
     }
 
+    public IDVariable(String varName, VarRole role) {
+        // used when the index is irrelevant (like global vars)
+        this(varName, role, -1);
+    }
+
     /* calculates the offset, whenever it's a local parameter */
     public int getOffset() {
         if (this.mRole == VarRole.ARG) {

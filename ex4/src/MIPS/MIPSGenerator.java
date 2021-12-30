@@ -22,7 +22,7 @@ public class MIPSGenerator
 	/******************************/
 	/* How many temporary we backup and restore inside a function? */
 	public static final int TEMP_TO_BACKUP_COUNT = 10;
-  
+
 	public static String LABEL_STRING_ACCESS_VIOLATION = "Label_string_access_violation";
 	public static String LABEL_STRING_ILLEGAL_DIV_BY_0 = "Label_string_illegal_div_by_zero";
 	public static String LABEL_STRING_INVALID_PTR_DREF = "Label_string_invalid_ptr_dref";
@@ -81,7 +81,22 @@ public class MIPSGenerator
 	public void allocate(String var_name)
 	{
 		fileWriter.format(".data\n");
-		fileWriter.format("\tglobal_%s: .word 721\n",var_name);
+		fileWriter.format("\t%s: .word 0\n",var_name);
+	}
+
+	public void allocateWithIntVal(String name, int val)
+	{
+		// name = val
+		// assumes name is unique
+		fileWriter.format(".data\n");
+		fileWriter.format("\t%s: .word %d\n",name, val);
+	}
+	public void allocateByReferenceName(String name, String referenceName)
+	{
+		// name = referenceName
+		// assumes name is unique
+		fileWriter.format(".data\n");
+		fileWriter.format("\t%s: .word %s\n",name, referenceName);
 	}
 
 	/* Loads variable from .data segment by given name */
@@ -208,7 +223,7 @@ public class MIPSGenerator
 		this.print_string(temp_print_msg);
 		this.finalizeFile();
 	}
-	
+
 	/**************************************/
 	/* USUAL SINGLETON IMPLEMENTATION ... */
 	/**************************************/
