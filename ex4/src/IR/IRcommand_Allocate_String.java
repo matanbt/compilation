@@ -12,16 +12,17 @@ package IR;
 /*******************/
 
 import MIPS.MIPSGenerator;
+import TEMP.TEMP;
 
 public class IRcommand_Allocate_String extends IRcommand
 {
 	String val;
-	int idx;
+	TEMP t;
 
-	public IRcommand_Allocate_String(String val, int idx)
+	public IRcommand_Allocate_String(String val, TEMP t)
 	{
 		this.val = val;
-		this.idx = idx;
+		this.t = t;
 	}
 	
 	/***************/
@@ -29,6 +30,7 @@ public class IRcommand_Allocate_String extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		MIPSGenerator.getInstance().allocateString(val, idx);
+		String var_name = String.format("str_%s_%d", this.val, this.t.getSerialNumber());
+		MIPSGenerator.getInstance().allocateString(var_name, this.val);
 	}
 }

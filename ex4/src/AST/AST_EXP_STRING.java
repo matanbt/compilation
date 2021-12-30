@@ -58,8 +58,12 @@ public class AST_EXP_STRING extends AST_EXP
 
     public TEMP IRme()
     {
+        /*
+         * NOTE: You should only call IRme on AST_EXP_STRING when it is part of an initialization
+         * of a local variable. Global variables handle the allocation of the string way differently!
+         */
         TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
-        IRcommand ir1 = new IRcommand_Allocate_String(this.value, t.getSerialNumber());
+        IRcommand ir1 = new IRcommand_Allocate_String(this.value, t);
         IRcommand ir2 = new IRcommand_Load_String(t, this.value);
         IR.getInstance().Add_IRcommand(ir1);
         IR.getInstance().Add_IRcommand(ir2);

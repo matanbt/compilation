@@ -55,20 +55,16 @@ public class MIPSGenerator
 		fileWriter.format(".data\n");
 		fileWriter.format("\tglobal_%s: .word 721\n",var_name);
 	}
-	public void allocateString(String val, int idx)
+	public void allocateString(String var_name, String val)
 	{
 		fileWriter.format(".data\n");
-		/*
-		 * In order to avoid string collisions (e.g. 2 places in the code
-		 * where the same string is being defined twice), we add the index
-		 * of the temporary holding it.
-		 */
-		fileWriter.format("\tstr_%s_%d: .asciiz %s\n", val, idx, val);
+		fileWriter.format("\t%s: .asciiz \"%s\"\n", var_name, val);
+		fileWriter.format(".text\n");
 	}
-	public void loadString(TEMP dst, String val)
+	public void loadString(TEMP dst, String str_name)
 	{
 		int idxdst=dst.getSerialNumber();
-		fileWriter.format("\tla Temp_%d, str_%s_%d\n",idxdst, val, idxdst);
+		fileWriter.format("\tla Temp_%d, %sd\n",idxdst, str_name);
 	}
 	public void load(TEMP dst,String var_name)
 	{
