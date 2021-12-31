@@ -21,7 +21,7 @@ public class AST_DEC_FUNC extends AST_DEC
 
 	// -------------------- IR Additions --------------------
 	private int argsCount = 0;
-	private int localsCount = 0;
+	public int localsCount = 0;
 	public String funcStartingLabel;
 	public String funcEpilogueLabel;
 	public boolean isMainFunc = false;
