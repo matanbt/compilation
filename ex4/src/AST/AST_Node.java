@@ -2,7 +2,7 @@ package AST;
 
 import EXCEPTIONS.SemanticException;
 
-import IR.IR;
+import IR.*;
 import SYMBOL_TABLE.SYMBOL_TABLE;
 import TEMP.TEMP;
 import TYPES.*;
@@ -169,8 +169,7 @@ public abstract class AST_Node
 					mIR.Add_IRcommand(new IRcommand_PrintInt(args_temp_list.get(0)));
 					break;
 				case "PrintString":
-					mIR.Add_IRcommand(new IR.IRcommand_PrintString((args_temp_list.get(0))));
-					// TODO this new IR command
+					mIR.Add_IRcommand(new IRcommand_PrintString((args_temp_list.get(0))));
 					break;
 				default:
 					mIR.Add_IRcommand(new IRcommand_Call(func, args_temp_list, rtnTemp));
