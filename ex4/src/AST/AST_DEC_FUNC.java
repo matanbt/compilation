@@ -108,7 +108,12 @@ public class AST_DEC_FUNC extends AST_DEC
 						"can't declare global-function", funcName));
 			}
 		}
-		// else: it's a method, will be checked as a CFIELD
+		else{
+			// it's a CField
+			// annotation for IR
+			encompassingClass.addToMethodList(this);
+			// CField semantic check is on AST_CFEILD
+		}
 
 
 		/***************************/
@@ -229,7 +234,8 @@ public class AST_DEC_FUNC extends AST_DEC
 		/* 1. Put a starting label */
 		if (encompassingClass != null) {
 			this.funcStartingLabel = String.format("method_%s_%s", encompassingClass.name, _funcName);
-		} else {
+		}
+		else {
 			this.funcStartingLabel = String.format("func_%s", _funcName);
 		}
 		mIR.Add_IRcommand(new IRcommand_Label(this.funcStartingLabel));

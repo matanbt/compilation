@@ -127,7 +127,12 @@ public class AST_DEC_VAR extends AST_DEC
               this.throw_error(String.format("variable %s already exists inside the scope\n", name));
             }
         }
-        // else - CField is being checked separately by AST_CFEILD
+        else {
+            // it's a CField
+            // annotation for IR
+            encompassingClass.addToFieldList(this);
+            // CField semantic check is on AST_CFEILD
+        }
 
         return semantic_type;
     }
@@ -233,14 +238,9 @@ public class AST_DEC_VAR extends AST_DEC
             ir.Add_IRcommand(new IRcommand_Store(this.idVariable, t_val_to_assign));
         }
 
-        // if it's statement variable declaration without assignment - do nothing
+        // if it's a statement variable declaration without assignment - do nothing
 
-        else if (varRole == VarRole.CFIELD_VAR) {
-            // class's variable declaration
-            // assumption: if a class variable is initialized with value,
-            // then the initial value is a constant (i.e., string, integer, nil)
-            encompassingClass.addToFieldList(this);
-        }
+        // if it's a class's variable declaration - do nothing
         return null;
     }
 
