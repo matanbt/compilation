@@ -132,7 +132,7 @@ public abstract class AST_Node
 		List<TEMP> args_temp_list = null;
 
 		if (funcType.encompassingClass != null) {
-			/* Calling a method */
+			/* Calling a method (Note: the encompassingClass was captured in the function signature)*/
 
 			// the class-instance that invokes the method
 			TEMP invokingClassObject;
@@ -160,8 +160,22 @@ public abstract class AST_Node
 		else {
 			/* Calling a global function
 			 * By semantic assumption caller is null */
+
 			args_temp_list = this.functionCallGetArgumentsTempList(args);
-			IR.getInstance().Add_IRcommand(new IRcommand_Call(this.func, args_temp_list, rtnTemp));
+
+			/* Handling built-in functions here*/
+			switch (func) {
+				case "PrintInt":
+					mIR.Add_IRcommand(new IRcommand_PrintInt(args_temp_list.get(0)));
+					break;
+				case "PrintString":
+					mIR.Add_IRcommand(new IR.IRcommand_PrintString((args_temp_list.get(0))));
+					// TODO this new IR command
+					break;
+				default:
+					mIR.Add_IRcommand(new IRcommand_Call(func, args_temp_list, rtnTemp));
+					break;
+			}
 		}
 	}
 
