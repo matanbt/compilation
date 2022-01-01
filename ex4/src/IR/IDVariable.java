@@ -24,7 +24,6 @@ public class IDVariable {
     private int mIndex;
 
     // only for mRole = VarRole.CFIELD_VAR
-//    private TEMP instancePtr = null;  // TODO DELETE
     TYPE_CLASS type_class = null;
 
     public IDVariable(String varName, VarRole role, int index) {
@@ -43,15 +42,6 @@ public class IDVariable {
         this(varName, role);
         this.type_class = type_class;
     }
-
-    // TODO DELETE
-//    public IDVariable(String varName, VarRole role, TEMP instancePtr, TYPE_CLASS type_class) {
-//        // only for VarRole.CFIELD_VAR & VarRole.CFIELD_FUNC
-//        this(varName, role);
-//        this.instancePtr = instancePtr;
-//        this.type_class = type_class;
-//    }
-
 
     /* calculates the offset, whenever it's a local parameter */
     public int getOffset() {
@@ -72,13 +62,4 @@ public class IDVariable {
         // Shouldn't get here, no offsets for other variable roles
         return 0;
     }
-
-    // TODO DELETE
-//    // only for mRole = VarRole.CFIELD_VAR
-//    public TEMP getInstancePtr(){
-//        if (this.mRole != VarRole.CFIELD_VAR){
-//            System.out.println("[DEBUG] IDVariable.getInstancePtr() was called on non-CFIELD_VAR");
-//        }
-//        return instancePtr;
-//    }
 }
