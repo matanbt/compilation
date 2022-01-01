@@ -18,13 +18,13 @@ import TEMP.TEMP;
 public class IRcommand_Field_set extends IRcommand
 {
 	private TEMP objectPointer;
-	private IDVariable var;  // field var
+	private IDVariable field;  // field var
 	private TEMP src;
 
-	public IRcommand_Field_set(TEMP objectPointer, IDVariable var, TEMP src)
+	public IRcommand_Field_set(TEMP objectPointer, IDVariable field, TEMP src)
 	{
 		this.objectPointer = objectPointer;
-		this.var = var;
+		this.field = field;
 		this.src = src;
 	}
 
@@ -33,6 +33,6 @@ public class IRcommand_Field_set extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		MIPSGenerator.getInstance().storeToHeap(src, objectPointer, var.getOffset());
+		MIPSGenerator.getInstance().storeToHeap(src, objectPointer, field.getOffset());
 	}
 }

@@ -14,7 +14,7 @@ public class AST_VAR_FIELD extends AST_VAR
 	public String fieldName;
 
 	// annotation for IR
-	private IDVariable idVariable;  // initiate in this.SemantMe()
+	private IDVariable idField;  // initiate in this.SemantMe()
 
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -85,7 +85,7 @@ public class AST_VAR_FIELD extends AST_VAR
 		}
 		TYPE_CLASS type_class = (TYPE_CLASS)(var_type).convertInstanceToSymbol();
 
-		this.idVariable = new IDVariable(this.fieldName, VarRole.CFIELD_VAR, type_class);
+		this.idField = new IDVariable(this.fieldName, VarRole.CFIELD_VAR, type_class);
 
 		// finds the field in this class or in its supers'
 		TYPE field_type = type_class.findInClassAndSuperClasses(this.fieldName);
@@ -110,7 +110,7 @@ public class AST_VAR_FIELD extends AST_VAR
 		TEMP objectPointer = this.var.IRme();
 		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
 
-		mIR.Add_IRcommand(new IRcommand_Field_access(dst, objectPointer, this.idVariable));
+		mIR.Add_IRcommand(new IRcommand_Field_access(dst, objectPointer, this.idField));
 
 		return dst;
 	}
@@ -120,6 +120,6 @@ public class AST_VAR_FIELD extends AST_VAR
 	public void IRmeAsLeftValue(AST_EXP src) {
 		TEMP objectPointer = this.var.IRme();
 		TEMP src_temp = src.IRme();
-		mIR.Add_IRcommand(new IRcommand_Field_set(objectPointer, this.idVariable, src_temp));
+		mIR.Add_IRcommand(new IRcommand_Field_set(objectPointer, this.idField, src_temp));
 	}
 }

@@ -32,6 +32,5 @@ public class IRcommand_New_Class_Instance_Init extends IRcommand
 	public void MIPSme()
 	{
 		// TODO
-		// TODO? (optional) treat instance initialization as a function (--> less MIPS code)
 	}
 }

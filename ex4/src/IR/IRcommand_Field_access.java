@@ -19,13 +19,13 @@ public class IRcommand_Field_access extends IRcommand
 {
 	private TEMP dst;
 	private TEMP objectPointer;
-	private IDVariable var;  // field var
+	private IDVariable field;  // field var
 
-	public IRcommand_Field_access(TEMP dst, TEMP objectPointer, IDVariable var)
+	public IRcommand_Field_access(TEMP dst, TEMP objectPointer, IDVariable field)
 	{
 		this.dst = dst;
 		this.objectPointer = objectPointer;
-		this.var = var;
+		this.field = field;
 	}
 
 	/***************/
@@ -33,6 +33,6 @@ public class IRcommand_Field_access extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		MIPSGenerator.getInstance().loadFromHeap(dst, objectPointer, var.getOffset());
+		MIPSGenerator.getInstance().loadFromHeap(dst, objectPointer, field.getOffset());
 	}
 }

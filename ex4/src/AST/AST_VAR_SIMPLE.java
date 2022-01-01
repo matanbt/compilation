@@ -112,7 +112,6 @@ public class AST_VAR_SIMPLE extends AST_VAR
 			IR.getInstance().Add_IRcommand(new IRcommand_Field_access(t, invokingClassObject, this.idVar));
 		}
 		else {
-			// LOCAL variable
 			IR.getInstance().Add_IRcommand(new IRcommand_Load(t, this.idVar));
 		}
 
@@ -129,7 +128,6 @@ public class AST_VAR_SIMPLE extends AST_VAR
 			IR.getInstance().Add_IRcommand(new IRcommand_Field_set(invokingClassObject, this.idVar, src_temp));
 		}
 		else {
-			// LOCAL variable
 			mIR.Add_IRcommand(new IRcommand_Store(this.idVar, src_temp));
 		}
 	}
