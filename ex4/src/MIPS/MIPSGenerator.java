@@ -196,16 +196,17 @@ public class MIPSGenerator
 		fileWriter.format("\tsw Temp_%d,%d($fp)\n",idxsrc, offset);
 	}
 
+	// TODO in the following functions I assume we're writing to `.text` session, that is -
+	//  every function that "opens" an `.data` section is responsible to close it as well.
+
 	/* Pushing a register (e.g. "$v0", "$fp", "$t5"...) to the "top" of the stack */
 	public void pushRegisterToStack(String register) {
-		fileWriter.format(".text");
 		fileWriter.format("\tsubu $sp, $sp, 4\n");
 		fileWriter.format("\tsw %s,0($sp)\n", register);
 	}
 
 	/* Pops the "top" of the stack and loads it to the given register (e.g. "$v0") */
 	public void popToRegisterFromStack(String register) {
-		fileWriter.format(".text");
 		fileWriter.format("\tlw %s,0($sp)\n", register);
 		fileWriter.format("\taddu $sp, $sp, 4\n");
 	}
@@ -214,7 +215,6 @@ public class MIPSGenerator
 	/* Sets to return value ($v0) to be the value in `t` */
 	public void setReturn(TEMP t) {
 		int idx = t.getSerialNumber();
-		fileWriter.format(".text\n");
 		fileWriter.format("\tmove $v0,Temp_%d\n", idx);
 	}
 
@@ -235,20 +235,18 @@ public class MIPSGenerator
 		fileWriter.format("\tsubu $sp, $sp, %d", localsCount * WORD_SIZE);
 	}
 
-	public void functionEpilogue() {
-		/* 1. Restores old frame-pointer (practically "removes" local variables TODO - but also TEMP-registers!!) */
-		fileWriter.format("\tmove $sp, $fp");
+	public void functionEpilogue(int localsCount) {
+		/* 1. Removes local from the stack */
+		fileWriter.format("\taddu $sp, $sp, %d", localsCount * WORD_SIZE);
 
-		/* 2. Restores all temp-registers by poping them from the stack */
-		// TODO: is it legal to access BELOW the $sp? I mean this should be considered
-		//  outside of the stack... Yet David did it in slide 38, rec-10
-		for (int i = 0; i < TEMP_TO_BACKUP_COUNT; i++) {
+		/* 2. Restores all temp-registers by popping them from the stack */
+		for (int i = TEMP_TO_BACKUP_COUNT - 1; i >= 0; i--) {
 			popToRegisterFromStack(String.format("$t%d", i));
 		}
 
 		/* 3. Restores important registers from stack */
-		popToRegisterFromStack("$ra");
 		popToRegisterFromStack("$fp");
+		popToRegisterFromStack("$ra");
 
 		/* 4. Jump back */
 		fileWriter.format("\tjr $ra");
