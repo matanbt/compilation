@@ -35,8 +35,12 @@ public class IRcommand_Store extends IRcommand {
             MIPSGenerator.getInstance().storeToStack(var.getOffset(), src);
         }
 
-        /*
-         *  TODO - deal with classes, when implementing their IR
-         */
+        else if (var.mRole == VarRole.CFIELD_VAR) {
+            System.out.println("[DEBUG] IRcommand_Store shouldn't be called on CFIELD_VAR, use IRcommand_Field_set");
+        }
+
+        else {
+            System.out.println("[DEBUG] IRcommand_Store with unexpected var.mRole");
+        }
     }
 }

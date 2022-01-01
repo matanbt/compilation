@@ -14,7 +14,7 @@ public class AST_DEC_VAR extends AST_DEC
     public AST_NEW_EXP new_exp;
 
     // ---- Semantic Properties ---
-    // non-null means var field of 'encompassingClass', and null means it's not in class scope
+    // non-null means var field of 'encompassingClass', and null means it's not a class's field (but can be inside a method)
     public TYPE_CLASS encompassingClass = null;
     public TYPE varType = null;  // gets real value when calling getType
     private IDVariable idVariable;  // idVariable is initialized in this.SemantMe()
@@ -183,7 +183,7 @@ public class AST_DEC_VAR extends AST_DEC
 
         /* Initiate this.idVariable */
         if (encompassingClass != null) {
-            this.idVariable = new IDVariable(name, VarRole.CFIELD_VAR);
+            this.idVariable = new IDVariable(name, VarRole.CFIELD_VAR, encompassingClass);
         }
         else if (symbol_table.isGlobalScope()) {
             this.idVariable = new IDVariable(name, VarRole.GLOBAL);
@@ -241,6 +241,7 @@ public class AST_DEC_VAR extends AST_DEC
         // if it's a statement variable declaration without assignment - do nothing
 
         // if it's a class's variable declaration - do nothing
+
         return null;
     }
 

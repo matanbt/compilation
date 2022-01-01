@@ -8,6 +8,8 @@ import SYMBOL_TABLE.SYMBOL_TABLE;
 import TEMP.TEMP;
 import TYPES.TYPE;
 import TYPES.TYPE_CLASS;
+import TEMP.TEMP_FACTORY;
+import IR.*;
 
 public class AST_VAR_SIMPLE extends AST_VAR
 {
@@ -16,7 +18,8 @@ public class AST_VAR_SIMPLE extends AST_VAR
 	/************************/
 	public String name;
 
-	public IDVariable idVar;
+	// annotation for IR
+	private IDVariable idVar;  // initiate in this.SemantMe()
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -96,13 +99,32 @@ public class AST_VAR_SIMPLE extends AST_VAR
 	public TEMP IRme()
 	{
 		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
-		IR.getInstance().Add_IRcommand(new IRcommand_Load(t, this.idVar));
+		if (this.idVar.mRole == VarRole.CFIELD_VAR) {
+			// the instance pointer is saved as the first argument of the method
+			TEMP invokingClassObject = TEMP_FACTORY.getInstance().getFreshTEMP();
+			IR.getInstance().Add_IRcommand(new IRcommand_Load(invokingClassObject , IDVariable.getThisInstance()));
+			IR.getInstance().Add_IRcommand(new IRcommand_Field_access(t, invokingClassObject, this.idVar));
+		}
+		else {
+			// LOCAL variable
+			IR.getInstance().Add_IRcommand(new IRcommand_Load(t, this.idVar));
+		}
+
 		return t;
 	}
 
 	/* The statement is of sort: var := (y + 2) */
 	public void IRmeAsLeftValue(AST_EXP src) {
 		TEMP src_temp = src.IRme();
-		mIR.Add_IRcommand(new IRcommand_Store(this.idVar, src_temp));
+		if (this.idVar.mRole == VarRole.CFIELD_VAR) {
+			// the instance pointer is saved as the first argument of the method
+			TEMP invokingClassObject = TEMP_FACTORY.getInstance().getFreshTEMP();
+			IR.getInstance().Add_IRcommand(new IRcommand_Load(invokingClassObject , IDVariable.getThisInstance()));
+			IR.getInstance().Add_IRcommand(new IRcommand_Field_set(invokingClassObject, this.idVar, src_temp));
+		}
+		else {
+			// LOCAL variable
+			mIR.Add_IRcommand(new IRcommand_Store(this.idVar, src_temp));
+		}
 	}
 }

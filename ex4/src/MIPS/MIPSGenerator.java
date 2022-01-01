@@ -125,6 +125,11 @@ public class MIPSGenerator
 		fileWriter.format("\tlw Temp_%d,%d(fp)\n", idxdst, offset);
 	}
 
+	public void loadFromHeap(TEMP dst, TEMP base_address, int offset) {
+		int idxdst = dst.getSerialNumber();
+		fileWriter.format("\tlw Temp_%d,%d(%s)\n", idxdst, offset, base_address);
+	}
+
   public void load_by_var_name(TEMP dst,String full_var_name)
 	{
 		int idxdst=dst.getSerialNumber();
@@ -141,6 +146,11 @@ public class MIPSGenerator
 	{
 		int idxsrc=src.getSerialNumber();
 		fileWriter.format("\tsw Temp_%d,%d(fp)\n",idxsrc, offset);
+	}
+
+	public void storeToHeap(TEMP src, TEMP base_address, int offset) {
+		int idxsrc = src.getSerialNumber();
+		fileWriter.format("\tsw Temp_%d,%d(%s)\n", idxsrc, offset, base_address);
 	}
 
 	public void li(TEMP t,int value)
