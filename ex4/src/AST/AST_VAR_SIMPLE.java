@@ -68,15 +68,21 @@ public class AST_VAR_SIMPLE extends AST_VAR
 		// Case [1] - We're inside a class definition
 		TYPE_CLASS encompassing_class = symbol_table.findScopeClass();
 		if (encompassing_class != null) {
-			// It must hold that we're inside a method! Otherwise Step-1 will raise null exception
+			// It must hold that we're inside a method! (Otherwise Step-1 will raise null exception)
 
 			// Step-1: Look in local variables inside the function
 			resolved_type = symbol_table.findWhenInFunctionScope(this.name);
-			if (resolved_type != null) return resolved_type;
+			if (resolved_type != null) {
+				this.idVar = SYMBOL_TABLE.getInstance().findIdVar(this.name);
+				return resolved_type;
+			}
 
 			// Step-2: Look in class-fields (possibly inherited)
 			resolved_type = encompassing_class.findInClassAndSuperClasses(this.name);
-			if (resolved_type != null) return resolved_type;
+			if (resolved_type != null) {
+				this.idVar = new IDVariable(this.name, VarRole.CFIELD_VAR, encompassing_class);
+				return resolved_type;
+			}
 
 			// Step-3: Look in global scope (meaning perform regular find)
 			// Will be done as part of the regular case, after the if
