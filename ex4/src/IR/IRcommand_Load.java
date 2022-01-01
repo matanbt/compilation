@@ -35,9 +35,12 @@ public class IRcommand_Load extends IRcommand {
             MIPSGenerator.getInstance().loadFromStack(dst, var.getOffset());
         }
 
-        /*
-         *  TODO - deal with classes, when implementing their IR
-         */
+        else if (var.mRole == VarRole.CFIELD_VAR) {
+            System.out.println("[DEBUG] IRcommand_Load shouldn't be called on CFIELD_VAR, use IRcommand_Field_access");
+        }
 
+        else {
+            System.out.println("[DEBUG] IRcommand_Load with unexpected var.mRole");
+        }
     }
 }

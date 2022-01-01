@@ -14,13 +14,10 @@ public class AST_DEC_VAR extends AST_DEC
     public AST_NEW_EXP new_exp;
 
     // ---- Semantic Properties ---
-    // non-null means var field of 'encompassingClass', and null means it's not in class scope
+    // non-null means var field of 'encompassingClass', and null means it's not a class's field (but can be inside a method)
     public TYPE_CLASS encompassingClass = null;
     public TYPE varType = null;  // gets real value when calling getType
-    private IDVariable idVariable;
-    // if this is a class var dec, this.idVariable is initialized in (//TODO-choose where) SemantMe()
-    // if this is a global or func/method var dec, this.idVariable is initialized in this.SemantMe()
-
+    private IDVariable idVariable;  // idVariable is initialized in this.SemantMe()
 
     /******************/
     /* CONSTRUCTOR(S) */
@@ -130,7 +127,12 @@ public class AST_DEC_VAR extends AST_DEC
               this.throw_error(String.format("variable %s already exists inside the scope\n", name));
             }
         }
-        // else - CField is being checked separately by AST_CFEILD
+        else {
+            // it's a CField
+            // annotation for IR
+            encompassingClass.addToFieldList(this);
+            // CField semantic check is on AST_CFEILD
+        }
 
         return semantic_type;
     }
@@ -175,24 +177,24 @@ public class AST_DEC_VAR extends AST_DEC
             }
         }
         /*****************************************************************/
-        /* [2] Enter the new var to the Symbol Table */
+        /* [2] Initiate idVariable & Enter the new var to the Symbol Table */
         /*****************************************************************/
         SYMBOL_TABLE symbol_table = SYMBOL_TABLE.getInstance();
 
-        if (this.idVariable == null){
-            // if this is a class var dec, this.idVariable is initialized in (//TODO-choose where) SemantMe
-            // --> if this.idVariable == null it means that this dec var is global or func/method
-
-            if (symbol_table.isGlobalScope()) {
-                this.idVariable = new IDVariable(name, VarRole.GLOBAL);
-            }
-            else {
-                // statement variable declaration
-                TYPE_FUNCTION type_func = symbol_table.findScopeFunc();
-                this.idVariable = new IDVariable(name, VarRole.LOCAL, type_func.funcASTNode.localsCount++);
-            }
+        /* Initiate this.idVariable */
+        if (encompassingClass != null) {
+            this.idVariable = new IDVariable(name, VarRole.CFIELD_VAR, encompassingClass);
+        }
+        else if (symbol_table.isGlobalScope()) {
+            this.idVariable = new IDVariable(name, VarRole.GLOBAL);
+        }
+        else {
+            // statement variable declaration
+            TYPE_FUNCTION type_func = symbol_table.findScopeFunc();
+            this.idVariable = new IDVariable(name, VarRole.LOCAL, type_func.funcASTNode.localsCount++);
         }
 
+        /* Enter the new var to the Symbol Table */
         symbol_table.enter(name, semantic_type, this.idVariable);
 
     }
@@ -219,7 +221,7 @@ public class AST_DEC_VAR extends AST_DEC
 
         if (varRole == VarRole.GLOBAL) {
             // global var
-            // assume that if a global variable is initialized with value,
+            // assumption: if a global variable is initialized with value,
             // then the initial value is a constant (i.e., string, integer, nil)
             // --> this.exp instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL
             ir.Add_IRcommand(new IRcommand_Global_Var_Dec(this.name, this.exp));  // also deals with this.exp=null case
@@ -236,11 +238,10 @@ public class AST_DEC_VAR extends AST_DEC
             ir.Add_IRcommand(new IRcommand_Store(this.idVariable, t_val_to_assign));
         }
 
-        // if it's statement variable declaration without assignment - do nothing
+        // if it's a statement variable declaration without assignment - do nothing
 
-        else if (varRole == VarRole.FIELD) {
-            // TODO (after class implementation)- probably won't be here (will new in the instance creation)
-        }
+        // if it's a class's variable declaration - do nothing
+
         return null;
     }
 

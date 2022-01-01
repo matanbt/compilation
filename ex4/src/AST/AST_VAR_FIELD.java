@@ -1,16 +1,20 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
-import IR.IR;
 import TEMP.TEMP;
 import TYPES.TYPE;
 import TYPES.TYPE_CLASS;
 import TYPES.TYPE_CLASS_INSTANCE;
+import TEMP.TEMP_FACTORY;
+import IR.*;
 
 public class AST_VAR_FIELD extends AST_VAR
 {
 	public AST_VAR var;
 	public String fieldName;
+
+	// annotation for IR
+	private IDVariable idField;  // initiate in this.SemantMe()
 
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -75,14 +79,16 @@ public class AST_VAR_FIELD extends AST_VAR
 		}
 
 		// var_type must be a class-instance if it wants to access a field
-		if(!var_type.isInstanceOfSomeClass()) {
+		if(! (var_type instanceof TYPE_CLASS_INSTANCE)) {
 			this.throw_error(String.format("type (%s) is not class-instance and has no fields",
 					var_type.name));
 		}
+		TYPE_CLASS type_class = (TYPE_CLASS)(var_type).convertInstanceToSymbol();
+
+		this.idField = new IDVariable(this.fieldName, VarRole.CFIELD_VAR, type_class);
 
 		// finds the field in this class or in its supers'
-		TYPE field_type = ((TYPE_CLASS)((TYPE_CLASS_INSTANCE) var_type).convertInstanceToSymbol()).
-				findInClassAndSuperClasses(this.fieldName);
+		TYPE field_type = type_class.findInClassAndSuperClasses(this.fieldName);
 
 		if(field_type == null) {
 			this.throw_error(String.format("failed to resolve field (%s) from variable (%s)",
@@ -104,8 +110,7 @@ public class AST_VAR_FIELD extends AST_VAR
 		TEMP objectPointer = this.var.IRme();
 		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
 
-		// TODO pass to IRCommand offset of fieldName, after implementing class
-		mIR.Add_IRcommand(new IRcommand_Field_access(dst, objectPointer, fieldName));
+		mIR.Add_IRcommand(new IRcommand_Field_access(dst, objectPointer, this.idField));
 
 		return dst;
 	}
@@ -115,6 +120,6 @@ public class AST_VAR_FIELD extends AST_VAR
 	public void IRmeAsLeftValue(AST_EXP src) {
 		TEMP objectPointer = this.var.IRme();
 		TEMP src_temp = src.IRme();
-		mIR.Add_IRcommand(new IRcommand_Field_set(objectPointer, fieldName, src_temp));
+		mIR.Add_IRcommand(new IRcommand_Field_set(objectPointer, this.idField, src_temp));
 	}
 }

@@ -11,20 +11,21 @@ package IR;
 /* PROJECT IMPORTS */
 /*******************/
 
+import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 
-/* IR Command : dst = field_access objPointer fieldName */
+/* IR Command : dst = field_access objPointer var */
 public class IRcommand_Field_access extends IRcommand
 {
-	public TEMP dst;
-	public TEMP objectPointer;
-	public String fieldName; // TODO when implementing classes: might need to be modified to int representing the field index
+	private TEMP dst;
+	private TEMP objectPointer;
+	private IDVariable field;  // field var
 
-	public IRcommand_Field_access(TEMP dst, TEMP objectPointer, String fieldName)
+	public IRcommand_Field_access(TEMP dst, TEMP objectPointer, IDVariable field)
 	{
 		this.dst = dst;
 		this.objectPointer = objectPointer;
-		this.fieldName = fieldName;
+		this.field = field;
 	}
 
 	/***************/
@@ -32,6 +33,6 @@ public class IRcommand_Field_access extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-//		MIPSGenerator.getInstance().?;
+		MIPSGenerator.getInstance().loadFromHeap(dst, objectPointer, field.getOffset());
 	}
 }

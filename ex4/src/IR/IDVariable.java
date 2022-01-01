@@ -1,5 +1,8 @@
 package IR;
 
+import TEMP.TEMP;
+import TYPES.TYPE_CLASS;
+
 import static MIPS.MIPSGenerator.TEMP_TO_BACKUP_COUNT;
 
 /*
@@ -20,6 +23,9 @@ public class IDVariable {
     /* Note: mIndex is used for simplification, rather than calculating the offset in ASTs */
     private int mIndex;
 
+    // only for mRole = VarRole.CFIELD_VAR
+    TYPE_CLASS type_class = null;
+
     public IDVariable(String varName, VarRole role, int index) {
         this.mVarName = varName;
         this.mRole = role;
@@ -29,6 +35,12 @@ public class IDVariable {
     public IDVariable(String varName, VarRole role) {
         // used when the index is irrelevant (like global vars)
         this(varName, role, -1);
+    }
+
+    public IDVariable(String varName, VarRole role, TYPE_CLASS type_class) {
+        // only for VarRole.CFIELD_VAR & VarRole.CFIELD_FUNC
+        this(varName, role);
+        this.type_class = type_class;
     }
 
     /* calculates the offset, whenever it's a local parameter */
@@ -44,7 +56,7 @@ public class IDVariable {
                     - (4 * this.mIndex);
         }
         else if(this.mRole == VarRole.CFIELD_VAR) {
-            // TODO
+            return type_class.getFieldOffset(this.mVarName);
         }
 
         // Shouldn't get here, no offsets for other variable roles
