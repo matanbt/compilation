@@ -14,6 +14,9 @@ package IR;
 import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 
+/*
+ * Allocates the string `val`, so it'll **later** be loaded into TEMP `t`.
+ */
 public class IRcommand_Allocate_String extends IRcommand
 {
 	String val;
