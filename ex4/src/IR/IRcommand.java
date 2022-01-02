@@ -13,6 +13,7 @@ package IR;
 import TEMP.TEMP;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /*******************/
 
@@ -28,8 +29,8 @@ public abstract class IRcommand
 	}
 
 	/* Fields used for liveness analysis */
-	public HashSet<TEMP> in_set = new HashSet<TEMP>();
-	public HashSet<TEMP> out_set = new HashSet<TEMP>();
+	public Set<TEMP> in_set = new HashSet<TEMP>();
+	public Set<TEMP> out_set = new HashSet<TEMP>();
 
 	/**
 	 * Update the IN set, based on the OUT set (see slides for

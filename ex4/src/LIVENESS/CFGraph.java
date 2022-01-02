@@ -21,11 +21,22 @@ public class CFGraph
         this.vertices = new ArrayList<>();
     }
 
+    /**
+     * Add vertex v to the graph. Note that it is inserted in a LIFO manner, for
+     * liveness analysis.
+     * @param v Vertex to add.
+     */
     protected void addVertex(Vertex v)
     {
         this.vertices.add(0, v);
     }
 
+    /**
+     * Given a list of IRcommands of a single function, create the control flow graph
+     * of the function.
+     * @param commands List of commands of a function.
+     * @return the CFG of the function.
+     */
     public static CFGraph createCFG(List<IRcommand> commands)
     {
         CFGraph g = new CFGraph();
