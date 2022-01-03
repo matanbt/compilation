@@ -9,6 +9,15 @@ package IR;
 
 /*******************/
 /* PROJECT IMPORTS */
+
+import LIVENESS.CFGraph;
+import LIVENESS.Liveness;
+import REG_ALLOC.InterferenceGraph;
+import REG_ALLOC.KColor;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /*******************/
 
 public class IR
@@ -37,6 +46,53 @@ public class IR
 				it = it.tail;
 			}
 			it.tail = new IRcommandList(cmd,null);
+		}
+	}
+
+	/**
+	 * Create mapping from virtual temporary registers (TEMP) to real MIPS registers.
+	 */
+	public void createTemporariesMapping()
+	{
+		boolean in_function = false;
+		List<IRcommand> commands = new ArrayList<>();
+
+		IRcommand ir = this.head;
+		IRcommandList next_ir = this.tail;
+
+		while (ir != null)
+		{
+			/* Start of a function */
+			if (ir instanceof IRcommand_Func_Prologue)
+			{
+				commands = new ArrayList<>();
+				in_function = true;
+			}
+			/* Body of a function */
+			else if (in_function && !(ir instanceof IRcommand_Func_Epilogue))
+			{
+				commands.add(ir);
+			}
+			/* End of a function - perform analysis */
+			else
+			{
+				in_function = false;
+				CFGraph cfg = CFGraph.createCFG(commands);
+				Liveness.analyze(cfg);
+				InterferenceGraph interferences = InterferenceGraph.CreateInterferenceGraph(commands);
+				KColor colors = new KColor();
+				colors.colorGraph(interferences);
+			}
+
+			if (next_ir != null)
+			{
+				ir = next_ir.head;
+				next_ir = next_ir.tail;
+			}
+			else
+			{
+				ir = null;
+			}
 		}
 	}
 	

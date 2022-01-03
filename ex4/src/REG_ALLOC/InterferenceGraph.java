@@ -48,7 +48,7 @@ public class InterferenceGraph
         return i;
     }
 
-    public InterferenceGraph CreateInterferenceGraph(List<IRcommand> commands)
+    public static InterferenceGraph CreateInterferenceGraph(List<IRcommand> commands)
     {
         InterferenceGraph g = new InterferenceGraph();
         Map<TEMP, Vertex> map = new HashMap<TEMP, Vertex>();
@@ -62,7 +62,7 @@ public class InterferenceGraph
                 if (!map.containsKey(t))
                 {
                     Vertex v = new Vertex(t);
-                    this.addVertex(v);
+                    g.addVertex(v);
                     map.put(t, v);
                 }
             }
