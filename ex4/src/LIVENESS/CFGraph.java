@@ -12,7 +12,7 @@ import java.util.Map;
 public class CFGraph
 {
     /*
-     * The graph is just a list of the vertices
+     * The graph is just a list of the vertices.
      */
     public List<Vertex> vertices;
 
