@@ -79,7 +79,7 @@ public class IR
 				in_function = false;
 				CFGraph cfg = CFGraph.createCFG(commands);
 				Liveness.analyze(cfg);
-				InterferenceGraph interferences = InterferenceGraph.CreateInterferenceGraph(commands);
+				InterferenceGraph interferences = InterferenceGraph.createInterferenceGraph(commands);
 				KColor colors = new KColor();
 				colors.colorGraph(interferences);
 			}

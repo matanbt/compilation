@@ -48,7 +48,12 @@ public class InterferenceGraph
         return i;
     }
 
-    public static InterferenceGraph CreateInterferenceGraph(List<IRcommand> commands)
+    /**
+     * Create interference graph for the given commands.
+     * @param commands Commands to calculate the graph for.
+     * @return The newly created graph.
+     */
+    public static InterferenceGraph createInterferenceGraph(List<IRcommand> commands)
     {
         InterferenceGraph g = new InterferenceGraph();
         Map<TEMP, Vertex> map = new HashMap<TEMP, Vertex>();
