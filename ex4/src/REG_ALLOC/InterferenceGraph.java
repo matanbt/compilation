@@ -29,6 +29,25 @@ public class InterferenceGraph
         this.vertices.add(v);
     }
 
+
+    /**
+     * Count how many turned on vertices are in this graph.
+     * @return Number of turned on vertices.
+     */
+    public int verticesCount()
+    {
+        int i = 0;
+        for (Vertex v: this.vertices)
+        {
+            if (v.is_on)
+            {
+                i += 1;
+            }
+        }
+
+        return i;
+    }
+
     public InterferenceGraph CreateInterferenceGraph(List<IRcommand> commands)
     {
         InterferenceGraph g = new InterferenceGraph();
