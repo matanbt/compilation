@@ -103,7 +103,7 @@ public class AST_DEC_VAR extends AST_DEC
         if (new_exp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, new_exp.SerialNumber);
     }
 
-    // SemantMe Part 1: Analyze the var type by it's declared type
+    // SemantMe Part 1: Analyze the var type by its declared type
     private TYPE SemantMe_declaredType() throws SemanticException {
         TYPE semantic_type;
 
@@ -224,7 +224,7 @@ public class AST_DEC_VAR extends AST_DEC
             // assumption: if a global variable is initialized with value,
             // then the initial value is a constant (i.e., string, integer, nil)
             // --> this.exp instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL
-            ir.Add_IRcommand(new IRcommand_Global_Var_Dec(this.name, this.exp));  // also deals with this.exp=null case
+            ir.Add_IRcommand(new IRcommand_Allocate_Global(this.name, this.exp));  // also deals with this.exp=null case
         }
 
         else if (varRole == VarRole.LOCAL && (exp != null || new_exp != null)) {
