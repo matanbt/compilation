@@ -1,6 +1,7 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import TEMP.TEMP;
 import TYPES.*;
 
 public class AST_EXP_CALL extends AST_EXP
@@ -8,6 +9,8 @@ public class AST_EXP_CALL extends AST_EXP
     public AST_VAR caller;  // the class's instance who called the function, can be null
     public String func;
     public AST_EXP_LIST args;  // can be null
+
+    public TYPE_FUNCTION funcType;
 
     /******************/
     /* CONSTRUCTOR(S) */
@@ -97,17 +100,15 @@ public class AST_EXP_CALL extends AST_EXP
     }
 
     public TYPE SemantMe() throws SemanticException {
-        return this.functionCallSemantMe(caller, func, args);  // instance-type. null if it's a void function call
+        this.funcType = this.functionCallSemantMe(caller, func, args);
+        return this.funcType.rtnType; // instance-type. null if it's a void function call
     }
 
     public TEMP IRme()
     {
-        TEMP t=null;
+        TEMP rtnTemp = TEMP_FACTORY.getInstance().getFreshTEMP();
+        this.functionCallIRme(caller, func, args, funcType, rtnTemp);
 
-        if (params != null) { t = params.head.IRme(); }
-
-        IR.getInstance().Add_IRcommand(new IRcommand_PrintInt(t));
-
-        return null;
+        return rtnTemp;
     }
 }

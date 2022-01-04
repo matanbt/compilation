@@ -5,6 +5,8 @@ import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
 import TYPES.TYPE_FOR_SCOPE_BOUNDARIES;
 import TYPES.TYPE_INT_INSTANCE;
+import TEMP.*;
+import IR.*;
 
 public class AST_STMT_WHILE extends AST_STMT
 {

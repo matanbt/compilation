@@ -60,7 +60,8 @@ public class AST_EXP_LIST extends AST_Node
 
 	public TEMP IRme()
 	{
-		return head.IRme();
+		// this is never being called
+		return null;
 	}
 
 }

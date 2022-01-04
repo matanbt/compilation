@@ -21,7 +21,7 @@ public class AST_DEC_FUNC extends AST_DEC
 
 	// -------------------- IR Additions --------------------
 	private int argsCount = 0;
-	private int localsCount = 0;
+	public int localsCount = 0;
 	public String funcStartingLabel;
 	public String funcEpilogueLabel;
 	public boolean isMainFunc = false;
@@ -108,7 +108,12 @@ public class AST_DEC_FUNC extends AST_DEC
 						"can't declare global-function", funcName));
 			}
 		}
-		// else: it's a method, will be checked as a CFIELD
+		else{
+			// it's a CField
+			// annotation for IR
+			encompassingClass.addToMethodList(this);
+			// CField semantic check is on AST_CFEILD
+		}
 
 
 		/***************************/
@@ -148,7 +153,8 @@ public class AST_DEC_FUNC extends AST_DEC
 			isFoundMain = true;
 		}
 
-		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes, this);
+		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes,
+				this, encompassingClass);
 	}
 
 	// SemantMe Part 2: Update Symbol Table & analyze the inner scope of the function
@@ -172,6 +178,10 @@ public class AST_DEC_FUNC extends AST_DEC
 		/***************************/
 		TYPE_LIST list_argTypes = result_SemantMe.args;
 		int i = 0;
+		if (this.encompassingClass != null) {
+			// a method will have `this` as first argument
+			i = 1;
+		}
 		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next, i++)
 		{
 			// find the TYPE of each
@@ -185,7 +195,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		}
 
 		// gets the amount of arguments
-		this.argsCount = list_argTypes.size();
+		this.argsCount = list_argTypes.size() + (this.encompassingClass != null ? 1 : 0);
 
 		/*******************/
 		/* [3] Semant Body */
@@ -229,7 +239,8 @@ public class AST_DEC_FUNC extends AST_DEC
 		/* 1. Put a starting label */
 		if (encompassingClass != null) {
 			this.funcStartingLabel = String.format("method_%s_%s", encompassingClass.name, _funcName);
-		} else {
+		}
+		else {
 			this.funcStartingLabel = String.format("func_%s", _funcName);
 		}
 		mIR.Add_IRcommand(new IRcommand_Label(this.funcStartingLabel));

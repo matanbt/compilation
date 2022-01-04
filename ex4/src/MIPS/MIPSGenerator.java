@@ -22,7 +22,7 @@ public class MIPSGenerator
 	/******************************/
 	/* How many temporary we backup and restore inside a function? */
 	public static final int TEMP_TO_BACKUP_COUNT = 10;
-  
+
 	public static String LABEL_STRING_ACCESS_VIOLATION = "Label_string_access_violation";
 	public static String LABEL_STRING_ILLEGAL_DIV_BY_0 = "Label_string_illegal_div_by_zero";
 	public static String LABEL_STRING_INVALID_PTR_DREF = "Label_string_invalid_ptr_dref";
@@ -80,7 +80,35 @@ public class MIPSGenerator
 	public void allocate(String var_name)
 	{
 		fileWriter.format(".data\n");
-		fileWriter.format("\tglobal_%s: .word 721\n",var_name);
+		fileWriter.format("\t%s: .word 0\n",var_name);
+	}
+
+	public void allocateString(String var_name, String val)
+	{
+		fileWriter.format(".data\n");
+		fileWriter.format("\t%s: .asciiz \"%s\"\n", var_name, val);
+		fileWriter.format(".text\n");
+	}
+  
+	public void loadString(TEMP dst, String str_name)
+	{
+		int idxdst=dst.getSerialNumber();
+		fileWriter.format("\tla Temp_%d, %s\n",idxdst, str_name);
+	}
+
+	public void allocateWithIntVal(String name, int val)
+	{
+		// name = val
+		// assumes name is unique
+		fileWriter.format(".data\n");
+		fileWriter.format("\t%s: .word %d\n",name, val);
+	}
+	public void allocateByReferenceName(String name, String referenceName)
+	{
+		// name = referenceName
+		// assumes name is unique
+		fileWriter.format(".data\n");
+		fileWriter.format("\t%s: .word %s\n",name, referenceName);
 	}
 
 	/* Loads variable from .data segment by given name */
@@ -96,6 +124,11 @@ public class MIPSGenerator
 		fileWriter.format("\tlw Temp_%d,%d(fp)\n", idxdst, offset);
 	}
 
+	public void loadFromHeap(TEMP dst, TEMP base_address, int offset) {
+		int idxdst = dst.getSerialNumber();
+		fileWriter.format("\tlw Temp_%d,%d(%s)\n", idxdst, offset, base_address);
+	}
+
   public void load_by_var_name(TEMP dst,String full_var_name)
 	{
 		int idxdst=dst.getSerialNumber();
@@ -107,6 +140,18 @@ public class MIPSGenerator
 		int idxsrc=src.getSerialNumber();
 		fileWriter.format("\tsw Temp_%d,global_%s\n",idxsrc,var_name);		
 	}
+
+	public void storeToStack(int offset,TEMP src)
+	{
+		int idxsrc=src.getSerialNumber();
+		fileWriter.format("\tsw Temp_%d,%d(fp)\n",idxsrc, offset);
+	}
+
+	public void storeToHeap(TEMP src, TEMP base_address, int offset) {
+		int idxsrc = src.getSerialNumber();
+		fileWriter.format("\tsw Temp_%d,%d(%s)\n", idxsrc, offset, base_address);
+	}
+
 
 	public void li(TEMP t,int value)
 	{
@@ -262,7 +307,7 @@ public class MIPSGenerator
 		this.print_string(temp_print_msg);
 		this.finalizeFile();
 	}
-	
+
 	/**************************************/
 	/* USUAL SINGLETON IMPLEMENTATION ... */
 	/**************************************/
