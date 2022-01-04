@@ -91,12 +91,14 @@ public class MIPSGenerator {
 
     public void loadFromHeap(TEMP dst, TEMP base_address, int offset) {
         int idxdst = dst.getSerialNumber();
-        fileWriter.format("\tlw Temp_%d,%d(%s)\n", idxdst, offset, base_address);
+        int idxBaseAddress = base_address.getSerialNumber();
+        fileWriter.format("\tlw Temp_%d,%d(Temp_%d)\n", idxdst, offset, idxBaseAddress);
     }
 
     public void storeToHeap(TEMP src, TEMP base_address, int offset) {
         int idxsrc = src.getSerialNumber();
-        fileWriter.format("\tsw Temp_%d,%d(%s)\n", idxsrc, offset, base_address);
+        int idxBaseAddress = base_address.getSerialNumber();
+        fileWriter.format("\tsw Temp_%d,%d(Temp_%d)\n", idxsrc, offset, idxBaseAddress);
     }
 
     public void loadString(TEMP dst, String str_name) {
@@ -104,22 +106,27 @@ public class MIPSGenerator {
         fileWriter.format("\tla Temp_%d, %s\n", idxdst, str_name);
     }
 
-  /* -------------- Stack access functions -------------- */
+    public void li(TEMP t, int value) {
+        int idx = t.getSerialNumber();
+        fileWriter.format("\tli Temp_%d,%d\n", idx, value);
+    }
 
-	// TODO in the following functions I assume we're writing to `.text` session, that is -
-	//  every function that "opens" an `.data` section is responsible to close it as well.
+    /* -------------- Stack access functions -------------- */
 
-	/* Pushing a register (e.g. "$v0", "$fp", "$t5"...) to the "top" of the stack */
-	public void pushRegisterToStack(String register) {
-		fileWriter.format("\tsubu $sp, $sp, 4\n");
-		fileWriter.format("\tsw %s,0($sp)\n", register);
-	}
+    // TODO in the following functions I assume we're writing to `.text` session, that is -
+    //  every function that "opens" an `.data` section is responsible to close it as well.
 
-	/* Pops the "top" of the stack and loads it to the given register (e.g. "$v0") */
-	public void popToRegisterFromStack(String register) {
-		fileWriter.format("\tlw %s,0($sp)\n", register);
-		fileWriter.format("\taddu $sp, $sp, 4\n");
-	}
+    /* Pushing a register (e.g. "$v0", "$fp", "$t5"...) to the "top" of the stack */
+    public void pushRegisterToStack(String register) {
+        fileWriter.format("\tsubu $sp, $sp, 4\n");
+        fileWriter.format("\tsw %s,0($sp)\n", register);
+    }
+
+    /* Pops the "top" of the stack and loads it to the given register (e.g. "$v0") */
+    public void popToRegisterFromStack(String register) {
+        fileWriter.format("\tlw %s,0($sp)\n", register);
+        fileWriter.format("\taddu $sp, $sp, 4\n");
+    }
 
 
     /* ---------------------- Operators and Arithmetic ---------------------- */
@@ -313,13 +320,6 @@ public class MIPSGenerator {
         fileWriter.format("\tsyscall\n");
     }
 
-    /* ---------------------- Other ---------------------- */
-
-    public void li(TEMP t, int value) {
-        int idx = t.getSerialNumber();
-        fileWriter.format("\tli Temp_%d,%d\n", idx, value);
-    }
-
 
     /* ---------------------- Beginning and Ending of the MIPS code ---------------------- */
 
@@ -380,22 +380,28 @@ public class MIPSGenerator {
         /* msg_name = "string_illegal_div_by_0" or "string_access_violation" or "string_invalid_ptr_dref" */
         // TODO - We shouldnt getFreshTEMP here, but use $s0, $s1 internally...
         TEMP temp_print_msg = TEMP_FACTORY.getInstance().getFreshTEMP();
-        loadByVarName(temp_print_msg, msg_name);
+        loadString(temp_print_msg, msg_name);
         this.print_string(temp_print_msg);
-        this.finalizeFile();
+        this.performExit();
+    }
+
+    /* exits the program */
+    private void performExit() {
+        fileWriter.print("\tli $v0,10\n");
+        fileWriter.print("\tsyscall\n");
     }
 
     /* End */
     public void finalizeFile() {
-        // TODO .text ?
-        fileWriter.print(".text\n");
+
         /* 1. Invokes user_main, i.e. the main() function of the L program */
         fileWriter.print("main:\n");
         fileWriter.print("\tjal user_main\n");
 
         /* 2. Performs exit */
-        fileWriter.print("\tli $v0,10\n");
-        fileWriter.print("\tsyscall\n");
+        performExit();
+
+        /* 3. Closes file */
         fileWriter.close();
     }
 
