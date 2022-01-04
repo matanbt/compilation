@@ -28,7 +28,7 @@ public class IRcommand_Store extends IRcommand {
     /***************/
     public void MIPSme() {
         if (var.mRole == VarRole.GLOBAL) {
-            MIPSGenerator.getInstance().storeGlobal(var.mVarName, src);
+            MIPSGenerator.getInstance().storeByVarName("global_" + var.mVarName, src);
         }
 
         else if (var.mRole == VarRole.LOCAL || var.mRole == VarRole.ARG) {

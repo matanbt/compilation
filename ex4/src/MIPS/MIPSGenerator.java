@@ -67,15 +67,9 @@ public class MIPSGenerator {
 
     /* ---------------------- Load & Stores ---------------------- */
 
-    /* Loads variable from .data segment by given name */
-    public void loadGlobal(TEMP dst, String var_name) {
-        String full_var_name = String.format("global_%s", var_name);
-        this.loadByVarName(dst, full_var_name);
-    }
-
-    public void storeGlobal(String var_name, TEMP src) {
+    public void storeByVarName(String full_var_name, TEMP src) {
         int idxsrc = src.getSerialNumber();
-        fileWriter.format("\tsw Temp_%d,global_%s\n", idxsrc, var_name);
+        fileWriter.format("\tsw Temp_%d,%s\n", idxsrc, full_var_name);
     }
 
     public void loadByVarName(TEMP dst, String full_var_name) {
