@@ -10,6 +10,7 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 
+import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 
 /*******************/
@@ -36,10 +37,9 @@ public class IRcommand_Func_Return extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		// TODO fill in the future
 		if (rtnTemporary != null) {
-			// move $v0, $rtnTemporary
+			MIPSGenerator.getInstance().setReturn(rtnTemporary);
 		}
-		//j epilogueLabel
+		MIPSGenerator.getInstance().jump(epilogueLabel);
 	}
 }

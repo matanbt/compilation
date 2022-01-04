@@ -40,7 +40,6 @@ public class MIPSGenerator
 	/***********************/
 	public void finalizeFile()
 	{
-		// TODO .text ?
 		fileWriter.print(".text\n");
 		/* 1. Invokes user_main, i.e. the main() function of the L program */
 		fileWriter.print("main:\n");
@@ -153,6 +152,7 @@ public class MIPSGenerator
 		fileWriter.format("\tsw Temp_%d,%d(%s)\n", idxsrc, offset, base_address);
 	}
 
+
 	public void li(TEMP t,int value)
 	{
 		int idx=t.getSerialNumber();
@@ -234,7 +234,68 @@ public class MIPSGenerator
 				
 		fileWriter.format("\tbeq Temp_%d,$zero,%s\n",i1,label);				
 	}
+	/* -------------- Stack access functions -------------- */
+	public void storeToStack(int offset,TEMP src)
+	{
+		int idxsrc=src.getSerialNumber();
+		fileWriter.format("\tsw Temp_%d,%d($fp)\n",idxsrc, offset);
+	}
 
+	// TODO in the following functions I assume we're writing to `.text` session, that is -
+	//  every function that "opens" an `.data` section is responsible to close it as well.
+
+	/* Pushing a register (e.g. "$v0", "$fp", "$t5"...) to the "top" of the stack */
+	public void pushRegisterToStack(String register) {
+		fileWriter.format("\tsubu $sp, $sp, 4\n");
+		fileWriter.format("\tsw %s,0($sp)\n", register);
+	}
+
+	/* Pops the "top" of the stack and loads it to the given register (e.g. "$v0") */
+	public void popToRegisterFromStack(String register) {
+		fileWriter.format("\tlw %s,0($sp)\n", register);
+		fileWriter.format("\taddu $sp, $sp, 4\n");
+	}
+
+	/* -------------- Functions related MIPS code -------------- */
+	/* Sets to return value ($v0) to be the value in `t` */
+	public void setReturn(TEMP t) {
+		int idx = t.getSerialNumber();
+		fileWriter.format("\tmove $v0,Temp_%d\n", idx);
+	}
+
+	public void functionPrologue(int localsCount) {
+		/* 1. Push important registers to stack */
+		pushRegisterToStack("$ra");
+		pushRegisterToStack("$fp");
+
+		/* 2. Set the new frame-pointer */
+		fileWriter.format("\tmove $fp, $sp");
+
+		/* 3. Backup all temp-registers by pushing them to stack as well */
+		for (int i = 0; i < TEMP_TO_BACKUP_COUNT; i++) {
+			pushRegisterToStack(String.format("$t%d", i));
+		}
+
+		/* 4. Keep some room for local variables in the stack */
+		fileWriter.format("\tsubu $sp, $sp, %d", localsCount * WORD_SIZE);
+	}
+
+	public void functionEpilogue(int localsCount) {
+		/* 1. Removes local from the stack */
+		fileWriter.format("\taddu $sp, $sp, %d", localsCount * WORD_SIZE);
+
+		/* 2. Restores all temp-registers by popping them from the stack */
+		for (int i = TEMP_TO_BACKUP_COUNT - 1; i >= 0; i--) {
+			popToRegisterFromStack(String.format("$t%d", i));
+		}
+
+		/* 3. Restores important registers from stack */
+		popToRegisterFromStack("$fp");
+		popToRegisterFromStack("$ra");
+
+		/* 4. Jump back */
+		fileWriter.format("\tjr $ra");
+	}
 
 	/* private methods */
 

@@ -28,7 +28,6 @@ public class IRcommand_Func_Prologue extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		// MIPSGenerator.getInstance().calleeBackup(); // callee responsibility backup
-		// MIPSGenerator.getInstance().prologue(localsCount);
+		MIPSGenerator.getInstance().functionPrologue(localsCount);
 	}
 }
