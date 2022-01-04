@@ -12,15 +12,16 @@ package IR;
 /*******************/
 
 import MIPS.MIPSGenerator;
+import TEMP.TEMP;
 
-/* The following command is actually meaningless in IR, but will be used in MIPSme */
-public class IRcommand_Func_Prologue extends IRcommand
+/* Given an address of null-terminated string, prints it */
+public class IRcommand_PrintString extends IRcommand
 {
-	public int localsCount;
+	TEMP t;
 
-	public IRcommand_Func_Prologue(int localsCount)
+	public IRcommand_PrintString(TEMP t)
 	{
-		this.localsCount = localsCount;
+		this.t = t;
 	}
 	
 	/***************/
@@ -28,6 +29,6 @@ public class IRcommand_Func_Prologue extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		MIPSGenerator.getInstance().functionPrologue(localsCount);
+		MIPSGenerator.getInstance().print_string(t);
 	}
 }

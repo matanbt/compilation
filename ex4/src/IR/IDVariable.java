@@ -62,4 +62,21 @@ public class IDVariable {
         // Shouldn't get here, no offsets for other variable roles
         return 0;
     }
+
+    /* --------------------------- THIS ---------------------------- */
+    /* a IDVariable dedicated to `this` inside a method
+    * Basically it represents the first argument of the function */
+    public static IDVariable thisInstance = null;
+
+    public static IDVariable getThisInstance() {
+        if (thisInstance != null) {
+            return thisInstance;
+        }
+        /* We observe that in method that first argument is always the "this" of the method,
+        * meaning the class-instance that invoked the method */
+        thisInstance = new IDVariable("this", VarRole.ARG, 0);
+        return thisInstance;
+    }
+    /* --------------------------- THIS ---------------------------- */
+
 }

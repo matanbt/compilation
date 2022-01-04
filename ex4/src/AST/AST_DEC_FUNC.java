@@ -153,7 +153,8 @@ public class AST_DEC_FUNC extends AST_DEC
 			isFoundMain = true;
 		}
 
-		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes, this);
+		return new TYPE_FUNCTION(semantic_rtnType, funcName, list_argTypes,
+				this, encompassingClass);
 	}
 
 	// SemantMe Part 2: Update Symbol Table & analyze the inner scope of the function
@@ -177,6 +178,10 @@ public class AST_DEC_FUNC extends AST_DEC
 		/***************************/
 		TYPE_LIST list_argTypes = result_SemantMe.args;
 		int i = 0;
+		if (this.encompassingClass != null) {
+			// a method will have `this` as first argument
+			i = 1;
+		}
 		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next, i++)
 		{
 			// find the TYPE of each
@@ -190,7 +195,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		}
 
 		// gets the amount of arguments
-		this.argsCount = list_argTypes.size();
+		this.argsCount = list_argTypes.size() + (this.encompassingClass != null ? 1 : 0);
 
 		/*******************/
 		/* [3] Semant Body */
@@ -249,7 +254,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		/* 4. Epilogue (Will be used for MIPS, meaningless in IR) */
 		this.funcEpilogueLabel = String.format("%s_epilogue", this.funcStartingLabel);
 		mIR.Add_IRcommand(new IRcommand_Label(this.funcEpilogueLabel));
-		mIR.Add_IRcommand(new IRcommand_Func_Epilogue());
+		mIR.Add_IRcommand(new IRcommand_Func_Epilogue(this.localsCount));
 
 		// No temporary in function declaration
 		return null;

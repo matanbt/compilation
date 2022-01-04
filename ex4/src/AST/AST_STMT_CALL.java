@@ -2,6 +2,8 @@ package AST;
 
 import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
+import TEMP.TEMP;
+import TEMP.TEMP_FACTORY;
 import TYPES.*;
 
 public class AST_STMT_CALL extends AST_STMT
@@ -12,6 +14,12 @@ public class AST_STMT_CALL extends AST_STMT
 	public AST_VAR caller;  // the class's instance who called the function, can be null
 	public String func;
 	public AST_EXP_LIST args;  // can be null
+
+	/***************/
+	/*  IR Additions */
+	/***************/
+	public TYPE_FUNCTION funcType;
+
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
@@ -65,14 +73,16 @@ public class AST_STMT_CALL extends AST_STMT
 	}
 
 	public TYPE SemantMe() throws SemanticException {
-		return this.functionCallSemantMe(caller, func, args);  // instance-type. null if it's a void function call
+		this.funcType =  this.functionCallSemantMe(caller, func, args);
+		return this.funcType.rtnType; // instance-type. null if it's a void function call
 		// NOTE: by L syntax, this return value is not being used
 	}
 
 	public TEMP IRme()
 	{
-		if (callExp != null) callExp.IRme();
+		this.functionCallIRme(caller, func, args, funcType, null);
 
+		// no TEMP returned from a call statement
 		return null;
 	}
 }
