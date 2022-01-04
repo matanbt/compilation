@@ -152,10 +152,12 @@ public abstract class AST_Node
 
 			// evaluating expressions must be AFTER evaluating invokingClassObject (left to right)
 			args_temp_list = this.functionCallGetArgumentsTempList(args);
+			args_temp_list.add(0, invokingClassObject); // invoking object is the first argument
+
 			/* TODO Offset - we'll need to pass the method offset in VTable */
 			IR.getInstance().Add_IRcommand(new IRcommand_Virtual_Call(invokingClassObject,
-					funcType.encompassingClass.name,
-					func, args_temp_list, rtnTemp));
+					funcType.encompassingClass.getMethodOffset(func),
+					args_temp_list, rtnTemp));
 		}
 		else {
 			/* Calling a global function
@@ -178,6 +180,7 @@ public abstract class AST_Node
 		}
 	}
 
+	/* Performs IRme to all the expressions in the given list, and the corresponding list of TEMPs*/
 	public List<TEMP> functionCallGetArgumentsTempList(AST_EXP_LIST args) {
 		AST_EXP_LIST exp_node;
 		List<TEMP> args_temp_list = new ArrayList<TEMP>();
