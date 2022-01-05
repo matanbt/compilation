@@ -107,7 +107,7 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		TEMP subscriptIndex = this.subscript.IRme();
 		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
 
-		IR.getInstance().Add_IRcommand(new IRcommand_Array_Access(dst, arrayPointer, subscriptIndex));
+		IR.getInstance().Add_IRcommand(new IRcommand_Array_Get(dst, arrayPointer, subscriptIndex));
 
 		return dst;
 	}

@@ -9,29 +9,34 @@ package IR;
 
 /*******************/
 /* PROJECT IMPORTS */
+
+import MIPS.MIPSGenerator;
+import TEMP.TEMP;
+import TEMP.*;
+
 /*******************/
 
-import TEMP.TEMP;
-
-/* IR Command : dst = array_access arrPointer, subscriptIndex */
-public class IRcommand_Array_Access extends IRcommand
+public abstract class IRcommand_Array_Access extends IRcommand
 {
-	public TEMP dst;
-	public TEMP arrPointer;
-	public TEMP subscriptIndex;
+	protected TEMP arrayAccess(TEMP arrPointer, TEMP subscriptIndex){
+		/* performs runtime check
+		 * & returns offset_in_words (the offset from arrPointer of the relevant cell) */
 
-	public IRcommand_Array_Access(TEMP dst, TEMP arrPointer, TEMP subscriptIndex)
-	{
-		this.dst = dst;
-		this.arrPointer = arrPointer;
-		this.subscriptIndex = subscriptIndex;
-	}
+		MIPSGenerator mips = MIPSGenerator.getInstance();
 
-	/***************/
-	/* MIPS me !!! */
-	/***************/
-	public void MIPSme()
-	{
-//		MIPSGenerator.getInstance().?;
+		/* Runtime check - out of bound array access */
+		// Case (1): subscriptIndex < 0
+		mips.bltz(subscriptIndex, MIPSGenerator.LABEL_STRING_ACCESS_VIOLATION);
+
+		// Case (2): subscriptIndex >= arrLen
+		TEMP arrLen = TEMP_FACTORY.getInstance().getFreshTEMP();
+		mips.loadFromHeap(arrLen, arrPointer, 0);
+		mips.bge(subscriptIndex, arrLen, MIPSGenerator.LABEL_STRING_ACCESS_VIOLATION);
+
+		TEMP offset_in_words = TEMP_FACTORY.getInstance().getFreshTEMP();
+		// the first item in the array is it's length, so the index val should be incremented by 1
+		mips.addi(offset_in_words, subscriptIndex, 1);
+
+		return offset_in_words;
 	}
 }
