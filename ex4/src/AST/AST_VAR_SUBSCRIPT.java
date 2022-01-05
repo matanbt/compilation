@@ -2,12 +2,12 @@ package AST;
 
 import EXCEPTIONS.SemanticException;
 import IR.IR;
-import SYMBOL_TABLE.SYMBOL_TABLE;
 import TEMP.TEMP;
 import TYPES.TYPE;
 import TYPES.TYPE_ARRAY_INSTANCE;
-import TYPES.TYPE_INT;
 import TYPES.TYPE_INT_INSTANCE;
+import TEMP.TEMP_FACTORY;
+import IR.*;
 
 public class AST_VAR_SUBSCRIPT extends AST_VAR
 {
@@ -107,7 +107,7 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		TEMP subscriptIndex = this.subscript.IRme();
 		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
 
-		IR.getInstance().Add_IRcommand(new IRcommand_Array_access(dst, arrayPointer, subscriptIndex));
+		IR.getInstance().Add_IRcommand(new IRcommand_Array_Access(dst, arrayPointer, subscriptIndex));
 
 		return dst;
 	}
@@ -118,6 +118,6 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		TEMP arrPointer = this.var.IRme();
 		TEMP subscriptIndex = this.subscript.IRme();
 		TEMP src_temp = src.IRme();
-		mIR.Add_IRcommand(new IRcommand_Array_set(arrPointer, subscriptIndex, src_temp));
+		mIR.Add_IRcommand(new IRcommand_Array_Set(arrPointer, subscriptIndex, src_temp));
 	}
 }

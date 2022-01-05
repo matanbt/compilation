@@ -1,6 +1,7 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import TEMP.TEMP;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
@@ -82,6 +83,11 @@ public class AST_DEC_ARRAY_TYPE_DEF extends AST_DEC
 		TYPE_ARRAY array = new TYPE_ARRAY(this.id, array_type);
 		table.enter(this.id, array);
 
+		return null;
+	}
+
+	public TEMP IRme() {
+		// array types objects aren't relevant in IR, MIPS
 		return null;
 	}
 }

@@ -11,20 +11,22 @@ package IR;
 /* PROJECT IMPORTS */
 /*******************/
 
+import AST.AST_VAR_SUBSCRIPT;
+import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 
-/* IR Command : dst = array_access arrPointer, subscriptIndex */
-public class IRcommand_Array_access extends IRcommand
+/* IR Command : array_set arrPointer, subscriptIndex, src */
+public class IRcommand_Array_Set extends IRcommand
 {
-	public TEMP dst;
 	public TEMP arrPointer;
 	public TEMP subscriptIndex;
+	public TEMP src;
 
-	public IRcommand_Array_access(TEMP dst, TEMP arrPointer, TEMP subscriptIndex)
+	public IRcommand_Array_Set(TEMP arrPointer, TEMP subscriptIndex, TEMP src)
 	{
-		this.dst = dst;
 		this.arrPointer = arrPointer;
 		this.subscriptIndex = subscriptIndex;
+		this.src = src;
 	}
 
 	/***************/
