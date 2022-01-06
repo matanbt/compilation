@@ -11,22 +11,19 @@ package TEMP;
 /* PROJECT IMPORTS */
 /*******************/
 
-public class TEMP
+public class SAVED extends TEMP
 {
-	protected int serial=0;
-	
-	public TEMP(int serial)
+	public SAVED(int serial)
 	{
-		this.serial = serial;
+		super(serial);
 	}
 	
 	public int getSerialNumber()
 	{
-		return serial;
+		return this.serial;
 	}
 
 	public String getRegisterName(){
-		return null;
-//		return String.format("$t%d", mapped_register_num);  // TODO
+		return String.format("$s%d", this.serial);
 	}
 }

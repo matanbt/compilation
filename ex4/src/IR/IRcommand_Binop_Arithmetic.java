@@ -38,8 +38,8 @@ public class IRcommand_Binop_Arithmetic extends IRcommand {
 	public void MIPSme() {
 		MIPSGenerator mips = MIPSGenerator.getInstance();
 
-		TEMP lower_bound = TEMP_FACTORY.getInstance().getFreshTEMP();  // TODO - change to $s
-		TEMP upper_bound = TEMP_FACTORY.getInstance().getFreshTEMP();  // TODO - change to $s
+		TEMP lower_bound = new SAVED(0);
+		TEMP upper_bound = new SAVED(1);
 
 		String lower_bound_lbl = getFreshLabel("lower");
 		String upper_bound_lbl = getFreshLabel("upper");
