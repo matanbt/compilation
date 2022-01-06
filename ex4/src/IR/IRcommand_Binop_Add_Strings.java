@@ -12,6 +12,7 @@ package IR;
 /*******************/
 
 import TEMP.TEMP;
+import TEMP.SAVED;
 import MIPS.MIPSGenerator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,10 +40,10 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 	public void MIPSme() {
 		MIPSGenerator mips = MIPSGenerator.getInstance();
 		TEMP curr_string;
-		TEMP res_string_len = null;  // TODO- change to $s
-		TEMP address_of_curr_str_i = null;  // TODO- change to $s
-		TEMP val_of_curr_str_i = null;  // TODO- change to $s
-		TEMP address_of_new_str_i = null;  // TODO- change to $s
+		TEMP res_string_len = new SAVED(0);
+		TEMP address_of_curr_str_i = new SAVED(1);
+		TEMP val_of_curr_str_i = new SAVED(2);
+		TEMP address_of_new_str_i = new SAVED(3);
 
 		String curr_loop, end_curr_loop;
 
