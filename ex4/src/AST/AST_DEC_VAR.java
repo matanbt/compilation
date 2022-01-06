@@ -141,7 +141,7 @@ public class AST_DEC_VAR extends AST_DEC
     // SemantMe Part 2: Check assignment (if exists) & update Symbol Table
     private void SemantMe_checkAssignment(TYPE semantic_type) throws SemanticException {
         /*
-        * semantic_type = instance type representing the type of var by it's type declaration
+        * semantic_type = instance type representing the type of var by its type declaration
         * e.g.: 'int x := "";'  --> semantic_type = TYPE_INT_INSTANCE
         * */
 

@@ -29,12 +29,12 @@ public abstract class IRcommand_Array_Access extends IRcommand
 		mips.bltz(subscriptIndex, MIPSGenerator.LABEL_STRING_ACCESS_VIOLATION);
 
 		// Case (2): subscriptIndex >= arrLen
-		TEMP arrLen = TEMP_FACTORY.getInstance().getFreshTEMP();
+		TEMP arrLen = new SAVED(0);
 		mips.loadFromHeap(arrLen, arrPointer, 0);
 		mips.bge(subscriptIndex, arrLen, MIPSGenerator.LABEL_STRING_ACCESS_VIOLATION);
 
-		TEMP offset_in_words = TEMP_FACTORY.getInstance().getFreshTEMP();
-		// the first item in the array is it's length, so the index val should be incremented by 1
+		TEMP offset_in_words = new SAVED(1);
+		// the first item in the array is its length, so the index val should be incremented by 1
 		mips.addi(offset_in_words, subscriptIndex, 1);
 
 		return offset_in_words;
