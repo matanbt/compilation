@@ -41,9 +41,9 @@ public class IRcommand_Binop_Arithmetic extends IRcommand {
 		TEMP lower_bound = new SAVED(0);
 		TEMP upper_bound = new SAVED(1);
 
-		String lower_bound_lbl = getFreshLabel("lower");
-		String upper_bound_lbl = getFreshLabel("upper");
-		String end_lbl = getFreshLabel("end");
+		String lower_bound_lbl = getFreshLabel("BINOP_ARITHMETIC_reached_lower_bound");
+		String upper_bound_lbl = getFreshLabel("BINOP_ARITHMETIC_reached_upper_bound");
+		String end_lbl = getFreshLabel("BINOP_ARITHMETIC_end");
 
 		/* Do the arithmetic operation */
 		if (arithmetic_op.equals("+")) {

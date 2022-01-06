@@ -26,7 +26,7 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 	public TEMP left_str;
 	public TEMP right_str;
 	public TEMP dst;
-	private int WORD_SIZE = 4;
+	private int CHAR_SIZE = 1;
 
 	public IRcommand_Binop_Add_Strings(TEMP dst, TEMP left_str, TEMP right_str) {
 		this.dst = dst;
@@ -50,12 +50,12 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 		List<TEMP> strings = new ArrayList<TEMP>(Arrays.asList(left_str, right_str));
 
 		// new string len = 1 (last cell = 0)
-		mips.li(res_string_len, 1);
+		mips.li(res_string_len, CHAR_SIZE);
 
 		/* Calculate the length of the new string */
 		for (int j = 0; j < strings.size(); j++) {
-			curr_loop = getFreshLabel("loop_calc_len_lbl");;
-			end_curr_loop = getFreshLabel("end_loop_calc_len_lbl");
+			curr_loop = getFreshLabel("STR_ADD_loop_calc_len_lbl");;
+			end_curr_loop = getFreshLabel("STR_ADD_end_loop_calc_len_lbl");
 
 			curr_string = strings.get(j);
 
@@ -65,13 +65,13 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 			// loop
 			mips.label(curr_loop);
 			// val_of_curr_str_i = curr_str[i]
-			mips.loadFromHeap(val_of_curr_str_i, address_of_curr_str_i, 0);
+			mips.loadByteFromHeap(val_of_curr_str_i, address_of_curr_str_i, 0);
 			// if curr_str[i] == 0, exit loop
 			mips.beqz(val_of_curr_str_i, end_curr_loop);
 			// res_string_len ++
-			mips.addi(res_string_len, res_string_len, 1);
+			mips.addi(res_string_len, res_string_len, CHAR_SIZE);
 			// i++
-			mips.addi(address_of_curr_str_i, address_of_curr_str_i, WORD_SIZE);
+			mips.addi(address_of_curr_str_i, address_of_curr_str_i, CHAR_SIZE);
 
 			mips.jump(curr_loop);
 
@@ -80,14 +80,14 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 		}
 
 		/* allocate memory for the new String */
-		mips.mallocWords(dst, res_string_len);
+		mips.malloc(dst, res_string_len);
 
 		/* Copy the Strings content to the new string */
 		mips.move(address_of_new_str_i, dst);
 
 		for (int j = 0; j < strings.size(); j++) {
-			curr_loop = getFreshLabel("loop_copy_content_lbl");
-			end_curr_loop = getFreshLabel("end_loop_copy_content_lbl");
+			curr_loop = getFreshLabel("STR_ADD_loop_copy_content_lbl");
+			end_curr_loop = getFreshLabel("STR_ADD_end_loop_copy_content_lbl");
 
 			curr_string = strings.get(j);
 
@@ -97,14 +97,14 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 			// loop
 			mips.label(curr_loop);
 			// val_of_curr_str_i = curr_str[i]
-			mips.loadFromHeap(val_of_curr_str_i, address_of_curr_str_i, 0);
+			mips.loadByteFromHeap(val_of_curr_str_i, address_of_curr_str_i, 0);
 			// if val_of_curr_str_i == 0, exit loop
 			mips.beqz(val_of_curr_str_i, end_curr_loop);
 			// dst[i] = curr_str[i]
-			mips.storeToHeap(val_of_curr_str_i, address_of_new_str_i, 0);
+			mips.storeByteToHeap(val_of_curr_str_i, address_of_new_str_i, 0);
 			// i++
-			mips.addi(address_of_curr_str_i, address_of_curr_str_i, WORD_SIZE);
-			mips.addi(address_of_curr_str_i, address_of_new_str_i, WORD_SIZE);
+			mips.addi(address_of_curr_str_i, address_of_curr_str_i, CHAR_SIZE);
+			mips.addi(address_of_curr_str_i, address_of_new_str_i, CHAR_SIZE);
 
 			mips.jump(curr_loop);
 
@@ -114,6 +114,6 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 
 		/* Add 0 at the end of the new String */
 		mips.li(val_of_curr_str_i, 0);
-		mips.storeToHeap(val_of_curr_str_i, address_of_new_str_i, 0);
+		mips.storeByteToHeap(val_of_curr_str_i, address_of_new_str_i, 0);
 	}
 }
