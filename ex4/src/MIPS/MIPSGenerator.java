@@ -274,11 +274,64 @@ public class MIPSGenerator {
         fileWriter.format("\tsyscall\n");
     }
 
+    /* ---------------------- Strings ---------------------- */
+    private int stringEQ_i = 0;  // for making stringEQ labels unique, relying on the singleton implementation
+    public void stringEQ(TEMP dst, TEMP str1, TEMP str2) {
+        /* dst = str1 == str2
+        * str1, str2 points to strings */
+
+        // labels:
+        String LABEL_stringEQ_NOT_EQUAL = String.format("Label_stringEQ_not_equal_%d", this.stringEQ_i);
+        String LABEL_stringEQ_EQUAL = String.format("Label_stringEQ_equal_%d", this.stringEQ_i);
+        String LABEL_stringEQ_LOOP_START = String.format("Label_stringEQ_loop_start_%d", this.stringEQ_i);
+        String LABEL_stringEQ_END = String.format("Label_stringEQ_end_%d", this.stringEQ_i);
+
+        this.stringEQ_i++;
+
+        fileWriter.format("\tmove $s1, Temp_%d\n", str1.getSerialNumber());
+        fileWriter.format("\tmove $s2, Temp_%d\n", str2.getSerialNumber());
+
+        // loop
+        fileWriter.format("\t%s:\n", LABEL_stringEQ_LOOP_START);
+
+            fileWriter.format("\t\tlw $s3, 0($s1)\n");
+            fileWriter.format("\t\tlw $s4, 0($s2)\n");
+
+            // check equality: if str1[i] != str2[i]
+            fileWriter.format("\t\tbne $s3, $s4, %s\n", LABEL_stringEQ_NOT_EQUAL);
+
+            // check end of strings: if str1[i] == 0
+            fileWriter.format("\t\tbeqz $s3, %s\n", LABEL_stringEQ_EQUAL);
+
+            // i++
+            fileWriter.format("\t\taddi $s1, $s1, %d\n", WORD_SIZE);
+            fileWriter.format("\t\taddi $s2, $s2, %d\n", WORD_SIZE);
+
+            // return to loop start
+            fileWriter.format("\t\tjump %s\n", LABEL_stringEQ_LOOP_START);
+
+        // not equal
+        fileWriter.format("\t%s:\n", LABEL_stringEQ_NOT_EQUAL);
+            fileWriter.format("\t\tmove Temp_%d, $zero\n", dst.getSerialNumber());
+            fileWriter.format("\t\tjump %s\n", LABEL_stringEQ_END);
+
+        // equal
+        fileWriter.format("\t%s:\n", LABEL_stringEQ_EQUAL);
+            fileWriter.format("\t\taddi Temp_%d, $zero, 1\n", dst.getSerialNumber());
+
+        // end
+        fileWriter.format("\t%s:\n", LABEL_stringEQ_END);
+    }
+
     /* ---------------------- Other ---------------------- */
 
     public void li(TEMP t, int value) {
         int idx = t.getSerialNumber();
         fileWriter.format("\tli Temp_%d,%d\n", idx, value);
+    }
+
+    public void move(TEMP dst, TEMP src) {
+        fileWriter.format("\tmove Temp_%d, Temp_%d\n", dst.getSerialNumber(), src.getSerialNumber());
     }
 
 

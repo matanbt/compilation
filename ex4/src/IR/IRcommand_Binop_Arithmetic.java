@@ -38,9 +38,8 @@ public class IRcommand_Binop_Arithmetic extends IRcommand {
 	public void MIPSme() {
 		MIPSGenerator mips = MIPSGenerator.getInstance();
 
-		TEMP lower_bound = TEMP_FACTORY.getInstance().getFreshTEMP();
-		TEMP upper_bound = TEMP_FACTORY.getInstance().getFreshTEMP();
-		TEMP zero = TEMP_FACTORY.getInstance().getFreshTEMP();
+		TEMP lower_bound = TEMP_FACTORY.getInstance().getFreshTEMP();  // TODO - change to $s
+		TEMP upper_bound = TEMP_FACTORY.getInstance().getFreshTEMP();  // TODO - change to $s
 
 		String lower_bound_lbl = getFreshLabel("lower");
 		String upper_bound_lbl = getFreshLabel("upper");
@@ -49,14 +48,19 @@ public class IRcommand_Binop_Arithmetic extends IRcommand {
 		/* Do the arithmetic operation */
 		if (arithmetic_op.equals("+")) {
 			mips.add(this.dst, this.left_t, this.right_t);
-		} else if (arithmetic_op.equals("-")) {
+		}
+
+		else if (arithmetic_op.equals("-")) {
 			mips.sub(this.dst, this.left_t, this.right_t);
-		} else if (arithmetic_op.equals("*")) {
+		}
+
+		else if (arithmetic_op.equals("*")) {
 			mips.mul(this.dst, this.left_t, this.right_t);
-		} else if (arithmetic_op.equals("/")) {
+		}
+
+		else if (arithmetic_op.equals("/")) {
 			/* Runtime check - division by zero */
-			mips.li(zero, 0);
-			mips.beq(this.right_t, zero, MIPSGenerator.LABEL_STRING_ILLEGAL_DIV_BY_0);
+			mips.beqz(this.right_t, MIPSGenerator.LABEL_STRING_ILLEGAL_DIV_BY_0);
 
 			mips.div(this.dst, this.left_t, this.right_t);
 		}

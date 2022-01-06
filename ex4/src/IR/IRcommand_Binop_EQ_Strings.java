@@ -11,6 +11,7 @@ package IR;
 /* PROJECT IMPORTS */
 /*******************/
 
+import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 
 
@@ -33,6 +34,6 @@ public class IRcommand_Binop_EQ_Strings extends IRcommand {
 
 	/***************/
 	public void MIPSme() {
-		// TODO
+		MIPSGenerator.getInstance().stringEQ(dst, left_t, right_t);
 	}
 }
