@@ -1,6 +1,8 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import IR.IRcommand_Allocate_Vtable;
+import TEMP.TEMP;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
@@ -9,6 +11,9 @@ public class AST_DEC_CLASS extends AST_DEC
 	public AST_CFIELD_LIST cfield_lst;
 	public String className;
 	public String superClassName;
+
+	// annotation for IRme, initiated in SemantMe()
+	TYPE_CLASS declared_class_type;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -94,13 +99,13 @@ public class AST_DEC_CLASS extends AST_DEC
 		}
 
 		/* Create the declared class's TYPE_CLASS */
-		TYPE_CLASS declared_class_type = new TYPE_CLASS((TYPE_CLASS) father, this.className, null);
+		this.declared_class_type = new TYPE_CLASS((TYPE_CLASS) father, this.className, null);
 
 		/* Enter the Class Type to the Symbol Table */
-		table.enter(this.className, declared_class_type);
+		table.enter(this.className, this.declared_class_type);
 
 		/* Begin Class Scope */
-		table.beginScope(TYPE_FOR_SCOPE_BOUNDARIES.CLASS_SCOPE, this, declared_class_type);
+		table.beginScope(TYPE_FOR_SCOPE_BOUNDARIES.CLASS_SCOPE, this, this.declared_class_type);
 
 		/* Semant the class's AST_CFIELD_LIST */
 		this.cfield_lst.SemantMe();
@@ -109,6 +114,12 @@ public class AST_DEC_CLASS extends AST_DEC
 		table.endScope();
 
 		/* Return value is irrelevant for class declarations */
+		return null;
+	}
+
+	public TEMP IRme()
+	{
+		mIR.Add_IRcommand(new IRcommand_Allocate_Vtable(this.className, this.declared_class_type.methods_list));
 		return null;
 	}
 }

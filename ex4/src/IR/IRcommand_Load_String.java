@@ -35,6 +35,6 @@ public class IRcommand_Load_String extends IRcommand
 	public void MIPSme()
 	{
 		String str_name = String.format("str_%s_%d", this.val, this.dst.getSerialNumber());
-		MIPSGenerator.getInstance().loadString(dst, str_name);
+		MIPSGenerator.getInstance().loadAddressByName(dst, str_name);
 	}
 }

@@ -18,9 +18,14 @@
         Starts with `Label_`
         e.g.: `Label_string_access_violation`
         
+        - `Label_vt_init_{class name}` - vtable init label for class `{class name}`.
+        
 - **Variables:**
   - `global_{name}` - a variable named `{name}` declared in the **global** context.
 
 - **Strings:**
   - `str_global_{string-name}` - contains the string value of the **global** {string-name} variable
   - `str_{string-name}_{unique-number}` - contains the string value of some **local** {string-name} variable
+  
+- **Classes:**
+  - `vt_{class name}` - the vtable of class `{class name}`.

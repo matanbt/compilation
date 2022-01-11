@@ -26,7 +26,7 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 
 	/* Lists all the method, includes those inherited / overridden
 	 * Will correspond to vtable in runtime. */
-	private final List<AST_DEC_FUNC> methods_list;
+	public final List<AST_DEC_FUNC> methods_list;
 	// func starting label saved in AST_DEC_FUNC.funcStartingLabel after AST_DEC_FUNC.IRme()
 
 	/* Lists all the field, includes those inherited /overridden

@@ -8,6 +8,8 @@ package MIPS;
 /*******************/
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /*******************/
 /* PROJECT IMPORTS */
@@ -28,6 +30,7 @@ public class MIPSGenerator {
     public static String LABEL_STRING_ILLEGAL_DIV_BY_0 = "Label_string_illegal_div_by_zero";
     public static String LABEL_STRING_INVALID_PTR_DREF = "Label_string_invalid_ptr_dref";
 
+    public List<String> vt_init_labels = new ArrayList<>();
 
     private int WORD_SIZE = 4;
     private int CHAR_SIZE = 1;
@@ -69,6 +72,18 @@ public class MIPSGenerator {
         // assumes name is unique
         fileWriter.format(".data\n");
         fileWriter.format("\t%s: .word %s\n", name, referenceName);
+        fileWriter.format(".text\n");
+    }
+
+    public void allocateWordsArray(String name, int numOfWords) {
+        // the words are stored in consecutive memory location
+        // name = address of first word allocated
+        // assumes name is unique
+        fileWriter.format(".data\n");
+        fileWriter.format("\t%s:\n", name);
+        for (int i = 0; i < numOfWords; i++) {
+            fileWriter.format("\t\t.word 0\n");
+        }
         fileWriter.format(".text\n");
     }
 
@@ -151,9 +166,9 @@ public class MIPSGenerator {
         fileWriter.format("\tsw Temp_%d, 0($s0)\n", src.getSerialNumber());
     }
 
-    public void loadString(TEMP dst, String str_name) {
+    public void loadAddressByName(TEMP dst, String name) {
         int idxdst = dst.getSerialNumber();
-        fileWriter.format("\tla Temp_%d, %s\n", idxdst, str_name);
+        fileWriter.format("\tla Temp_%d, %s\n", idxdst, name);
     }
   
   /* -------------- Stack access functions -------------- */
@@ -309,8 +324,12 @@ public class MIPSGenerator {
 		popToRegisterFromStack("$ra");
 
 		/* 4. Jump back */
-		fileWriter.format("\tjr $ra");
+        jumpToReturnAddress();
 	}
+
+    public void jumpToReturnAddress() {
+        fileWriter.format("\tjr $ra\n");
+    }
   
 
     /* ---------------------- Built-in functions ---------------------- */
@@ -411,6 +430,12 @@ public class MIPSGenerator {
     public void finalizeFile() {
         // TODO .text ?
         fileWriter.print(".text\n");
+
+        /* 0. Init all vtables */
+        for (int i = 0; i < this.vt_init_labels.size(); i++) {
+            fileWriter.format("\tjal %s\n", this.vt_init_labels.get(i));
+        }
+
         /* 1. Invokes user_main, i.e. the main() function of the L program */
         fileWriter.print("main:\n");
         fileWriter.print("\tjal user_main\n");
