@@ -24,7 +24,8 @@ public class IRcommand_Binop_EQ_Strings extends IRcommand {
 	public TEMP str_1;
 	public TEMP str_2;
 	public TEMP dst;
-	private int CHAR_SIZE = 1;
+	private MIPSGenerator mips = MIPSGenerator.getInstance();
+	private int char_size = mips.getCharSizeInBytes();;
 
 	public IRcommand_Binop_EQ_Strings(TEMP dst, TEMP str_1, TEMP str_2) {
 		this.dst = dst;
@@ -67,8 +68,8 @@ public class IRcommand_Binop_EQ_Strings extends IRcommand {
 		mips.beqz(val_of_curr_str_1_i, lbl_end);
 
 		// i++
-		mips.addi(address_of_str_1_i, address_of_str_1_i, CHAR_SIZE);
-		mips.addi(address_of_str_2_i, address_of_str_2_i, CHAR_SIZE);
+		mips.addi(address_of_str_1_i, address_of_str_1_i, char_size);
+		mips.addi(address_of_str_2_i, address_of_str_2_i, char_size);
 
 		// return to loop start
 		mips.jump(lbl_loop);

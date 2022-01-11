@@ -31,6 +31,12 @@ public class MIPSGenerator {
 
     private int WORD_SIZE = 4;
     private int CHAR_SIZE = 1;
+
+
+    public int getCharSizeInBytes() {
+        return this.CHAR_SIZE;
+    }
+
     /***********************/
     /* The file writer ... */
     /***********************/
@@ -67,7 +73,8 @@ public class MIPSGenerator {
     }
 
     public void malloc(TEMP dst, TEMP len) {
-        // dst = malloc(len)
+        /* dst = malloc(len)
+        allocates 'len' amount of bytes, allocation address stored in 'dst' */
         fileWriter.format("\tli $v0, 9\n");
         fileWriter.format("\tmove $a0, Temp_%d\n", len.getSerialNumber());
         fileWriter.format("\tsyscall\n");
@@ -303,7 +310,6 @@ public class MIPSGenerator {
     public void move(TEMP dst, TEMP src) {
         fileWriter.format("\tmove Temp_%d, Temp_%d\n", dst.getSerialNumber(), src.getSerialNumber());
     }
-
 
     /* ---------------------- Beginning and Ending of the MIPS code ---------------------- */
 
