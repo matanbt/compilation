@@ -26,7 +26,7 @@ public class IRcommand_Allocate_Global extends IRcommand
 
     public IRcommand_Allocate_Global(String var_name, AST_EXP var_value_ast)
     {
-        // assumes var_value instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL
+        // assumes var_value_ast instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL (can be null)
         this.var_name = var_name;
         this.var_value_ast = var_value_ast;  // can be null (meaning it's a var dec without assignment)
     }

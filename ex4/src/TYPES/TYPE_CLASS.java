@@ -2,7 +2,6 @@ package TYPES;
 
 import AST.AST_DEC_FUNC;
 import AST.AST_DEC_VAR;
-import AST.AST_EXP;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,9 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 	 * Will correspond to the object-struct in runtime. */
 	// TODO - a note for shir: if you want to access to the initialized value of a field, you can access AST_DEC_VAR.exp
 	//                         (which by semantic assumption should be int / string / nil)
-	private final List<AST_DEC_VAR> fields_list;
+	public final List<AST_DEC_VAR> fields_list;
+
+	public String vt_name;
 
 
 	/**************************************************/

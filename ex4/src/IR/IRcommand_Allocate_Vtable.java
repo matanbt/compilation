@@ -15,6 +15,7 @@ import AST.AST_DEC_FUNC;
 import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 import TEMP.SAVED;
+import TYPES.TYPE_CLASS;
 
 import java.util.List;
 
@@ -24,12 +25,13 @@ public class IRcommand_Allocate_Vtable extends IRcommand
 	List<AST_DEC_FUNC> methods_list;
 	String vt_name, label_vt_init;
 
-	public IRcommand_Allocate_Vtable(String class_name, List<AST_DEC_FUNC> methods_list)
+	public IRcommand_Allocate_Vtable(TYPE_CLASS type_class)
 	{
-		this.class_name = class_name;
-		this.methods_list = methods_list;
+		this.class_name = type_class.name;
+		this.methods_list = type_class.methods_list;
 		this.vt_name = String.format("vt_%s", class_name);
 		this.label_vt_init = String.format("Label_vt_init_%s", class_name);
+		type_class.vt_name = this.vt_name;
 	}
 	
 	/***************/

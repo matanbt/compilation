@@ -31,7 +31,7 @@ public class IRcommand_New_Array extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		// the array contains the length as its first item, so we need to allocate
+		// the array contains the length as its first item, so we need to allocate arrLen + 1 words
 		MIPSGenerator.getInstance().addi(arrLen, arrLen, 1);
 		MIPSGenerator.getInstance().mallocWords(arrPointer, arrLen);
 		MIPSGenerator.getInstance().addi(arrLen, arrLen, -1);
