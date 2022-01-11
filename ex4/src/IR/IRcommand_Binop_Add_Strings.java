@@ -38,78 +38,85 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 
 	/***************/
 	public void MIPSme() {
-		TEMP curr_string;
 		TEMP res_string_len = new SAVED(0);  // the len in bytes of the new string
 		TEMP address_of_curr_str_i = new SAVED(1);
 		TEMP val_of_curr_str_i = new SAVED(2);
 		TEMP address_of_new_str_i = new SAVED(3);
+		TEMP did_loop_twice = new SAVED(4);
+		// each loop happens twice- first with left_str, and then with right_str. after the first loop, did_loop_twice = 0
+		// after the second loop, did_loop_twice = 1
 
 		String curr_loop, end_curr_loop;
-
-		List<TEMP> strings = new ArrayList<TEMP>(Arrays.asList(left_str, right_str));
 
 		// new string len = 1 (last cell = 0)
 		mips.li(res_string_len, char_size);
 
-		/* Calculate the length of the new string */
-		for (int j = 0; j < strings.size(); j++) {
-			curr_loop = getFreshLabel("STR_ADD_loop_calc_len_lbl");
-			end_curr_loop = getFreshLabel("STR_ADD_end_loop_calc_len_lbl");
+		/* (1) Calculate the length of the new string */
 
-			curr_string = strings.get(j);
+		curr_loop = getFreshLabel("STR_ADD_loop_calc_len_lbl");
+		end_curr_loop = getFreshLabel("STR_ADD_end_loop_calc_len_lbl");
 
-			// address_of_curr_str_i = curr_string
-			mips.move(address_of_curr_str_i, curr_string);
+		// address_of_curr_str_i = left_str (for adding to res_string_len the length of left_str)
+		mips.move(address_of_curr_str_i, left_str);
 
-			// loop
-			mips.label(curr_loop);
-			// val_of_curr_str_i = curr_str[i]
-			mips.loadByteFromHeap(val_of_curr_str_i, address_of_curr_str_i, 0);
-			// if curr_str[i] == 0, exit loop
-			mips.beqz(val_of_curr_str_i, end_curr_loop);
-			// res_string_len ++
-			mips.addi(res_string_len, res_string_len, char_size);
-			// i++
-			mips.addi(address_of_curr_str_i, address_of_curr_str_i, char_size);
+		mips.li(did_loop_twice, -1);
 
-			mips.jump(curr_loop);
+		// loop
+		mips.label(curr_loop);
+		// val_of_curr_str_i = curr_str[i]
+		mips.loadByteFromHeap(val_of_curr_str_i, address_of_curr_str_i, 0);
+		// if curr_str[i] == 0, exit loop
+		mips.beqz(val_of_curr_str_i, end_curr_loop);
+		// res_string_len ++
+		mips.addi(res_string_len, res_string_len, char_size);
+		// i++
+		mips.addi(address_of_curr_str_i, address_of_curr_str_i, char_size);
 
-			// loop end
-			mips.label(end_curr_loop);
-		}
+		mips.jump(curr_loop);
 
-		/* allocate memory for the new String */
+		// loop end
+		mips.label(end_curr_loop);
+		mips.addi(did_loop_twice, did_loop_twice, 1);
+
+		// address_of_curr_str_i = right_str (for adding to res_string_len the length of right_str)
+		mips.move(address_of_curr_str_i, right_str);
+		mips.beqz(did_loop_twice, curr_loop);  // if we did loop only once, do it again
+
+		/* (2) allocate memory for the new String */
 		mips.malloc(dst, res_string_len);
 
-		/* Copy the Strings content to the new string */
+		/* (3) Copy the Strings content to the new string */
 		mips.move(address_of_new_str_i, dst);
 
-		for (int j = 0; j < strings.size(); j++) {
-			curr_loop = getFreshLabel("STR_ADD_loop_copy_content_lbl");
-			end_curr_loop = getFreshLabel("STR_ADD_end_loop_copy_content_lbl");
+		curr_loop = getFreshLabel("STR_ADD_loop_copy_content_lbl");
+		end_curr_loop = getFreshLabel("STR_ADD_end_loop_copy_content_lbl");
 
-			curr_string = strings.get(j);
+		// address_of_curr_str_i = left_str (for copying left_str content to the new string)
+		mips.move(address_of_curr_str_i, left_str);
 
-			// address_of_curr_str_i = curr_string
-			mips.move(address_of_curr_str_i, curr_string);
+		mips.li(did_loop_twice, -1);
 
-			// loop
-			mips.label(curr_loop);
-			// val_of_curr_str_i = curr_str[i]
-			mips.loadByteFromHeap(val_of_curr_str_i, address_of_curr_str_i, 0);
-			// if val_of_curr_str_i == 0, exit loop
-			mips.beqz(val_of_curr_str_i, end_curr_loop);
-			// dst[i] = curr_str[i]
-			mips.storeByteToHeap(val_of_curr_str_i, address_of_new_str_i, 0);
-			// i++
-			mips.addi(address_of_curr_str_i, address_of_curr_str_i, char_size);
-			mips.addi(address_of_curr_str_i, address_of_new_str_i, char_size);
+		// loop
+		mips.label(curr_loop);
+		// val_of_curr_str_i = curr_str[i]
+		mips.loadByteFromHeap(val_of_curr_str_i, address_of_curr_str_i, 0);
+		// if val_of_curr_str_i == 0, exit loop
+		mips.beqz(val_of_curr_str_i, end_curr_loop);
+		// dst[i] = curr_str[i]
+		mips.storeByteToHeap(val_of_curr_str_i, address_of_new_str_i, 0);
+		// i++
+		mips.addi(address_of_curr_str_i, address_of_curr_str_i, char_size);
+		mips.addi(address_of_curr_str_i, address_of_new_str_i, char_size);
 
-			mips.jump(curr_loop);
+		mips.jump(curr_loop);
 
-			// loop end
-			mips.label(end_curr_loop);
-		}
+		// loop end
+		mips.label(end_curr_loop);
+		mips.addi(did_loop_twice, did_loop_twice, 1);
+
+		// address_of_curr_str_i = right_str (for adding to res_string_len the length of right_str)
+		mips.move(address_of_curr_str_i, right_str);
+		mips.beqz(did_loop_twice, curr_loop);  // if we did loop only once, do it again
 
 		/* Add 0 at the end of the new String */
 		mips.li(val_of_curr_str_i, 0);
