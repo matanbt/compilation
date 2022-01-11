@@ -30,6 +30,13 @@ public class MIPSGenerator {
 
 
     private int WORD_SIZE = 4;
+    private int CHAR_SIZE = 1;
+
+
+    public int getCharSizeInBytes() {
+        return this.CHAR_SIZE;
+    }
+
     /***********************/
     /* The file writer ... */
     /***********************/
@@ -65,7 +72,16 @@ public class MIPSGenerator {
         fileWriter.format(".text\n");
     }
 
-    public void mallocWords(TEMP dst, TEMP len) {
+    public void malloc(TEMP dst, TEMP len) {
+        /* dst = malloc(len)
+        allocates 'len' amount of bytes, allocation address stored in 'dst' */
+        fileWriter.format("\tli $v0, 9\n");
+        fileWriter.format("\tmove $a0, Temp_%d\n", len.getSerialNumber());
+        fileWriter.format("\tsyscall\n");
+        fileWriter.format("\tmove Temp_%d, $v0\n", dst.getSerialNumber());
+    }
+
+  public void mallocWords(TEMP dst, TEMP len) {
         // dst = malloc(len * WORD_SIZE)
         fileWriter.format("\tli $v0, 9\n");
         fileWriter.format("\tmove $a0, Temp_%d\n", len.getSerialNumber());
@@ -105,18 +121,28 @@ public class MIPSGenerator {
 
     public void loadFromHeap(TEMP dst, TEMP base_address, int offset_in_words) {
         int idxdst = dst.getSerialNumber();
-        fileWriter.format("\tlw Temp_%d,%d(%s)\n", idxdst, offset_in_words, base_address);
+        fileWriter.format("\tlw Temp_%d,%d(Temp_%d)\n", idxdst, offset, base_address.getSerialNumber());
+    }
+  
+    public void loadFromHeap(TEMP dst, TEMP base_address, TEMP offset_in_words) {
+      fileWriter.format("\tmul $s0, Temp_%d, %d\n", offset_in_words.getSerialNumber(), WORD_SIZE);
+      fileWriter.format("\tadd $s0, $s0, Temp_%d\n", base_address.getSerialNumber());
+      fileWriter.format("\tlw Temp_%d, 0($s0)\n", dst.getSerialNumber());
     }
 
-    public void loadFromHeap(TEMP dst, TEMP base_address, TEMP offset_in_words) {
-        fileWriter.format("\tmul $s0, Temp_%d, %d\n", offset_in_words.getSerialNumber(), WORD_SIZE);
-        fileWriter.format("\tadd $s0, $s0, Temp_%d\n", base_address.getSerialNumber());
-        fileWriter.format("\tlw Temp_%d, 0($s0)\n", dst.getSerialNumber());
+    public void loadByteFromHeap(TEMP dst, TEMP base_address, int offset) {
+        int idxdst = dst.getSerialNumber();
+        fileWriter.format("\tlb Temp_%d,%d(Temp_%d)\n", idxdst, offset, base_address.getSerialNumber());
     }
 
     public void storeToHeap(TEMP src, TEMP base_address, int offset_in_words) {
         int idxsrc = src.getSerialNumber();
-        fileWriter.format("\tsw Temp_%d,%d(%s)\n", idxsrc, offset_in_words, base_address);
+        fileWriter.format("\tsw Temp_%d,%d(Temp_%d)\n", idxsrc, offset, base_address.getSerialNumber());
+    }
+
+    public void storeByteToHeap(TEMP src, TEMP base_address, int offset) {
+        int idxsrc = src.getSerialNumber();
+        fileWriter.format("\tsb Temp_%d,%d(Temp_%d)\n", idxsrc, offset, base_address.getSerialNumber());
     }
 
     public void storeToHeap(TEMP src, TEMP base_address, TEMP offset_in_words) {
@@ -314,6 +340,9 @@ public class MIPSGenerator {
         fileWriter.format("\tli Temp_%d,%d\n", idx, value);
     }
 
+    public void move(TEMP dst, TEMP src) {
+        fileWriter.format("\tmove Temp_%d, Temp_%d\n", dst.getSerialNumber(), src.getSerialNumber());
+    }
 
     /* ---------------------- Beginning and Ending of the MIPS code ---------------------- */
 

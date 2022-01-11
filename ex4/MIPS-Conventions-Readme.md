@@ -6,14 +6,18 @@
 - Sometimes we might not use any convention, and just call `IR.getFreshLabel()`.
 
 ## Conventions
-- **Functions:**
-  - Starting Labels:
-    - `func_{name}` - a function named `{name}` declared in global context.
-    - `method_{class-name}_{name}` - a method named `{name}` declared in the context of class `{class-name}`.
-  - Epilogue Labels:
-    - `{f_label}_epilogue` - a label for the epilogue of the function (or method) that was labeled by `{f_lablel}`.
-
-
+- **Labels:**
+    - *Functions:*
+      - Starting Labels:
+        - `func_{name}` - a function named `{name}` declared in global context.
+        - `method_{class-name}_{name}` - a method named `{name}` declared in the context of class `{class-name}`.
+      - Epilogue Labels:
+        - `{f_label}_epilogue` - a label for the epilogue of the function (or method) that was labeled by `{f_lablel}`.
+    
+    - *System Labels (const labels that we create):* 
+        Starts with `Label_`
+        e.g.: `Label_string_access_violation`
+        
 - **Variables:**
   - `global_{name}` - a variable named `{name}` declared in the **global** context.
 
