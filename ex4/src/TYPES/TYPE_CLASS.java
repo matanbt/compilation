@@ -64,7 +64,7 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 
 	public TYPE findInClassAndSuperClasses(String cfield_name)
 	{
-		/* search for cfield_name in this class and it's super classes and return it's TYPE */
+		/* search for cfield_name in this class and its super classes and return its TYPE */
 		TYPE_CLASS curr_class = this;
 		while (curr_class != null) {
 			CFIELD_LIST curr_cfield_list = curr_class.cfield_list;
@@ -74,7 +74,7 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 					return cfield.type;
 				}
 			}
-			// name is not in caller_class, search in it's super class
+			// name is not in caller_class, search in its super class
 			curr_class = curr_class.father;
 		}
 		// didn't find cfield_name

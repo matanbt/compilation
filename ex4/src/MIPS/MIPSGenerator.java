@@ -81,6 +81,15 @@ public class MIPSGenerator {
         fileWriter.format("\tmove Temp_%d, $v0\n", dst.getSerialNumber());
     }
 
+  public void mallocWords(TEMP dst, TEMP len) {
+        // dst = malloc(len * WORD_SIZE)
+        fileWriter.format("\tli $v0, 9\n");
+        fileWriter.format("\tmove $a0, Temp_%d\n", len.getSerialNumber());
+        fileWriter.format("\tmul $a0, $a0, %d\n", WORD_SIZE);
+        fileWriter.format("\tsyscall\n");
+        fileWriter.format("\tmove Temp_%d, $v0\n", dst.getSerialNumber());
+    }
+
     /* ---------------------- Load & Stores ---------------------- */
 
     /* Loads variable from .data segment by given name */
@@ -110,9 +119,15 @@ public class MIPSGenerator {
         fileWriter.format("\tsw Temp_%d,%d(fp)\n", idxsrc, offset);
     }
 
-    public void loadFromHeap(TEMP dst, TEMP base_address, int offset) {
+    public void loadFromHeap(TEMP dst, TEMP base_address, int offset_in_words) {
         int idxdst = dst.getSerialNumber();
         fileWriter.format("\tlw Temp_%d,%d(Temp_%d)\n", idxdst, offset, base_address.getSerialNumber());
+    }
+  
+    public void loadFromHeap(TEMP dst, TEMP base_address, TEMP offset_in_words) {
+      fileWriter.format("\tmul $s0, Temp_%d, %d\n", offset_in_words.getSerialNumber(), WORD_SIZE);
+      fileWriter.format("\tadd $s0, $s0, Temp_%d\n", base_address.getSerialNumber());
+      fileWriter.format("\tlw Temp_%d, 0($s0)\n", dst.getSerialNumber());
     }
 
     public void loadByteFromHeap(TEMP dst, TEMP base_address, int offset) {
@@ -120,7 +135,7 @@ public class MIPSGenerator {
         fileWriter.format("\tlb Temp_%d,%d(Temp_%d)\n", idxdst, offset, base_address.getSerialNumber());
     }
 
-    public void storeToHeap(TEMP src, TEMP base_address, int offset) {
+    public void storeToHeap(TEMP src, TEMP base_address, int offset_in_words) {
         int idxsrc = src.getSerialNumber();
         fileWriter.format("\tsw Temp_%d,%d(Temp_%d)\n", idxsrc, offset, base_address.getSerialNumber());
     }
@@ -128,6 +143,12 @@ public class MIPSGenerator {
     public void storeByteToHeap(TEMP src, TEMP base_address, int offset) {
         int idxsrc = src.getSerialNumber();
         fileWriter.format("\tsb Temp_%d,%d(Temp_%d)\n", idxsrc, offset, base_address.getSerialNumber());
+    }
+
+    public void storeToHeap(TEMP src, TEMP base_address, TEMP offset_in_words) {
+        fileWriter.format("\tmul $s0, Temp_%d, %d\n", offset_in_words.getSerialNumber(), WORD_SIZE);
+        fileWriter.format("\tadd $s0, $s0, Temp_%d\n", base_address.getSerialNumber());
+        fileWriter.format("\tsw Temp_%d, 0($s0)\n", src.getSerialNumber());
     }
 
     public void loadString(TEMP dst, String str_name) {
@@ -161,6 +182,14 @@ public class MIPSGenerator {
         int dstidx = dst.getSerialNumber();
 
         fileWriter.format("\tadd Temp_%d,Temp_%d,Temp_%d\n", dstidx, i1, i2);
+    }
+
+    public void addi(TEMP dst, TEMP temp_oprnd, int int_oprnd) {
+        // dst = temp_oprnd + int_oprnd
+        int oprnd_idx = temp_oprnd.getSerialNumber();
+        int dstidx = dst.getSerialNumber();
+
+        fileWriter.format("\taddi Temp_%d, Temp_%d, %d\n", dstidx, oprnd_idx, int_oprnd);
     }
 
     public void sub(TEMP dst, TEMP oprnd1, TEMP oprnd2) {
@@ -233,8 +262,12 @@ public class MIPSGenerator {
 
     public void beqz(TEMP oprnd1, String label) {
         int i1 = oprnd1.getSerialNumber();
-
         fileWriter.format("\tbeq Temp_%d,$zero,%s\n", i1, label);
+    }
+
+    public void bltz(TEMP oprnd1, String label) {
+        int i1 = oprnd1.getSerialNumber();
+        fileWriter.format("\tbltz Temp_%d, %s\n", i1, label);
     }
 
   

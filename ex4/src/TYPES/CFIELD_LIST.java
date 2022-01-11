@@ -20,7 +20,7 @@ public class CFIELD_LIST
 	}
 
 	public void addLast(CFIELD cfield) {
-		// should be used only on the first CFIELD_LIST node (only it's tail is updated)
+		// should be used only on the first CFIELD_LIST node (only its tail is updated)
 		this.tail.next = new CFIELD_LIST(cfield, null);
 		this.tail = this.tail.next;
 	}

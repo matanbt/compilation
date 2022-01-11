@@ -11,16 +11,17 @@ package IR;
 /* PROJECT IMPORTS */
 /*******************/
 
+import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 
-/* IR Command : dst = array_access arrPointer, subscriptIndex */
-public class IRcommand_Array_access extends IRcommand
+/* IR Command : dst = array_get arrPointer, subscriptIndex */
+public class IRcommand_Array_Get extends IRcommand_Array_Access
 {
 	public TEMP dst;
 	public TEMP arrPointer;
 	public TEMP subscriptIndex;
 
-	public IRcommand_Array_access(TEMP dst, TEMP arrPointer, TEMP subscriptIndex)
+	public IRcommand_Array_Get(TEMP dst, TEMP arrPointer, TEMP subscriptIndex)
 	{
 		this.dst = dst;
 		this.arrPointer = arrPointer;
@@ -32,6 +33,6 @@ public class IRcommand_Array_access extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-//		MIPSGenerator.getInstance().?;
+		MIPSGenerator.getInstance().loadFromHeap(dst, arrPointer, this.arrayAccess(arrPointer, subscriptIndex));
 	}
 }
