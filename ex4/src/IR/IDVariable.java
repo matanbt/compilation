@@ -56,7 +56,7 @@ public class IDVariable {
                     - (4 * this.mIndex);
         }
         else if(this.mRole == VarRole.CFIELD_VAR) {
-            return type_class.getFieldOffset(this.mVarName);
+            return type_class.getFieldOffset(this.mVarName) + 1;  // +1 because vtable is on first word cell
         }
 
         // Shouldn't get here, no offsets for other variable roles

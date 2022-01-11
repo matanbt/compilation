@@ -15,13 +15,13 @@ import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 
 /* IR Command : dst = field_access objPointer var */
-public class IRcommand_Field_access extends IRcommand
+public class IRcommand_Field_get extends IRcommand
 {
 	private TEMP dst;
 	private TEMP objectPointer;
 	private IDVariable field;  // field var
 
-	public IRcommand_Field_access(TEMP dst, TEMP objectPointer, IDVariable field)
+	public IRcommand_Field_get(TEMP dst, TEMP objectPointer, IDVariable field)
 	{
 		this.dst = dst;
 		this.objectPointer = objectPointer;
