@@ -48,7 +48,8 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 
 		String curr_loop, end_curr_loop;
 
-		// new string len = 1 (last cell = 0)
+		// new string len = 1 (in chars unit)
+		// starting from 1 because last cell = 0
 		mips.li(res_string_len, char_size);
 
 		/* (1) Calculate the length of the new string */
