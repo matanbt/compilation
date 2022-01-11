@@ -1,8 +1,11 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
-import SYMBOL_TABLE.SYMBOL_TABLE;
+import IR.IR;
+import TEMP.TEMP;
 import TYPES.*;
+import TEMP.TEMP_FACTORY;
+import IR.*;
 
 // indexable new-expression
 public class AST_NEW_EXP_IDX extends AST_NEW_EXP
@@ -85,5 +88,14 @@ public class AST_NEW_EXP_IDX extends AST_NEW_EXP
 		/* 4. Return type of array instance */
 		TYPE_ARRAY t = new TYPE_ARRAY("", array_type);
 		return t.convertSymbolToInstance();
+	}
+
+	public TEMP IRme() {
+		/* new array initialization */
+		IR ir = IR.getInstance();
+		TEMP arrPointer = TEMP_FACTORY.getInstance().getFreshTEMP();
+		TEMP arrLen = this.expression.IRme();
+		ir.Add_IRcommand(new IRcommand_New_Array(arrPointer, arrLen));
+		return arrPointer;
 	}
 }
