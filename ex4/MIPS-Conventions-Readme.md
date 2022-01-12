@@ -17,9 +17,7 @@
     - *System Labels (const labels that we create):* 
         Starts with `Label_`
         e.g.: `Label_string_access_violation`
-        
-        - `Label_vt_init_{class name}` - vtable init label for class `{class name}`.
-        
+                
 - **Variables:**
   - `global_{name}` - a variable named `{name}` declared in the **global** context.
 

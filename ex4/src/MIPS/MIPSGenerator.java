@@ -30,8 +30,6 @@ public class MIPSGenerator {
     public static String LABEL_STRING_ILLEGAL_DIV_BY_0 = "Label_string_illegal_div_by_zero";
     public static String LABEL_STRING_INVALID_PTR_DREF = "Label_string_invalid_ptr_dref";
 
-    public List<String> vt_init_labels = new ArrayList<>();
-
     private int WORD_SIZE = 4;
     private int CHAR_SIZE = 1;
 
@@ -75,14 +73,14 @@ public class MIPSGenerator {
         fileWriter.format(".text\n");
     }
 
-    public void allocateWordsArray(String name, int numOfWords) {
-        // the words are stored in consecutive memory location
+    public void allocateWordsArray(String name, List<String> referenceNamesList) {
+        // the words will be stored in consecutive memory location
         // name = address of first word allocated
         // assumes name is unique
         fileWriter.format(".data\n");
         fileWriter.format("\t%s:\n", name);
-        for (int i = 0; i < numOfWords; i++) {
-            fileWriter.format("\t\t.word 0\n");
+        for (int i = 0; i < referenceNamesList.size(); i++) {
+            fileWriter.format("\t\t.word %s\n", referenceNamesList.get(i));
         }
         fileWriter.format(".text\n");
     }
@@ -430,11 +428,6 @@ public class MIPSGenerator {
     public void finalizeFile() {
         // TODO .text ?
         fileWriter.print(".text\n");
-
-        /* 0. Init all vtables */
-        for (int i = 0; i < this.vt_init_labels.size(); i++) {
-            fileWriter.format("\tjal %s\n", this.vt_init_labels.get(i));
-        }
 
         /* 1. Invokes user_main, i.e. the main() function of the L program */
         fileWriter.print("main:\n");
