@@ -11,6 +11,7 @@ package IR;
 /* PROJECT IMPORTS */
 /*******************/
 
+import AST.AST_DEC_VAR;
 import AST.AST_EXP;
 import MIPS.MIPSGenerator;
 import TEMP.TEMP;
@@ -36,7 +37,7 @@ public class IRcommand_New_Class_Instance_Init extends IRcommand
 		MIPSGenerator mips = MIPSGenerator.getInstance();
 
 		TEMP size_of_instance = new SAVED(0);  // size in words
-		TEMP vt_address = new SAVED(2);
+		TEMP vt_address = new SAVED(1);
 
 		/* Allocate memory for the new object */
 		mips.li(size_of_instance, class_of_instance.fields_list.size() + 1); // +1 for the vtable
@@ -48,10 +49,15 @@ public class IRcommand_New_Class_Instance_Init extends IRcommand
 
 		/* store the fields' initial values */
 		/* assumption: a declared data member inside a class can be initialized only as constant integer, string or nil */
-		for (int offset = 1; offset <= class_of_instance.fields_list.size(); offset++) {
-			AST_EXP ast_field_val = class_of_instance.fields_list.get(offset - 1).exp;
+		for (int i = 0; i < class_of_instance.fields_list.size(); i++) {
+			AST_DEC_VAR ast_field_dec = class_of_instance.fields_list.get(i);
+			AST_EXP ast_field_val = ast_field_dec.exp;
 			// ast_field_val instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL (can be null)
-			mips.storeToHeap(ast_field_val.IRme(), dst, offset);
+			if (ast_field_val == null) {
+				// field declared without initialization
+				return;
+			}
+			mips.storeToHeap(ast_field_val.IRme(), dst, class_of_instance.getFieldOffset(ast_field_dec.name));
 		}
 	}
 }

@@ -21,12 +21,14 @@ import java.util.List;
 
 public class IRcommand_Allocate_Vtable extends IRcommand
 {
+	TYPE_CLASS type_class;
 	String class_name;
 	List<AST_DEC_FUNC> methods_list;
 	String vt_name, label_vt_init;
 
 	public IRcommand_Allocate_Vtable(TYPE_CLASS type_class)
 	{
+		this.type_class = type_class;
 		this.class_name = type_class.name;
 		this.methods_list = type_class.methods_list;
 		this.vt_name = String.format("vt_%s", class_name);
@@ -54,9 +56,10 @@ public class IRcommand_Allocate_Vtable extends IRcommand
 
 		mips.loadAddressByName(address_of_vt, vt_name);
 
-		for (int offset = 0; offset < methods_list.size(); offset++) {
-			mips.loadAddressByName(method_address, methods_list.get(offset).funcStartingLabel);
-			mips.storeToHeap(method_address, address_of_vt, offset);
+		for (int i = 0; i < methods_list.size(); i++) {
+			AST_DEC_FUNC method_dec = methods_list.get(i);
+			mips.loadAddressByName(method_address, method_dec.funcStartingLabel);
+			mips.storeToHeap(method_address, address_of_vt, type_class.getMethodOffset(method_dec.funcName));
 		}
 		mips.jumpToReturnAddress();
 	}
