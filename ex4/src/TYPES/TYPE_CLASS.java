@@ -135,7 +135,7 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 		methods_list.add(methodToAdd);
 	}
 
-	/* return the offset f the field, or 0 if failed to find */
+	/* return the offset of the field, or 0 if failed to find */
 	public int getFieldOffset(String fieldNameToFind) {
 		int offset = 1; // start with offset 1, as vtable is found in offset 0
 
@@ -149,7 +149,7 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 		return 0;
 	}
 
-	/* return the offset f the method, or -1 if failed to find*/
+	/* return the offset of the method, or -1 if failed to find*/
 	public int getMethodOffset(String methodNameToFind) {
 		int offset = 0;
 
