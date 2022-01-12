@@ -27,3 +27,4 @@
   
 - **Classes:**
   - `vt_{class name}` - the vtable of class `{class name}`.
+  - `class_{class name}_field_{field name}` - contains the string value of {field name} string field in {class name} class 

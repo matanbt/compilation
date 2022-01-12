@@ -131,7 +131,7 @@ public class AST_DEC_VAR extends AST_DEC
             // it's a CField
             // annotation for IR
             encompassingClass.addToFieldList(this);
-            // CField semantic check is on AST_CFEILD
+            // CField semantic check is on AST_CFIELD
         }
 
         return semantic_type;
@@ -220,15 +220,15 @@ public class AST_DEC_VAR extends AST_DEC
         VarRole varRole = this.idVariable.mRole;
 
         if (varRole == VarRole.GLOBAL) {
-            // global var
-            // assumption: if a global variable is initialized with value,
-            // then the initial value is a constant (i.e., string, integer, nil)
-            // --> this.exp instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL
+            /* global var
+            *  assumption: if a global variable is initialized with value,
+            *  then the initial value is a constant (i.e., string, integer, nil)
+            *  --> this.exp instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL */
             ir.Add_IRcommand(new IRcommand_Allocate_Global(this.name, this.exp));  // also deals with this.exp=null case
         }
 
         else if (varRole == VarRole.LOCAL && (exp != null || new_exp != null)) {
-            // statement variable declaration with assignment
+            /* statement variable declaration with assignment */
             TEMP t_val_to_assign = null;
             if (exp != null)
                 t_val_to_assign = this.exp.IRme();
@@ -238,9 +238,20 @@ public class AST_DEC_VAR extends AST_DEC
             ir.Add_IRcommand(new IRcommand_Store(this.idVariable, t_val_to_assign));
         }
 
-        // if it's a statement variable declaration without assignment - do nothing
+        else if (varRole == VarRole.CFIELD_VAR) {
+            /* class's variable declaration
+             * assumption: if a field is initialized with value,
+             * then the initial value is a constant (i.e., string, integer, nil)
+             * --> this.exp instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL
+             *
+             * only need to handle AST_EXP_STRING case */
+            if (exp instanceof AST_EXP_STRING) {
+                ir.Add_IRcommand(new IRcommand_Allocate_Global_String(((AST_EXP_STRING) this.exp).value,
+                        this.encompassingClass.getStringFieldGlobalName(this.name)));
+            }
+        }
 
-        // if it's a class's variable declaration - do nothing
+        // if it's a statement variable declaration without assignment - do nothing
 
         return null;
     }
