@@ -67,7 +67,7 @@ public class IRcommand_New_Class_Instance_Init extends IRcommand
 			else if (ast_field_val instanceof AST_EXP_STRING) {
 				/* This string is initialized in this field's declaration (in the class declaration),
 				and its memory location is saved by the label defined in TYPE_CLASS - getStringFieldGlobalName() */
-				mips.loadAddressByName(field_val, class_of_instance.getStringFieldGlobalName(ast_field_dec.name));
+				mips.loadAddressByName(field_val, ast_field_dec.encompassingClass.getStringFieldGlobalName(ast_field_dec.name));
 			}
 
 			else {
