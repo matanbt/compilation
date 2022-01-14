@@ -24,6 +24,7 @@
 - **Strings:**
   - `str_global_{string-name}` - contains the string value of the **global** {string-name} variable
   - `str_{string-name}_{unique-number}` - contains the string value of some **local** {string-name} variable
+  - `string_` -  prefix for strings used by the compiler for error messages.
   
 - **Classes:**
   - `vt_{class name}` - the vtable of class `{class name}`.

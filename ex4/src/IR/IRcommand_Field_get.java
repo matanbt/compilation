@@ -33,6 +33,9 @@ public class IRcommand_Field_get extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
+		// invalid pointer dereference case - assumes that pointers to null\not initialized class instances are = 0  // TODO - verify that! (need to do this in arrays, fields, locals, globals)
+		MIPSGenerator.getInstance().beqz(objectPointer, MIPSGenerator.LABEL_STRING_INVALID_PTR_DREF);
+
 		MIPSGenerator.getInstance().loadFromHeap(dst, objectPointer, field.getOffset());
 	}
 }
