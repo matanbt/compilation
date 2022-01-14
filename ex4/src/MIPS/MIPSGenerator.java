@@ -418,7 +418,7 @@ public class MIPSGenerator {
     /* End resulted by error */
     private void exit_due_to_runtime_check(String msg_name) {
         /* msg_name = "string_illegal_div_by_0" or "string_access_violation" or "string_invalid_ptr_dref" */
-        TEMP temp_print_msg = TEMP_FACTORY.getInstance().getFreshTEMP();
+        TEMP temp_print_msg = new SAVED(0);
         loadByVarName(temp_print_msg, msg_name);
         this.print_string(temp_print_msg);
         this.finalizeFile();
