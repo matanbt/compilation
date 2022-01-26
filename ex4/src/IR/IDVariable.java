@@ -43,7 +43,7 @@ public class IDVariable {
         this.type_class = type_class;
     }
 
-    /* calculates the offset, whenever it's a local parameter */
+    /* calculates the offset (in Bytes), whenever it's a local parameter */
     public int getOffset() {
         if (this.mRole == VarRole.ARG) {
             int offset_to_first_arg = 8; // we need to skip "previous-fp" and "return-address"
@@ -56,7 +56,7 @@ public class IDVariable {
                     - (4 * this.mIndex);
         }
         else if(this.mRole == VarRole.CFIELD_VAR) {
-            return type_class.getFieldOffset(this.mVarName);
+            return type_class.getFieldOffset(this.mVarName) * 4;
         }
 
         // Shouldn't get here, no offsets for other variable roles

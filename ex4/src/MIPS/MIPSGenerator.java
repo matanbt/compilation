@@ -122,45 +122,43 @@ public class MIPSGenerator {
     }
 
     /* Loads variable from the stack by given offset (relative to $fp) */
-    public void loadFromStack(TEMP dst, int offset) {
+    public void loadFromStack(TEMP dst, int offset_in_bytes) {
         int idxdst = dst.getSerialNumber();
-        fileWriter.format("\tlw Temp_%d,%d($fp)\n", idxdst, offset);
+        fileWriter.format("\tlw Temp_%d,%d($fp)\n", idxdst, offset_in_bytes);
     }
 
-    public void storeToStack(int offset, TEMP src) {
+    public void storeToStack(int offset_in_bytes, TEMP src) {
         int idxsrc = src.getSerialNumber();
-        fileWriter.format("\tsw Temp_%d,%d(fp)\n", idxsrc, offset);
+        fileWriter.format("\tsw Temp_%d,%d(fp)\n", idxsrc, offset_in_bytes);
     }
 
-    public void loadFromHeap(TEMP dst, TEMP base_address, int offset_in_words) {
+    public void loadFromHeap(TEMP dst, TEMP base_address, int offset_in_bytes) {
         int idxdst = dst.getSerialNumber();
-        fileWriter.format("\tlw Temp_%d,%d(Temp_%d)\n", idxdst, offset_in_words, base_address.getSerialNumber());
+        fileWriter.format("\tlw Temp_%d,%d(Temp_%d)\n", idxdst, offset_in_bytes, base_address.getSerialNumber());
     }
   
-    public void loadFromHeap(TEMP dst, TEMP base_address, TEMP offset_in_words) {
-      fileWriter.format("\tmul $s0, Temp_%d, %d\n", offset_in_words.getSerialNumber(), WORD_SIZE);
-      fileWriter.format("\tadd $s0, $s0, Temp_%d\n", base_address.getSerialNumber());
+    public void loadFromHeap(TEMP dst, TEMP base_address, TEMP offset_in_bytes) {
+      fileWriter.format("\tadd $s0, Temp_%d, Temp_%d\n", base_address.getSerialNumber(), offset_in_bytes.getSerialNumber());
       fileWriter.format("\tlw Temp_%d, 0($s0)\n", dst.getSerialNumber());
     }
 
-    public void loadByteFromHeap(TEMP dst, TEMP base_address, int offset) {
+    public void loadByteFromHeap(TEMP dst, TEMP base_address, int offset_in_bytes) {
         int idxdst = dst.getSerialNumber();
-        fileWriter.format("\tlb Temp_%d,%d(Temp_%d)\n", idxdst, offset, base_address.getSerialNumber());
+        fileWriter.format("\tlb Temp_%d, %d(Temp_%d)\n", idxdst, offset_in_bytes, base_address.getSerialNumber());
     }
 
-    public void storeToHeap(TEMP src, TEMP base_address, int offset_in_words) {
+    public void storeToHeap(TEMP src, TEMP base_address, int offset_in_bytes) {
         int idxsrc = src.getSerialNumber();
-        fileWriter.format("\tsw Temp_%d,%d(Temp_%d)\n", idxsrc, offset_in_words, base_address.getSerialNumber());
+        fileWriter.format("\tsw Temp_%d, %d(Temp_%d)\n", idxsrc, offset_in_bytes, base_address.getSerialNumber());
     }
 
-    public void storeByteToHeap(TEMP src, TEMP base_address, int offset) {
+    public void storeByteToHeap(TEMP src, TEMP base_address, int offset_in_bytes) {
         int idxsrc = src.getSerialNumber();
-        fileWriter.format("\tsb Temp_%d,%d(Temp_%d)\n", idxsrc, offset, base_address.getSerialNumber());
+        fileWriter.format("\tsb Temp_%d, %d(Temp_%d)\n", idxsrc, offset_in_bytes, base_address.getSerialNumber());
     }
 
-    public void storeToHeap(TEMP src, TEMP base_address, TEMP offset_in_words) {
-        fileWriter.format("\tmul $s0, Temp_%d, %d\n", offset_in_words.getSerialNumber(), WORD_SIZE);
-        fileWriter.format("\tadd $s0, $s0, Temp_%d\n", base_address.getSerialNumber());
+    public void storeToHeap(TEMP src, TEMP base_address, TEMP offset_in_bytes) {
+        fileWriter.format("\tadd $s0, Temp_%d, Temp_%d\n", base_address.getSerialNumber(), offset_in_bytes.getSerialNumber());
         fileWriter.format("\tsw Temp_%d, 0($s0)\n", src.getSerialNumber());
     }
 

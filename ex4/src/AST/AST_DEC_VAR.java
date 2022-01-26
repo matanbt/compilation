@@ -244,7 +244,8 @@ public class AST_DEC_VAR extends AST_DEC
              * then the initial value is a constant (i.e., string, integer, nil)
              * --> this.exp instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL
              *
-             * only need to handle AST_EXP_STRING case */
+             * only need to handle AST_EXP_STRING case
+             * In every object allocation in the code-generation stage, the CFIELD value is fetched from TYPE_CLASS */
             if (exp instanceof AST_EXP_STRING) {
                 ir.Add_IRcommand(new IRcommand_Allocate_Global_String(((AST_EXP_STRING) this.exp).value,
                         this.encompassingClass.getStringFieldGlobalName(this.name)));

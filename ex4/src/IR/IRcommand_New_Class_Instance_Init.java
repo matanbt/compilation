@@ -75,7 +75,7 @@ public class IRcommand_New_Class_Instance_Init extends IRcommand
 			}
 
 			/* store the field's value */
-			mips.storeToHeap(field_val, dst, class_of_instance.getFieldOffset(ast_field_dec.name));
+			mips.storeToHeap(field_val, dst, class_of_instance.getFieldOffset(ast_field_dec.name) * 4);
 		}
 	}
 }

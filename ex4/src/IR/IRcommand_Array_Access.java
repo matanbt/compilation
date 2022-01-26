@@ -20,7 +20,7 @@ public abstract class IRcommand_Array_Access extends IRcommand
 {
 	protected TEMP arrayAccess(TEMP arrPointer, TEMP subscriptIndex){
 		/* performs runtime check
-		 * & returns offset_in_words (the offset from arrPointer of the relevant cell) */
+		 * & returns offset_in_bytes (the offset from arrPointer of the relevant cell) */
 
 		MIPSGenerator mips = MIPSGenerator.getInstance();
 
@@ -33,10 +33,15 @@ public abstract class IRcommand_Array_Access extends IRcommand
 		mips.loadFromHeap(arrLen, arrPointer, 0);
 		mips.bge(subscriptIndex, arrLen, MIPSGenerator.LABEL_STRING_ACCESS_VIOLATION);
 
-		TEMP offset_in_words = new SAVED(1);
+		TEMP offset_in_bytes = new SAVED(1);
 		// the first item in the array is its length, so the index val should be incremented by 1
-		mips.addi(offset_in_words, subscriptIndex, 1);
+		mips.addi(offset_in_bytes, subscriptIndex, 1);
 
-		return offset_in_words;
+		// offset in words --> offset in bytes
+		TEMP word_size = new SAVED(0);
+		mips.li(word_size, mips.getCharSizeInBytes());
+		mips.mul(offset_in_bytes, offset_in_bytes, word_size);
+
+		return offset_in_bytes;
 	}
 }
