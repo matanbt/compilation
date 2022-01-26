@@ -14,13 +14,13 @@ public class Vertex
      */
     public TEMP t;
     public boolean is_on;
-    public Set<Vertex> edges;
+    public Set<Vertex> neighbors;
 
     public Vertex(TEMP t)
     {
         this.t = t;
         this.is_on = true;
-        this.edges = new HashSet<>();
+        this.neighbors = new HashSet<>();
     }
 
     /**
@@ -30,9 +30,9 @@ public class Vertex
     public int edgesCount()
     {
         int i = 0;
-        for (Vertex edge: this.edges)
+        for (Vertex neighbor: this.neighbors)
         {
-            if (edge.is_on)
+            if (neighbor.is_on)
             {
                 i += 1;
             }
@@ -49,7 +49,7 @@ public class Vertex
     {
         if (this != v)
         {
-            edges.add(v);
+            neighbors.add(v);
         }
     }
 }

@@ -91,7 +91,7 @@ public class KColor
             found_color = true;
 
             /* For each connected vertex of v, check their color */
-            for (Vertex u: v.edges)
+            for (Vertex u: v.neighbors)
             {
                 /* We ignore edges turned off */
                 if (!u.is_on)
