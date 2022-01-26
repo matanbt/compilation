@@ -30,6 +30,7 @@ public class MIPSGenerator {
     public static String LABEL_STRING_ILLEGAL_DIV_BY_0 = "Label_string_illegal_div_by_zero";
     public static String LABEL_STRING_INVALID_PTR_DREF = "Label_string_invalid_ptr_dref";
 
+
     private int WORD_SIZE = 4;
     private int CHAR_SIZE = 1;
 
@@ -127,19 +128,21 @@ public class MIPSGenerator {
         fileWriter.format("\tlw Temp_%d,%d($fp)\n", idxdst, offset_in_bytes);
     }
 
+    /* Stores variable in the stack by given offset (relative to $fp) */
     public void storeToStack(int offset_in_bytes, TEMP src) {
         int idxsrc = src.getSerialNumber();
-        fileWriter.format("\tsw Temp_%d,%d(fp)\n", idxsrc, offset_in_bytes);
+        fileWriter.format("\tsw Temp_%d,%d($fp)\n", idxsrc, offset_in_bytes);
     }
 
     public void loadFromHeap(TEMP dst, TEMP base_address, int offset_in_bytes) {
         int idxdst = dst.getSerialNumber();
-        fileWriter.format("\tlw Temp_%d,%d(Temp_%d)\n", idxdst, offset_in_bytes, base_address.getSerialNumber());
+        int idxBaseAddress = base_address.getSerialNumber();
+        fileWriter.format("\tlw Temp_%d,%d(Temp_%d)\n", idxdst, offset_in_bytes, idxBaseAddress);
     }
-  
+
     public void loadFromHeap(TEMP dst, TEMP base_address, TEMP offset_in_bytes) {
-      fileWriter.format("\tadd $s0, Temp_%d, Temp_%d\n", base_address.getSerialNumber(), offset_in_bytes.getSerialNumber());
-      fileWriter.format("\tlw Temp_%d, 0($s0)\n", dst.getSerialNumber());
+        fileWriter.format("\tadd $s0, Temp_%d, Temp_%d\n", base_address.getSerialNumber(), offset_in_bytes.getSerialNumber());
+        fileWriter.format("\tlw Temp_%d, 0($s0)\n", dst.getSerialNumber());
     }
 
     public void loadByteFromHeap(TEMP dst, TEMP base_address, int offset_in_bytes) {
@@ -154,6 +157,8 @@ public class MIPSGenerator {
 
     public void storeByteToHeap(TEMP src, TEMP base_address, int offset_in_bytes) {
         int idxsrc = src.getSerialNumber();
+        int idxBaseAddress = base_address.getSerialNumber();
+        fileWriter.format("\tsw Temp_%d,%d(Temp_%d)\n", idxsrc, offset, idxBaseAddress);
         fileWriter.format("\tsb Temp_%d, %d(Temp_%d)\n", idxsrc, offset_in_bytes, base_address.getSerialNumber());
     }
 
@@ -169,20 +174,20 @@ public class MIPSGenerator {
   
   /* -------------- Stack access functions -------------- */
 
-	// TODO in the following functions I assume we're writing to `.text` session, that is -
-	//  every function that "opens" an `.data` section is responsible to close it as well.
+    // TODO in the following functions I assume we're writing to `.text` session, that is -
+    //  every function that "opens" an `.data` section is responsible to close it as well.
 
-	/* Pushing a register (e.g. "$v0", "$fp", "$t5"...) to the "top" of the stack */
-	public void pushRegisterToStack(String register) {
-		fileWriter.format("\tsubu $sp, $sp, 4\n");
-		fileWriter.format("\tsw %s,0($sp)\n", register);
-	}
+    /* Pushing a register (e.g. "$v0", "$fp", "$t5"...) to the "top" of the stack */
+    public void pushRegisterToStack(String register) {
+        fileWriter.format("\tsubu $sp, $sp, 4\n");
+        fileWriter.format("\tsw %s,0($sp)\n", register);
+    }
 
-	/* Pops the "top" of the stack and loads it to the given register (e.g. "$v0") */
-	public void popToRegisterFromStack(String register) {
-		fileWriter.format("\tlw %s,0($sp)\n", register);
-		fileWriter.format("\taddu $sp, $sp, 4\n");
-	}
+    /* Pops the "top" of the stack and loads it to the given register (e.g. "$v0") */
+    public void popToRegisterFromStack(String register) {
+        fileWriter.format("\tlw %s,0($sp)\n", register);
+        fileWriter.format("\taddu $sp, $sp, 4\n");
+    }
 
 
     /* ---------------------- Operators and Arithmetic ---------------------- */
@@ -273,6 +278,7 @@ public class MIPSGenerator {
 
     public void beqz(TEMP oprnd1, String label) {
         int i1 = oprnd1.getSerialNumber();
+
         fileWriter.format("\tbeq Temp_%d,$zero,%s\n", i1, label);
     }
 
@@ -281,8 +287,8 @@ public class MIPSGenerator {
         fileWriter.format("\tbltz Temp_%d, %s\n", i1, label);
     }
 
-  
-	/* -------------- Functions related MIPS code -------------- */
+
+	/* -------------- (Callee) Functions related MIPS code -------------- */
 	/* Sets to return value ($v0) to be the value in `t` */
 	public void setReturn(TEMP t) {
 		int idx = t.getSerialNumber();
@@ -326,16 +332,58 @@ public class MIPSGenerator {
     public void jumpToReturnAddress() {
         fileWriter.format("\tjr $ra\n");
     }
-  
+
+
+    /* -------------- (Caller) Functions related MIPS code -------------- */
+
+    /* Prologue code before the caller invokes the function / method */
+    public void functionCallerPrologue(List<TEMP> argValues) {
+        /* Pushes the arguments to the stack in reverse order */
+        for (int i = argValues.size() - 1; i >= 0; i--) {
+            String argValueTemp = String.format("$Temp_%d", argValues.get(i).getSerialNumber());
+            pushRegisterToStack(argValueTemp);
+        }
+    }
+
+    /* perform jal to the given (full) label */
+    public void functionJumpAndLink(String full_label) {
+        fileWriter.format("\tjal %s\n", full_label);
+    }
+
+    /* fetches the method-address from vTable and `jalr` to its */
+    public void methodJumpAndLink(TEMP classObject, int methodOffset) {
+        /* load the vTable pointer to $s0 */
+        fileWriter.format("\tlw $s0 0(TEMP_%d)\n", classObject.getSerialNumber());
+
+        /* load the method pointer to $s1 */
+        fileWriter.format("\tlw $s1 %d($s0)\n", methodOffset);
+
+        /* jump (and link) to the method */
+        fileWriter.format("\tjalr $s1\n");
+    }
+
+    public void functionCallerEpilogue(int argsCount, TEMP dstRtn) {
+        /* Removes all arguments that were located CallerPrologue */
+        fileWriter.format("\taddu $sp, $sp, %d", argsCount * WORD_SIZE);
+
+        if (dstRtn != null) {
+            /* Saves the return value to 'dstRtn' */
+            fileWriter.format("\tmove TEMP_%d, $v0", dstRtn.getSerialNumber());
+        }
+    }
+
 
     /* ---------------------- Built-in functions ---------------------- */
 
     public void print_int(TEMP t) {
         int idx = t.getSerialNumber();
-        // fileWriter.format("\taddi $a0,Temp_%d,0\n",idx);
+
+        /* Prints the integer in 't' */
         fileWriter.format("\tmove $a0,Temp_%d\n", idx);
         fileWriter.format("\tli $v0,1\n");
         fileWriter.format("\tsyscall\n");
+
+        /* Prints space char (as required by exercise's instructions) */
         fileWriter.format("\tli $a0,32\n");  // space char
         fileWriter.format("\tli $v0,11\n");
         fileWriter.format("\tsyscall\n");
@@ -343,6 +391,8 @@ public class MIPSGenerator {
 
     public void print_string(TEMP t) {
         int idx = t.getSerialNumber();
+
+        /* Prints the string in pointed by 't' */
         fileWriter.format("\tmove $a0,Temp_%d\n", idx);
         fileWriter.format("\tli $v0,4\n");
         fileWriter.format("\tsyscall\n");
@@ -417,23 +467,28 @@ public class MIPSGenerator {
     private void exit_due_to_runtime_check(String msg_name) {
         /* msg_name = "string_illegal_div_by_0" or "string_access_violation" or "string_invalid_ptr_dref" */
         TEMP temp_print_msg = new SAVED(0);
-        loadByVarName(temp_print_msg, msg_name);
+        loadAddressByName(temp_print_msg, msg_name);
         this.print_string(temp_print_msg);
-        this.finalizeFile();
+        this.performExit();
+    }
+
+    /* exits the program */
+    private void performExit() {
+        fileWriter.print("\tli $v0,10\n");
+        fileWriter.print("\tsyscall\n");
     }
 
     /* End */
     public void finalizeFile() {
-        // TODO .text ?
-        fileWriter.print(".text\n");
 
         /* 1. Invokes user_main, i.e. the main() function of the L program */
         fileWriter.print("main:\n");
         fileWriter.print("\tjal user_main\n");
 
         /* 2. Performs exit */
-        fileWriter.print("\tli $v0,10\n");
-        fileWriter.print("\tsyscall\n");
+        performExit();
+
+        /* 3. Closes file */
         fileWriter.close();
     }
 }

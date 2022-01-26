@@ -36,27 +36,29 @@ public class IRcommand_Allocate_Global extends IRcommand
     /***************/
     public void MIPSme()
     {
+        String full_var_name = String.format("global_%s", var_name); // Adding convention to global variable
+
         if (this.var_value_ast == null || this.var_value_ast instanceof AST_EXP_NIL) {
-            MIPSGenerator.getInstance().allocateWithIntVal(var_name, 0);
+            MIPSGenerator.getInstance().allocateWithIntVal(full_var_name, 0);
         }
 
         else if (this.var_value_ast instanceof AST_EXP_INT) {
-            MIPSGenerator.getInstance().allocateWithIntVal(var_name, ((AST_EXP_INT)var_value_ast).value);
+            MIPSGenerator.getInstance().allocateWithIntVal(full_var_name, ((AST_EXP_INT)var_value_ast).value);
         }
 
         else if (this.var_value_ast instanceof AST_EXP_STRING) {
             // 1. Allocate the string itself
             // The name of the allocated string must be unique, so a unique integer is concatenated
-            String allocatedStringLabel = String.format("str_global_%s_%d", var_name, uniqueAllocatedStringNum++);
+            String allocatedStringLabel = String.format("str_%s_%d", full_var_name, uniqueAllocatedStringNum++);
             String allocatedStringValue = ((AST_EXP_STRING)var_value_ast).value;
             MIPSGenerator.getInstance().allocateString(allocatedStringLabel, allocatedStringValue);
 
             // 2. Allocate the pointer to the string
-            MIPSGenerator.getInstance().allocateByReferenceName("global_" + var_name, allocatedStringLabel);
+            MIPSGenerator.getInstance().allocateByReferenceName(full_var_name, allocatedStringLabel);
         }
 
         else {
-            System.out.println("[DEBUG] Warning: unexpected var_value in IRcommand_Global_Var_Dec");
+            System.out.println("[DEBUG] Warning: unexpected var_value in IRcommand_Allocate_Global");
         }
     }
 }

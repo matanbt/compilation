@@ -28,7 +28,7 @@ public class IRcommand_Load extends IRcommand {
     /***************/
     public void MIPSme() {
         if (var.mRole == VarRole.GLOBAL) {
-            MIPSGenerator.getInstance().loadGlobal(dst, var.mVarName);
+            MIPSGenerator.getInstance().loadByVarName(dst, "global_" + var.mVarName);
         }
 
         else if (var.mRole == VarRole.LOCAL || var.mRole == VarRole.ARG) {

@@ -16,7 +16,7 @@ import TEMP.TEMP;
 
 import java.util.List;
 
-/* Invocation of global functions
+/* Invocation of *global* functions
 *     call f, arg1, arg2, ...
 *     rtnTemp = call f, arg1, arg2, ...  */
 public class IRcommand_Call extends IRcommand {
@@ -24,9 +24,9 @@ public class IRcommand_Call extends IRcommand {
     List<TEMP> argsTempList;
     TEMP rtnTemp; // temporary to save return value, null means no save
 
-    /* funcName is required to be WITHOUT our MIPS conventions */
+
     public IRcommand_Call(String funcName, List<TEMP> argsTempList, TEMP rtnTemp) {
-        this.funcName = funcName;
+        this.funcName = funcName; //  funcName is required to be WITHOUT our MIPS conventions
         this.argsTempList = argsTempList;
         this.rtnTemp = rtnTemp;
     }
@@ -35,12 +35,13 @@ public class IRcommand_Call extends IRcommand {
     /* MIPS me !!! */
     /***************/
     public void MIPSme() {
-        String funcLabel = String.format("func_%s", funcName); // we inject our conventions here
-        // caller prologue (push arguments to stack in reverse)
-        // for (TEMP arg: argsTempList[::-1]) {}
-        // jal funcName
-        // save $ra to temp (if not null)
-        // caller epilogue
+        MIPSGenerator mips = MIPSGenerator.getInstance();
 
+        // add our global function convention here
+        String funcLabel = String.format("func_%s", funcName);
+
+        mips.functionCallerPrologue(argsTempList);
+        mips.functionJumpAndLink(funcLabel);
+        mips.functionCallerEpilogue(argsTempList.size(), rtnTemp);
     }
 }
