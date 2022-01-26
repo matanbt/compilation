@@ -107,7 +107,7 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 		mips.storeByteToHeap(val_of_curr_str_i, address_of_new_str_i, 0);
 		// i++
 		mips.addi(address_of_curr_str_i, address_of_curr_str_i, char_size);
-		mips.addi(address_of_curr_str_i, address_of_new_str_i, char_size);
+		mips.addi(address_of_new_str_i, address_of_new_str_i, char_size);
 
 		mips.jump(curr_loop);
 
