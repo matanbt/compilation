@@ -2,8 +2,8 @@ package REG_ALLOC;
 
 import TEMP.TEMP;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Vertex
 {
@@ -14,13 +14,13 @@ public class Vertex
      */
     public TEMP t;
     public boolean is_on;
-    public List<Edge> edges;
+    public Set<Vertex> edges;
 
     public Vertex(TEMP t)
     {
         this.t = t;
         this.is_on = true;
-        this.edges = new ArrayList<>();
+        this.edges = new HashSet<>();
     }
 
     /**
@@ -30,9 +30,9 @@ public class Vertex
     public int edgesCount()
     {
         int i = 0;
-        for (Edge edge: this.edges)
+        for (Vertex edge: this.edges)
         {
-            if (edge.isOn())
+            if (edge.is_on)
             {
                 i += 1;
             }
@@ -49,8 +49,7 @@ public class Vertex
     {
         if (this != v)
         {
-            Edge e = new Edge(this, v);
-            edges.add(e);
+            edges.add(v);
         }
     }
 }

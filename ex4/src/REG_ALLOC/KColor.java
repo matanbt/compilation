@@ -16,7 +16,7 @@ public class KColor
     /*
      * Can color using $t0 - $t9, so in total 10 colors.
      */
-    private static int DEFAULT_K = 10;
+    private static final int DEFAULT_K = 10;
 
     public KColor(int k)
     {
@@ -83,7 +83,6 @@ public class KColor
     private boolean colorVertex(Vertex v)
     {
         boolean found_color;
-        Vertex u;
         Integer u_color;
 
         /* Go over all of the colors */
@@ -92,16 +91,13 @@ public class KColor
             found_color = true;
 
             /* For each connected vertex of v, check their color */
-            for (Edge edge: v.edges)
+            for (Vertex u: v.edges)
             {
                 /* We ignore edges turned off */
-                if (!edge.isOn())
+                if (!u.is_on)
                 {
                     continue;
                 }
-
-                /* Get the other side of this edge */
-                u = edge.getOtherVertex(v);
 
                 /* Check if the other vertex is colored in the color of `i` */
                 u_color = Palette.getInstance().getColor(u.t.getSerialNumber());
