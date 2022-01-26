@@ -164,7 +164,7 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 	}
 
 	public String getStringFieldGlobalName(String fieldName) {
-		return String.format("class_%s_field_%s", this.name, fieldName);
+		return String.format("str_class_%s_field_%s", this.name, fieldName);
 	}
 
 }
