@@ -1,6 +1,8 @@
 package REG_ALLOC;
 
 
+import EXCEPTIONS.ColoringException;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -31,7 +33,7 @@ public class KColor
      * @param graph The graph to color.
      * @return A stack of all of the vertices, in order that will allow us to color them.
      */
-    private Deque<Vertex> createVerticesStack(InterferenceGraph graph)
+    private Deque<Vertex> createVerticesStack(InterferenceGraph graph) throws ColoringException
     {
         Deque<Vertex> stack = new ArrayDeque<>();
         boolean stuck;
@@ -66,8 +68,7 @@ public class KColor
              */
             if (stuck)
             {
-                /* TODO: should we create a new exception for this? */
-                throw new RuntimeException("Couldn't color graph");
+                throw new ColoringException("Couldn't color graph: Couldn't create vertex stack");
             }
         }
 
@@ -100,14 +101,7 @@ public class KColor
                 }
 
                 /* Get the other side of this edge */
-                if (edge.u != v)
-                {
-                    u = edge.u;
-                }
-                else
-                {
-                    u = edge.v;
-                }
+                u = edge.getOtherVertex(v);
 
                 /* Check if the other vertex is colored in the color of `i` */
                 u_color = Palette.getInstance().getColor(u.t.getSerialNumber());
@@ -135,7 +129,7 @@ public class KColor
      * Color the graph using K colors.
      * @param graph Graph to color.
      */
-    public void colorGraph(InterferenceGraph graph)
+    public void colorGraph(InterferenceGraph graph) throws ColoringException
     {
         Deque<Vertex> stack = this.createVerticesStack(graph);
 
@@ -150,8 +144,7 @@ public class KColor
             boolean found_color = this.colorVertex(v);
             if (!found_color)
             {
-                /* TODO: should we create a new exception for this? */
-                throw new RuntimeException("Couldn't color graph");
+                throw new ColoringException("Couldn't color graph");
             }
         }
     }

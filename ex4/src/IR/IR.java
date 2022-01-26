@@ -10,6 +10,7 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 
+import EXCEPTIONS.ColoringException;
 import LIVENESS.CFGraph;
 import LIVENESS.Liveness;
 import REG_ALLOC.InterferenceGraph;
@@ -52,7 +53,7 @@ public class IR
 	/**
 	 * Create mapping from virtual temporary registers (TEMP) to real MIPS registers.
 	 */
-	public void createTemporariesMapping()
+	public void createTemporariesMapping() throws ColoringException
 	{
 		boolean in_function = false;
 		List<IRcommand> commands = new ArrayList<>();
@@ -74,15 +75,18 @@ public class IR
 				commands.add(ir);
 			}
 			/* End of a function - perform analysis */
-			else
+			else if (in_function)
 			{
 				in_function = false;
+                commands.add(ir);
 				CFGraph cfg = CFGraph.createCFG(commands);
 				Liveness.analyze(cfg);
 				InterferenceGraph interferences = InterferenceGraph.createInterferenceGraph(commands);
 				KColor colors = new KColor();
 				colors.colorGraph(interferences);
 			}
+
+            /* Not in a function - do nothing */
 
 			if (next_ir != null)
 			{

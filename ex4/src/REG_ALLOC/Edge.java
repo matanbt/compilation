@@ -3,7 +3,7 @@ package REG_ALLOC;
 public class Edge
 {
     /*
-     * `u` and `v` are vertices connected by this edge.
+     * `u` and `v` are vertices connected by this (undirected) edge.
      */
     public Vertex u;
     public Vertex v;
@@ -22,5 +22,23 @@ public class Edge
     public boolean isOn()
     {
         return u.is_on && v.is_on;
+    }
+
+    /**
+     * Return the other side of the edge, according to a given vertex.
+     * @param self A vertex in this edge.
+     * @return The other vertex, or null if `self` isn't a part of this edge.
+     */
+    public Vertex getOtherVertex(Vertex self)
+    {
+        if (this.u == self)
+        {
+            return this.v;
+        }
+        else if (this.v == self)
+        {
+            return this.u;
+        }
+        return null;
     }
 }

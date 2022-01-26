@@ -63,19 +63,6 @@ public class CFGraph
                 Vertex v_out = map.get(((IRcommand_Jump_Label) ir).jump_dst);
                 v_in.outgoing_edges.add(v_out);
             }
-            else if (ir instanceof IRcommand_Jump_If_Eq_To_Zero)
-            {
-                Vertex v_out1 = map.get(((IRcommand_Jump_If_Eq_To_Zero) ir).jump_dst);
-                v_in.outgoing_edges.add(v_out1);
-
-                /* If there is a next command, add it */
-                if (i < size - 1)
-                {
-                    IRcommand next_ir = commands.get(i + 1);
-                    Vertex v_out2 = map.get(next_ir);
-                    v_in.outgoing_edges.add(v_out2);
-                }
-            }
             else
             {
                 /* If there is a next command, add it */
@@ -83,6 +70,13 @@ public class CFGraph
                 {
                     IRcommand next_ir = commands.get(i + 1);
                     Vertex v_out = map.get(next_ir);
+                    v_in.outgoing_edges.add(v_out);
+                }
+
+                /* Handle jumps differently */
+                if (ir instanceof IRcommand_Jump_If_Eq_To_Zero)
+                {
+                    Vertex v_out = map.get(((IRcommand_Jump_If_Eq_To_Zero) ir).jump_dst);
                     v_in.outgoing_edges.add(v_out);
                 }
             }

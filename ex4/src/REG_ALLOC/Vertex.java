@@ -9,7 +9,7 @@ public class Vertex
 {
     /*
      * `t` is the temporary associated with this vertex.
-     * `is_on` is a flag, indicating whether we removed this vertex from the graph its on or not.
+     * `is_on` is a flag, which is on if the vertex is in the graph, and off if we remove it from the graph.
      * `edges` is a list of edges connected to this vertex.
      */
     public TEMP t;
