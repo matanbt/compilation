@@ -98,8 +98,8 @@ public class AST_STMT_IF extends AST_STMT
 	{
 		TEMP cond_val = this.cond.IRme();
 		String end_label = IRcommand.getFreshLabel("end_cond");
-		IRcommand ir_cond = new IRcommand_Jump_If_Eq_To_Zero(cond_val, end_label);
 		IRcommand end = new IRcommand_Label(end_label);
+		IRcommand ir_cond = new IRcommand_Jump_If_Eq_To_Zero(cond_val, end_label, end);
 
 		IR.getInstance().Add_IRcommand(ir_cond);
 		this.body.IRme();

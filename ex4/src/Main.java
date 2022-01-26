@@ -79,24 +79,29 @@ public class Main
 			/* [8] IR the AST ... */
 			/**********************/
 			AST.IRme();
+
+			/****************************************/
+			/* [9] Translate TEMPs to registers ... */
+			/****************************************/
+			IR.getInstance().createTemporariesMapping();
 			
-			/***********************/
-			/* [9] MIPS the IR ... */
-			/***********************/
+			/************************/
+			/* [10] MIPS the IR ... */
+			/************************/
 			IR.getInstance().MIPSme();
 
 			/**************************************/
-			/* [10] Finalize AST GRAPHIZ DOT file */
+			/* [11] Finalize AST GRAPHIZ DOT file */
 			/**************************************/
 			AST_GRAPHVIZ.getInstance().finalizeFile();			
 
 			/***************************/
-			/* [11] Finalize MIPS file */
+			/* [12] Finalize MIPS file */
 			/***************************/
 			MIPSGenerator.getInstance().finalizeFile();			
 
 			/**************************/
-			/* [12] Close output file */
+			/* [13] Close output file */
 			/**************************/
 			file_writer.close();
     	}
