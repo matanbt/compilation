@@ -109,7 +109,7 @@ public class AST_VAR_SIMPLE extends AST_VAR
 			// the instance pointer is saved as the first argument of the method
 			TEMP invokingClassObject = TEMP_FACTORY.getInstance().getFreshTEMP();
 			IR.getInstance().Add_IRcommand(new IRcommand_Load(invokingClassObject , IDVariable.getThisInstance()));
-			IR.getInstance().Add_IRcommand(new IRcommand_Field_access(t, invokingClassObject, this.idVar));
+			IR.getInstance().Add_IRcommand(new IRcommand_Field_get(t, invokingClassObject, this.idVar));
 		}
 		else {
 			IR.getInstance().Add_IRcommand(new IRcommand_Load(t, this.idVar));

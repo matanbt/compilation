@@ -2,7 +2,6 @@ package TYPES;
 
 import AST.AST_DEC_FUNC;
 import AST.AST_DEC_VAR;
-import AST.AST_EXP;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +25,16 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 
 	/* Lists all the method, includes those inherited / overridden
 	 * Will correspond to vtable in runtime. */
-	private final List<AST_DEC_FUNC> methods_list;
+	public final List<AST_DEC_FUNC> methods_list;
 	// func starting label saved in AST_DEC_FUNC.funcStartingLabel after AST_DEC_FUNC.IRme()
 
 	/* Lists all the field, includes those inherited /overridden
 	 * Will correspond to the object-struct in runtime. */
 	// TODO - a note for shir: if you want to access to the initialized value of a field, you can access AST_DEC_VAR.exp
 	//                         (which by semantic assumption should be int / string / nil)
-	private final List<AST_DEC_VAR> fields_list;
+	public final List<AST_DEC_VAR> fields_list;
+
+	public String vt_name;
 
 
 	/**************************************************/
@@ -134,7 +135,7 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 		methods_list.add(methodToAdd);
 	}
 
-	/* return the offset f the field, or 0 if failed to find */
+	/* return the offset of the field, or 0 if failed to find */
 	public int getFieldOffset(String fieldNameToFind) {
 		int offset = 1; // start with offset 1, as vtable is found in offset 0
 
@@ -148,7 +149,7 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 		return 0;
 	}
 
-	/* return the offset f the method, or -1 if failed to find*/
+	/* return the offset of the method, or -1 if failed to find*/
 	public int getMethodOffset(String methodNameToFind) {
 		int offset = 0;
 
@@ -160,6 +161,10 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 		}
 		// failure to find the method results with -1 offset
 		return -1;
+	}
+
+	public String getStringFieldGlobalName(String fieldName) {
+		return String.format("str_class_%s_field_%s", this.name, fieldName);
 	}
 
 }

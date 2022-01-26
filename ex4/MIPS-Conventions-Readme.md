@@ -17,10 +17,15 @@
     - *System Labels (const labels that we create):* 
         Starts with `Label_`
         e.g.: `Label_string_access_violation`
-        
+                
 - **Variables:**
   - `global_{name}` - a variable named `{name}` declared in the **global** context.
 
 - **Strings:**
   - `str_global_{string-name}` - contains the string value of the **global** {string-name} variable
   - `str_{string-name}_{unique-number}` - contains the string value of some **local** {string-name} variable
+  - `string_` -  prefix for strings used by the compiler for error messages.
+  - `str_class_{class name}_field_{field name}` - contains the string value of {field name} string field in {class name} class 
+
+- **Classes:**
+  - `vt_{class name}` - the vtable of class `{class name}`.

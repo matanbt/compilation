@@ -8,6 +8,8 @@ package MIPS;
 /*******************/
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /*******************/
 /* PROJECT IMPORTS */
@@ -27,7 +29,6 @@ public class MIPSGenerator {
     public static String LABEL_STRING_ACCESS_VIOLATION = "Label_string_access_violation";
     public static String LABEL_STRING_ILLEGAL_DIV_BY_0 = "Label_string_illegal_div_by_zero";
     public static String LABEL_STRING_INVALID_PTR_DREF = "Label_string_invalid_ptr_dref";
-
 
     private int WORD_SIZE = 4;
     private int CHAR_SIZE = 1;
@@ -72,6 +73,18 @@ public class MIPSGenerator {
         fileWriter.format(".text\n");
     }
 
+    public void allocateWordsArray(String name, List<String> referenceNamesList) {
+        // the words will be stored in consecutive memory location
+        // name = address of first word allocated
+        // assumes name is unique
+        fileWriter.format(".data\n");
+        fileWriter.format("\t%s:\n", name);
+        for (int i = 0; i < referenceNamesList.size(); i++) {
+            fileWriter.format("\t\t.word %s\n", referenceNamesList.get(i));
+        }
+        fileWriter.format(".text\n");
+    }
+
     public void malloc(TEMP dst, TEMP len) {
         /* dst = malloc(len)
         allocates 'len' amount of bytes, allocation address stored in 'dst' */
@@ -109,51 +122,49 @@ public class MIPSGenerator {
     }
 
     /* Loads variable from the stack by given offset (relative to $fp) */
-    public void loadFromStack(TEMP dst, int offset) {
+    public void loadFromStack(TEMP dst, int offset_in_bytes) {
         int idxdst = dst.getSerialNumber();
-        fileWriter.format("\tlw Temp_%d,%d($fp)\n", idxdst, offset);
+        fileWriter.format("\tlw Temp_%d,%d($fp)\n", idxdst, offset_in_bytes);
     }
 
-    public void storeToStack(int offset, TEMP src) {
+    public void storeToStack(int offset_in_bytes, TEMP src) {
         int idxsrc = src.getSerialNumber();
-        fileWriter.format("\tsw Temp_%d,%d(fp)\n", idxsrc, offset);
+        fileWriter.format("\tsw Temp_%d,%d(fp)\n", idxsrc, offset_in_bytes);
     }
 
-    public void loadFromHeap(TEMP dst, TEMP base_address, int offset_in_words) {
+    public void loadFromHeap(TEMP dst, TEMP base_address, int offset_in_bytes) {
         int idxdst = dst.getSerialNumber();
-        fileWriter.format("\tlw Temp_%d,%d(Temp_%d)\n", idxdst, offset, base_address.getSerialNumber());
+        fileWriter.format("\tlw Temp_%d,%d(Temp_%d)\n", idxdst, offset_in_bytes, base_address.getSerialNumber());
     }
   
-    public void loadFromHeap(TEMP dst, TEMP base_address, TEMP offset_in_words) {
-      fileWriter.format("\tmul $s0, Temp_%d, %d\n", offset_in_words.getSerialNumber(), WORD_SIZE);
-      fileWriter.format("\tadd $s0, $s0, Temp_%d\n", base_address.getSerialNumber());
+    public void loadFromHeap(TEMP dst, TEMP base_address, TEMP offset_in_bytes) {
+      fileWriter.format("\tadd $s0, Temp_%d, Temp_%d\n", base_address.getSerialNumber(), offset_in_bytes.getSerialNumber());
       fileWriter.format("\tlw Temp_%d, 0($s0)\n", dst.getSerialNumber());
     }
 
-    public void loadByteFromHeap(TEMP dst, TEMP base_address, int offset) {
+    public void loadByteFromHeap(TEMP dst, TEMP base_address, int offset_in_bytes) {
         int idxdst = dst.getSerialNumber();
-        fileWriter.format("\tlb Temp_%d,%d(Temp_%d)\n", idxdst, offset, base_address.getSerialNumber());
+        fileWriter.format("\tlb Temp_%d, %d(Temp_%d)\n", idxdst, offset_in_bytes, base_address.getSerialNumber());
     }
 
-    public void storeToHeap(TEMP src, TEMP base_address, int offset_in_words) {
+    public void storeToHeap(TEMP src, TEMP base_address, int offset_in_bytes) {
         int idxsrc = src.getSerialNumber();
-        fileWriter.format("\tsw Temp_%d,%d(Temp_%d)\n", idxsrc, offset, base_address.getSerialNumber());
+        fileWriter.format("\tsw Temp_%d, %d(Temp_%d)\n", idxsrc, offset_in_bytes, base_address.getSerialNumber());
     }
 
-    public void storeByteToHeap(TEMP src, TEMP base_address, int offset) {
+    public void storeByteToHeap(TEMP src, TEMP base_address, int offset_in_bytes) {
         int idxsrc = src.getSerialNumber();
-        fileWriter.format("\tsb Temp_%d,%d(Temp_%d)\n", idxsrc, offset, base_address.getSerialNumber());
+        fileWriter.format("\tsb Temp_%d, %d(Temp_%d)\n", idxsrc, offset_in_bytes, base_address.getSerialNumber());
     }
 
-    public void storeToHeap(TEMP src, TEMP base_address, TEMP offset_in_words) {
-        fileWriter.format("\tmul $s0, Temp_%d, %d\n", offset_in_words.getSerialNumber(), WORD_SIZE);
-        fileWriter.format("\tadd $s0, $s0, Temp_%d\n", base_address.getSerialNumber());
+    public void storeToHeap(TEMP src, TEMP base_address, TEMP offset_in_bytes) {
+        fileWriter.format("\tadd $s0, Temp_%d, Temp_%d\n", base_address.getSerialNumber(), offset_in_bytes.getSerialNumber());
         fileWriter.format("\tsw Temp_%d, 0($s0)\n", src.getSerialNumber());
     }
 
-    public void loadString(TEMP dst, String str_name) {
+    public void loadAddressByName(TEMP dst, String name) {
         int idxdst = dst.getSerialNumber();
-        fileWriter.format("\tla Temp_%d, %s\n", idxdst, str_name);
+        fileWriter.format("\tla Temp_%d, %s\n", idxdst, name);
     }
   
   /* -------------- Stack access functions -------------- */
@@ -309,8 +320,12 @@ public class MIPSGenerator {
 		popToRegisterFromStack("$ra");
 
 		/* 4. Jump back */
-		fileWriter.format("\tjr $ra");
+        jumpToReturnAddress();
 	}
+
+    public void jumpToReturnAddress() {
+        fileWriter.format("\tjr $ra\n");
+    }
   
 
     /* ---------------------- Built-in functions ---------------------- */
@@ -401,7 +416,7 @@ public class MIPSGenerator {
     /* End resulted by error */
     private void exit_due_to_runtime_check(String msg_name) {
         /* msg_name = "string_illegal_div_by_0" or "string_access_violation" or "string_invalid_ptr_dref" */
-        TEMP temp_print_msg = TEMP_FACTORY.getInstance().getFreshTEMP();
+        TEMP temp_print_msg = new SAVED(0);
         loadByVarName(temp_print_msg, msg_name);
         this.print_string(temp_print_msg);
         this.finalizeFile();
@@ -411,6 +426,7 @@ public class MIPSGenerator {
     public void finalizeFile() {
         // TODO .text ?
         fileWriter.print(".text\n");
+
         /* 1. Invokes user_main, i.e. the main() function of the L program */
         fileWriter.print("main:\n");
         fileWriter.print("\tjal user_main\n");

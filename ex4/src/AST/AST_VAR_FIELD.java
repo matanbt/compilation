@@ -110,7 +110,7 @@ public class AST_VAR_FIELD extends AST_VAR
 		TEMP objectPointer = this.var.IRme();
 		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
 
-		mIR.Add_IRcommand(new IRcommand_Field_access(dst, objectPointer, this.idField));
+		mIR.Add_IRcommand(new IRcommand_Field_get(dst, objectPointer, this.idField));
 
 		return dst;
 	}

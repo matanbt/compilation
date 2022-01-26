@@ -36,7 +36,7 @@ public class IRcommand_Load extends IRcommand {
         }
 
         else if (var.mRole == VarRole.CFIELD_VAR) {
-            System.out.println("[DEBUG] IRcommand_Load shouldn't be called on CFIELD_VAR, use IRcommand_Field_access");
+            System.out.println("[DEBUG] IRcommand_Load shouldn't be called on CFIELD_VAR, use IRcommand_Field_get");
         }
 
         else {

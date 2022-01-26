@@ -112,7 +112,7 @@ public class AST_DEC_FUNC extends AST_DEC
 			// it's a CField
 			// annotation for IR
 			encompassingClass.addToMethodList(this);
-			// CField semantic check is on AST_CFEILD
+			// CField semantic check is on AST_CFIELD
 		}
 
 
