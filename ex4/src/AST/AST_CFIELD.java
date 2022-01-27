@@ -110,9 +110,6 @@ public class AST_CFIELD extends AST_Node
 		/* Finish SemantMe */
 		this.dec.SemantMe();
 
-		// TODO FOR SHIR:  here you insert `dec` into encompassingClass.methodsList / encompassingClass.fieldsList
-		//				   by using TYPE_CLASS.addToFieldList(dec) / TYPE_CLASS.addToMethodList()
-
 		return null;
 	}
 }

@@ -15,7 +15,6 @@ public class AST_DEC_VAR extends AST_DEC
 
     // ---- Semantic Properties ---
     // non-null means var field of 'encompassingClass', and null means it's not a class's field (but can be inside a method)
-    public TYPE_CLASS encompassingClass = null;
     public TYPE varType = null;  // gets real value when calling getType
     private IDVariable idVariable;  // idVariable is initialized in this.SemantMe()
 

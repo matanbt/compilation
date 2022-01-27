@@ -16,7 +16,6 @@ public class AST_DEC_FUNC extends AST_DEC
 
 	// -------------------- Semantic Additions --------------------
 	// non-null means method of 'encompassingClass', and null means it's global function
-	public TYPE_CLASS encompassingClass = null;
 	public TYPE funcType = null;  // gets real value when calling getType
 
 	// -------------------- IR Additions --------------------
