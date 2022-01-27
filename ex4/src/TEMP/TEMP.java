@@ -9,6 +9,9 @@ package TEMP;
 
 /*******************/
 /* PROJECT IMPORTS */
+
+import REG_ALLOC.Palette;
+
 /*******************/
 
 public class TEMP
@@ -26,7 +29,7 @@ public class TEMP
 	}
 
 	public String getRegisterName(){
-		return null;
-//		return String.format("$t%d", mapped_register_num);  // TODO
+		int mapped_register_num = Palette.getInstance().getColor(serial);
+		return String.format("$t%d", mapped_register_num);
 	}
 }
