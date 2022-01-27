@@ -14,6 +14,7 @@ package IR;
 import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 
+import java.util.HashSet;
 import java.util.List;
 
 /* Invocation of global functions
@@ -32,6 +33,14 @@ public class IRcommand_Virtual_Call extends IRcommand {
         this.methodOffset = methodOffset;
         this.argsTempList = argsTempList;
         this.rtnTemp = rtnTemp;
+    }
+
+    public void updateInSet()
+    {
+        this.in_set = new HashSet<TEMP>(this.out_set);
+        this.in_set.remove(rtnTemp);
+        this.in_set.add(classObject);
+        this.in_set.addAll(argsTempList);
     }
 
     /***************/

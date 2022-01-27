@@ -13,6 +13,8 @@ package IR;
 import TEMP.*;
 import MIPS.*;
 
+import java.util.HashSet;
+
 
 public class IRcommand_Binop_Arithmetic extends IRcommand {
 	// Arithmetic operation between integers
@@ -31,6 +33,15 @@ public class IRcommand_Binop_Arithmetic extends IRcommand {
 		this.right_t = right_t;
 		this.arithmetic_op = arithmetic_op;
 	}
+
+	public void updateInSet()
+	{
+		this.in_set = new HashSet<TEMP>(this.out_set);
+		this.in_set.remove(dst);
+		this.in_set.add(left_t);
+		this.in_set.add(right_t);
+	}
+
 	/***************/
 	/* MIPS me !!! */
 
