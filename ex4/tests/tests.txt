@@ -1,0 +1,6 @@
+/// example_test
+void main() {
+    PrintInt(3);
+}
+
+*** 3
