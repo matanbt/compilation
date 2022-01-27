@@ -1,6 +1,6 @@
 int boof() {
     int i := -5;
-    while (i > -32768) {
+    while (i > -32767) {
         i := i - 505;
     }
     return i + 2;

@@ -53,6 +53,7 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 		TEMP val_of_curr_str_i = new SAVED(2);
 		TEMP address_of_new_str_i = new SAVED(3);
 		TEMP did_loop_twice = new SAVED(4);
+		TEMP temp_dst = new SAVED(5);
 		// each loop happens twice- first with left_str, and then with right_str. after the first loop, did_loop_twice = 0
 		// after the second loop, did_loop_twice = 1
 
@@ -94,10 +95,10 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 		mips.beqz(did_loop_twice, curr_loop);  // if we did loop only once, do it again
 
 		/* (2) allocate memory for the new String */
-		mips.malloc(dst, res_string_len);
+		mips.malloc(temp_dst, res_string_len);
 
 		/* (3) Copy the Strings content to the new string */
-		mips.move(address_of_new_str_i, dst);
+		mips.move(address_of_new_str_i, temp_dst);
 
 		curr_loop = getFreshLabel("STR_ADD_loop_copy_content_lbl");
 		end_curr_loop = getFreshLabel("STR_ADD_end_loop_copy_content_lbl");
@@ -132,5 +133,7 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 		/* Add 0 at the end of the new String */
 		mips.li(val_of_curr_str_i, 0);
 		mips.storeByteToHeap(val_of_curr_str_i, address_of_new_str_i, 0);
+
+		mips.move(dst, temp_dst);
 	}
 }

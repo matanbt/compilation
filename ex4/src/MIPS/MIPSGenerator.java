@@ -107,7 +107,7 @@ public class MIPSGenerator {
     /* ---------------------- Load & Stores ---------------------- */
 
     public void storeByVarName(String var_name, TEMP src) {
-        fileWriter.format("\tsw %s, global_%s\n", src.getRegisterName(), var_name);
+        fileWriter.format("\tsw %s, %s\n", src.getRegisterName(), var_name);
     }
 
     public void loadByVarName(TEMP dst, String full_var_name) {
@@ -143,8 +143,6 @@ public class MIPSGenerator {
 
     public void storeByteToHeap(TEMP src, TEMP base_address, int offset_in_bytes) {
         String src_reg_name = src.getRegisterName();
-        String BaseAddress_reg_name = base_address.getRegisterName();
-        fileWriter.format("\tsw %s, %d(%s)\n", src_reg_name, offset_in_bytes, BaseAddress_reg_name);
         fileWriter.format("\tsb %s, %d(%s)\n", src_reg_name, offset_in_bytes, base_address.getRegisterName());
     }
 
@@ -390,7 +388,7 @@ public class MIPSGenerator {
             /*****************************************************/
             instance.fileWriter.print(".data\n");
             instance.fileWriter.print("string_access_violation: .asciiz \"Access Violation\"\n");
-            instance.fileWriter.print("string_illegal_div_by_0: .asciiz \"Illegal Division By Zero\"\n");
+            instance.fileWriter.print("string_illegal_div_by_0: .asciiz \"Division By Zero\"\n");
             instance.fileWriter.print("string_invalid_ptr_dref: .asciiz \"Invalid Pointer Dereference\"\n");
 
             /* global labels */

@@ -59,9 +59,10 @@ public class IRcommand_Binop_EQ_Strings extends IRcommand {
 		TEMP address_of_str_2_i = new SAVED(2);
 		TEMP val_of_curr_str_1_i = new SAVED(3);
 		TEMP val_of_curr_str_2_i = new SAVED(4);
+		TEMP temp_dst = new SAVED(5);
 
 		// dst = 1
-		mips.li(dst, 1);
+		mips.li(temp_dst, 1);
 
 		mips.move(address_of_str_1_i, str_1);
 		mips.move(address_of_str_2_i, str_2);
@@ -88,9 +89,10 @@ public class IRcommand_Binop_EQ_Strings extends IRcommand {
 		// not equal
 		mips.label(lbl_not_equal);
 		// dst = 0
-		mips.li(dst, 0);
+		mips.li(temp_dst, 0);
 
 		// end
 		mips.label(lbl_end);
+		mips.move(dst, temp_dst);
 	}
 }
