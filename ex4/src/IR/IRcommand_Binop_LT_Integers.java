@@ -13,6 +13,8 @@ package IR;
 import TEMP.*;
 import MIPS.*;
 
+import java.util.HashSet;
+
 public class IRcommand_Binop_LT_Integers extends IRcommand
 {
 	// dst = t1 < t2
@@ -25,6 +27,14 @@ public class IRcommand_Binop_LT_Integers extends IRcommand
 		this.dst = dst;
 		this.t1 = t1;
 		this.t2 = t2;
+	}
+
+	public void updateInSet()
+	{
+		this.in_set = new HashSet<TEMP>(this.out_set);
+		this.in_set.remove(dst);
+		this.in_set.add(t1);
+		this.in_set.add(t2);
 	}
 	
 	/***************/

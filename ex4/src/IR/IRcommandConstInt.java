@@ -13,8 +13,11 @@ package IR;
 import TEMP.*;
 import MIPS.*;
 
+import java.util.HashSet;
+
 public class IRcommandConstInt extends IRcommand
 {
+	/* t := const int */
 	TEMP t;
 	int value;
 	
@@ -22,6 +25,12 @@ public class IRcommandConstInt extends IRcommand
 	{
 		this.t = t;
 		this.value = value;
+	}
+
+	public void updateInSet()
+	{
+		this.in_set = new HashSet<TEMP>(this.out_set);
+		this.in_set.remove(t);
 	}
 	
 	/***************/

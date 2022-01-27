@@ -14,13 +14,22 @@ package IR;
 import TEMP.*;
 import MIPS.*;
 
+import java.util.HashSet;
+
 public class IRcommand_Store extends IRcommand {
+    /* var := src */
     IDVariable var;
     TEMP src;
 
     public IRcommand_Store(IDVariable var, TEMP src) {
         this.src = src;
         this.var = var;
+    }
+
+    public void updateInSet()
+    {
+        this.in_set = new HashSet<TEMP>(this.out_set);
+        this.in_set.add(src);
     }
 
     /***************/

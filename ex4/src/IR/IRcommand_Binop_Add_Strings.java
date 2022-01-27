@@ -16,6 +16,7 @@ import TEMP.SAVED;
 import MIPS.MIPSGenerator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 public class IRcommand_Binop_Add_Strings extends IRcommand {
@@ -33,6 +34,15 @@ public class IRcommand_Binop_Add_Strings extends IRcommand {
 		this.left_str = left_str;
 		this.right_str = right_str;
 	}
+
+	public void updateInSet()
+	{
+		this.in_set = new HashSet<TEMP>(this.out_set);
+		this.in_set.remove(dst);
+		this.in_set.add(left_str);
+		this.in_set.add(right_str);
+	}
+
 	/***************/
 	/* MIPS me !!! */
 
