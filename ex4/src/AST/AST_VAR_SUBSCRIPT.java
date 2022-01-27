@@ -14,8 +14,8 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 	public AST_VAR var;
 	public AST_EXP subscript;
 
-	private TEMP arrPointer = this.var.IRme();
-	private TEMP subscriptIndex = this.subscript.IRme();
+	private TEMP arrPointer;
+	private TEMP subscriptIndex;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -38,6 +38,10 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		this.var = var;
 		this.subscript = subscript;
 		this.lineNumber = lineNumber;
+
+		/* TODO: Check if this is necessary */
+//		this.arrPointer = this.var.IRme();
+//		this.subscriptIndex = this.subscript.IRme();
 	}
 
 	/*****************************************************/

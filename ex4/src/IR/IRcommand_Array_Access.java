@@ -39,7 +39,7 @@ public abstract class IRcommand_Array_Access extends IRcommand
 
 		// offset in words --> offset in bytes
 		TEMP word_size = new SAVED(0);
-		mips.li(word_size, mips.getCharSizeInBytes());
+		mips.li(word_size, mips.WORD_SIZE);
 		mips.mul(offset_in_bytes, offset_in_bytes, word_size);
 
 		return offset_in_bytes;

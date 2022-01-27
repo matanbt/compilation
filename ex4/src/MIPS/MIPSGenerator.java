@@ -31,8 +31,8 @@ public class MIPSGenerator {
     public static String LABEL_STRING_INVALID_PTR_DREF = "Label_string_invalid_ptr_dref";
 
 
-    private int WORD_SIZE = 4;
-    private int CHAR_SIZE = 1;
+    public final int WORD_SIZE = 4;
+    public final int CHAR_SIZE = 1;
 
 
     public int getCharSizeInBytes() {
@@ -303,7 +303,7 @@ public class MIPSGenerator {
     /* fetches the method-address from vTable and `jalr` to its */
     public void methodJumpAndLink(TEMP classObject, int methodOffset) {
         /* load the vTable pointer to $s0 */
-        fileWriter.format("\tlw $s0, 0(TEMP_%d)\n", classObject.getRegisterName());
+        fileWriter.format("\tlw $s0, 0(%s)\n", classObject.getRegisterName());
 
         /* load the method pointer to $s1 */
         fileWriter.format("\tlw $s1, %d($s0)\n", methodOffset);
@@ -318,7 +318,7 @@ public class MIPSGenerator {
 
         if (dstRtn != null) {
             /* Saves the return value to 'dstRtn' */
-            fileWriter.format("\tmove TEMP_%d, $v0\n", dstRtn.getRegisterName());
+            fileWriter.format("\tmove %s, $v0\n", dstRtn.getRegisterName());
         }
     }
 
@@ -420,7 +420,7 @@ public class MIPSGenerator {
     /* exits the program */
     private void performExit() {
         fileWriter.print("\tli $v0, 10\n");
-        fileWriter.print("\tsyscall\n");
+        fileWriter.print("\tsyscall\n\n\n");
     }
 
     /* End */
@@ -428,7 +428,7 @@ public class MIPSGenerator {
 
         /* 1. Invokes user_main, i.e. the main() function of the L program */
         fileWriter.print("main:\n");
-        fileWriter.print("\tjal user_main\n");
+        fileWriter.print("\tjal func_user_main\n");
 
         /* 2. Performs exit */
         performExit();

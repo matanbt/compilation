@@ -94,8 +94,8 @@ public class AST_STMT_WHILE extends AST_STMT
 		/*******************************/
 		/* [1] Allocate 2 fresh labels */
 		/*******************************/
-		String label_end   = IRcommand.getFreshLabel("end");
-		String label_start = IRcommand.getFreshLabel("start");
+		String label_end   = IRcommand.getFreshLabel("WHILE_end");
+		String label_start = IRcommand.getFreshLabel("WHILE_start");
 		IRcommand start_ir = new IRcommand_Label(label_start);
 		IRcommand end_ir = new IRcommand_Label(label_end);
 

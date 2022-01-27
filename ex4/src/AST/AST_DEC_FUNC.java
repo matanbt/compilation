@@ -248,11 +248,13 @@ public class AST_DEC_FUNC extends AST_DEC
 		/* 2. Prologue (Will be used for MIPS, meaningless in IR) */
 		mIR.Add_IRcommand(new IRcommand_Func_Prologue(this.localsCount));
 
+		/* 2.5. Create the epilogue label for the return statements to use */
+		this.funcEpilogueLabel = String.format("%s_epilogue", this.funcStartingLabel);
+
 		/* 3. Function body */
 		if (body != null) body.IRme();
 
 		/* 4. Epilogue (Will be used for MIPS, meaningless in IR) */
-		this.funcEpilogueLabel = String.format("%s_epilogue", this.funcStartingLabel);
 		mIR.Add_IRcommand(new IRcommand_Label(this.funcEpilogueLabel));
 		mIR.Add_IRcommand(new IRcommand_Func_Epilogue(this.localsCount));
 
