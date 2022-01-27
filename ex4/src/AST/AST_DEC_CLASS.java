@@ -119,6 +119,7 @@ public class AST_DEC_CLASS extends AST_DEC
 
 	public TEMP IRme()
 	{
+		this.cfield_lst.IRme();
 		mIR.Add_IRcommand(new IRcommand_Allocate_Vtable(this.declared_class_type));
 		return null;
 	}

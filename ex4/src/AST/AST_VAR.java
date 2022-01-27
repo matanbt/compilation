@@ -11,4 +11,6 @@ public abstract class AST_VAR extends AST_Node
 
     public abstract void IRmeAsLeftValue(AST_EXP src);
 
+    public abstract void IRmeAsLeftValue(AST_NEW_EXP src);
+
 }

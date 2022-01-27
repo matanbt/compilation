@@ -1,6 +1,7 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import TEMP.TEMP;
 import TYPES.TYPE;
 
 public class AST_CFIELD_LIST extends AST_Node
@@ -74,4 +75,11 @@ public class AST_CFIELD_LIST extends AST_Node
 		return null; // there is no TYPE for sequence of statements.
 	}
 
+	@Override
+	public TEMP IRme() {
+		if (head != null) head.IRme();
+		if (next != null) next.IRme();
+
+		return null;
+	}
 }

@@ -2,6 +2,7 @@ package AST;
 
 import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
+import TEMP.TEMP;
 import TYPES.*;
 
 public class AST_CFIELD extends AST_Node
@@ -111,5 +112,10 @@ public class AST_CFIELD extends AST_Node
 		this.dec.SemantMe();
 
 		return null;
+	}
+
+	@Override
+	public TEMP IRme() {
+		return this.dec.IRme();
 	}
 }

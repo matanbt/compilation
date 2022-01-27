@@ -122,4 +122,11 @@ public class AST_VAR_FIELD extends AST_VAR
 		TEMP src_temp = src.IRme();
 		mIR.Add_IRcommand(new IRcommand_Field_set(objectPointer, this.idField, src_temp));
 	}
+
+	public void IRmeAsLeftValue(AST_NEW_EXP src) {
+		TEMP objectPointer = this.var.IRme();
+		TEMP src_temp = src.IRme();
+		mIR.Add_IRcommand(new IRcommand_Field_set(objectPointer, this.idField, src_temp));
+	}
+
 }

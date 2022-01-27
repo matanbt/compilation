@@ -131,4 +131,18 @@ public class AST_VAR_SIMPLE extends AST_VAR
 			mIR.Add_IRcommand(new IRcommand_Store(this.idVar, src_temp));
 		}
 	}
+
+	public void IRmeAsLeftValue(AST_NEW_EXP src) {
+		TEMP src_temp = src.IRme();
+		if (this.idVar.mRole == VarRole.CFIELD_VAR) {
+			// the instance pointer is saved as the first argument of the method
+			TEMP invokingClassObject = TEMP_FACTORY.getInstance().getFreshTEMP();
+			IR.getInstance().Add_IRcommand(new IRcommand_Load(invokingClassObject , IDVariable.getThisInstance()));
+			IR.getInstance().Add_IRcommand(new IRcommand_Field_set(invokingClassObject, this.idVar, src_temp));
+		}
+		else {
+			mIR.Add_IRcommand(new IRcommand_Store(this.idVar, src_temp));
+		}
+	}
+
 }

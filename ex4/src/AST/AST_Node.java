@@ -154,7 +154,6 @@ public abstract class AST_Node
 			args_temp_list = this.functionCallGetArgumentsTempList(args);
 			args_temp_list.add(0, invokingClassObject); // invoking object is the first argument
 
-			/* TODO Offset - we'll need to pass the method offset in VTable */
 			IR.getInstance().Add_IRcommand(new IRcommand_Virtual_Call(invokingClassObject,
 					funcType.encompassingClass.getMethodOffset(func),
 					args_temp_list, rtnTemp));

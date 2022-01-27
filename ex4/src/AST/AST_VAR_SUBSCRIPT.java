@@ -124,4 +124,12 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		TEMP src_temp = src.IRme();
 		mIR.Add_IRcommand(new IRcommand_Array_Set(arrPointer, subscriptIndex, src_temp));
 	}
+
+	public void IRmeAsLeftValue(AST_NEW_EXP src) {
+		TEMP arrPointer = this.var.IRme();
+		TEMP subscriptIndex = this.subscript.IRme();
+		TEMP src_temp = src.IRme();
+		mIR.Add_IRcommand(new IRcommand_Array_Set(arrPointer, subscriptIndex, src_temp));
+	}
+
 }

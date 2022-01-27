@@ -30,7 +30,7 @@ public class IRcommand_Virtual_Call extends IRcommand {
     public IRcommand_Virtual_Call(TEMP classObject, int methodOffset, List<TEMP> argsTempList,
                                   TEMP rtnTemp) {
         this.classObject = classObject;
-        this.methodOffset = methodOffset;
+        this.methodOffset = methodOffset * MIPSGenerator.getInstance().WORD_SIZE;
         this.argsTempList = argsTempList;
         this.rtnTemp = rtnTemp;
     }
