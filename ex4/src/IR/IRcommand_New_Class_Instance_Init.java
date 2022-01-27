@@ -27,7 +27,13 @@ public class IRcommand_New_Class_Instance_Init extends IRcommand
 		this.dst = dst;
 		this.class_of_instance = type_class;
 	}
-	
+
+	@Override
+	public void updateInSet() {
+		super.updateInSet();
+		this.in_set.remove(dst);
+	}
+
 	/***************/
 	/* MIPS me !!! */
 	/***************/

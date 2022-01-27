@@ -29,6 +29,15 @@ public class IRcommand_Array_Set extends IRcommand_Array_Access
 		this.src = src;
 	}
 
+	@Override
+	public void updateInSet() {
+		super.updateInSet();
+		this.in_set.add(src);
+		this.in_set.add(arrPointer);
+		this.in_set.add(subscriptIndex);
+	}
+
+
 	/***************/
 	/* MIPS me !!! */
 	/***************/

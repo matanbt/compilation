@@ -28,6 +28,14 @@ public class IRcommand_Array_Get extends IRcommand_Array_Access
 		this.subscriptIndex = subscriptIndex;
 	}
 
+	@Override
+	public void updateInSet() {
+		super.updateInSet();
+		this.in_set.remove(dst);
+		this.in_set.add(arrPointer);
+		this.in_set.add(subscriptIndex);
+	}
+
 	/***************/
 	/* MIPS me !!! */
 	/***************/

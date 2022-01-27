@@ -23,6 +23,12 @@ public class IRcommand_Load extends IRcommand {
         this.var = var;
     }
 
+    @Override
+    public void updateInSet() {
+        super.updateInSet();
+        this.in_set.remove(dst);
+    }
+
     /***************/
     /* MIPS me !!! */
     /***************/

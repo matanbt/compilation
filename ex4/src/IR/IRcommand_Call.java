@@ -31,6 +31,17 @@ public class IRcommand_Call extends IRcommand {
         this.rtnTemp = rtnTemp;
     }
 
+    @Override
+    public void updateInSet() {
+        super.updateInSet();
+        if (rtnTemp != null)
+        {
+            this.in_set.remove(rtnTemp);
+        }
+
+        this.in_set.addAll(argsTempList);
+    }
+
     /***************/
     /* MIPS me !!! */
     /***************/

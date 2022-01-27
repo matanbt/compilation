@@ -23,7 +23,13 @@ public class IRcommand_PrintString extends IRcommand
 	{
 		this.t = t;
 	}
-	
+
+	@Override
+	public void updateInSet() {
+		super.updateInSet();
+		this.in_set.add(t);
+	}
+
 	/***************/
 	/* MIPS me !!! */
 	/***************/

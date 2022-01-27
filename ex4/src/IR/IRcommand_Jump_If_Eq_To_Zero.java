@@ -28,7 +28,13 @@ public class IRcommand_Jump_If_Eq_To_Zero extends IRcommand
 		this.label_name = label_name;
 		this.jump_dst = jump_dst;
 	}
-	
+
+	@Override
+	public void updateInSet() {
+		super.updateInSet();
+		this.in_set.add(t);
+	}
+
 	/***************/
 	/* MIPS me !!! */
 	/***************/

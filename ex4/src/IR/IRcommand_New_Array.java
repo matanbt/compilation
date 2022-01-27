@@ -25,7 +25,14 @@ public class IRcommand_New_Array extends IRcommand
 		this.arrPointer = arrPointer;
 		this.arrLen = arrLen;
 	}
-	
+
+	@Override
+	public void updateInSet() {
+		super.updateInSet();
+		this.in_set.remove(arrPointer);
+		this.in_set.add(arrLen);
+	}
+
 	/***************/
 	/* MIPS me !!! */
 	/***************/

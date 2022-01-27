@@ -28,7 +28,13 @@ public class IRcommand_Load_String extends IRcommand
 		this.dst = dst;
 		this.val = val;
 	}
-	
+
+	@Override
+	public void updateInSet() {
+		super.updateInSet();
+		this.in_set.remove(dst);
+	}
+
 	/***************/
 	/* MIPS me !!! */
 	/***************/

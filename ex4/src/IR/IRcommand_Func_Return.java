@@ -31,7 +31,16 @@ public class IRcommand_Func_Return extends IRcommand
 		this.funcName = funcName;
 		this.epilogueLabel = epilogueLabel;
 	}
-	
+
+	@Override
+	public void updateInSet() {
+		super.updateInSet();
+		if (rtnTemporary != null)
+		{
+			this.in_set.add(rtnTemporary);
+		}
+	}
+
 	/***************/
 	/* MIPS me !!! */
 	/***************/

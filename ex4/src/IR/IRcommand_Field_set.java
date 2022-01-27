@@ -28,6 +28,14 @@ public class IRcommand_Field_set extends IRcommand
 		this.src = src;
 	}
 
+	@Override
+	public void updateInSet() {
+		super.updateInSet();
+		this.in_set.add(src);
+		this.in_set.add(objectPointer);
+	}
+
+
 	/***************/
 	/* MIPS me !!! */
 	/***************/
