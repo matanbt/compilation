@@ -4,7 +4,7 @@ import EXCEPTIONS.SemanticException;
 
 import IR.*;
 import SYMBOL_TABLE.SYMBOL_TABLE;
-import TEMP.TEMP;
+import TEMP.*;
 import TYPES.*;
 
 import java.util.ArrayList;

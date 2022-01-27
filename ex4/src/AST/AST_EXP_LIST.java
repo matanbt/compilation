@@ -2,6 +2,7 @@ package AST;
 
 import EXCEPTIONS.SemanticException;
 import TYPES.TYPE;
+import TEMP.TEMP;
 
 public class AST_EXP_LIST extends AST_Node
 {

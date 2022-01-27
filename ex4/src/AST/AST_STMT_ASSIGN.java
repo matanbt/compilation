@@ -1,10 +1,6 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
-import IR.IDVariable;
-import IR.IRcommand_Array_set;
-import IR.IRcommand_Field_set;
-import IR.IRcommand_Store;
 import TEMP.TEMP;
 import TYPES.TYPE;
 

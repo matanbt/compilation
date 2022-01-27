@@ -1,7 +1,7 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
-import TEMP.TEMP;
+import TEMP.*;
 import TYPES.*;
 
 public class AST_EXP_CALL extends AST_EXP
