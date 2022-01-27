@@ -113,6 +113,11 @@ public class MIPSGenerator {
     }
 
     public void storeGlobal(String var_name, TEMP src) {
+        String full_var_name = String.format("global_%s", var_name);
+        this.storeByVarName(full_var_name, src);
+    }
+
+    public void storeByVarName(String var_name, TEMP src) {
         int idxsrc = src.getSerialNumber();
         fileWriter.format("\tsw Temp_%d,global_%s\n", idxsrc, var_name);
     }
@@ -158,7 +163,7 @@ public class MIPSGenerator {
     public void storeByteToHeap(TEMP src, TEMP base_address, int offset_in_bytes) {
         int idxsrc = src.getSerialNumber();
         int idxBaseAddress = base_address.getSerialNumber();
-        fileWriter.format("\tsw Temp_%d,%d(Temp_%d)\n", idxsrc, offset, idxBaseAddress);
+        fileWriter.format("\tsw Temp_%d,%d(Temp_%d)\n", idxsrc, offset_in_bytes, idxBaseAddress);
         fileWriter.format("\tsb Temp_%d, %d(Temp_%d)\n", idxsrc, offset_in_bytes, base_address.getSerialNumber());
     }
 
@@ -301,7 +306,7 @@ public class MIPSGenerator {
 		pushRegisterToStack("$fp");
 
 		/* 2. Set the new frame-pointer */
-		fileWriter.format("\tmove $fp, $sp");
+		fileWriter.format("\tmove $fp, $sp\n");
 
 		/* 3. Backup all temp-registers by pushing them to stack as well */
 		for (int i = 0; i < TEMP_TO_BACKUP_COUNT; i++) {
@@ -309,12 +314,12 @@ public class MIPSGenerator {
 		}
 
 		/* 4. Keep some room for local variables in the stack */
-		fileWriter.format("\tsubu $sp, $sp, %d", localsCount * WORD_SIZE);
+		fileWriter.format("\tsubu $sp, $sp, %d\n", localsCount * WORD_SIZE);
 	}
 
 	public void functionEpilogue(int localsCount) {
 		/* 1. Removes local from the stack */
-		fileWriter.format("\taddu $sp, $sp, %d", localsCount * WORD_SIZE);
+		fileWriter.format("\taddu $sp, $sp, %d\n", localsCount * WORD_SIZE);
 
 		/* 2. Restores all temp-registers by popping them from the stack */
 		for (int i = TEMP_TO_BACKUP_COUNT - 1; i >= 0; i--) {
@@ -364,11 +369,11 @@ public class MIPSGenerator {
 
     public void functionCallerEpilogue(int argsCount, TEMP dstRtn) {
         /* Removes all arguments that were located CallerPrologue */
-        fileWriter.format("\taddu $sp, $sp, %d", argsCount * WORD_SIZE);
+        fileWriter.format("\taddu $sp, $sp, %d\n", argsCount * WORD_SIZE);
 
         if (dstRtn != null) {
             /* Saves the return value to 'dstRtn' */
-            fileWriter.format("\tmove TEMP_%d, $v0", dstRtn.getSerialNumber());
+            fileWriter.format("\tmove TEMP_%d, $v0\n", dstRtn.getSerialNumber());
         }
     }
 
