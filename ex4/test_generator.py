@@ -4,6 +4,7 @@ from typing import Dict
 TEST_GENERATOR_FILE_PATH = "./tests/tests.txt"
 TEST_GENERATOR_FILE_PATHS_LIST = [
     "./tests/tests.txt",
+    "./tests/matan_tests_1.txt",
 ]
 TEST_INPUT_DIR = "./input"
 TEST_OUTPUT_DIR = "./expected_output"

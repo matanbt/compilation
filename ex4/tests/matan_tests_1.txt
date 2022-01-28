@@ -36,7 +36,7 @@ void main() {
 /// calling_method_from_class
 
 class A {
-    void foo() {PrintString("foo ");}
+    void foo() {PrintString("foo");}
     void bar() {
         foo();
         PrintString("bar");
@@ -47,26 +47,26 @@ void main() {
     A a := new A;
     a.bar();
 }
-*** foo bar
+*** foobar
 
 /// my_test_string_eq_1
 void main() {
-    String s1 := "matan";
-    String s2 := "odmatan";
+    string s1 := "matan";
+    string s2 := "odmatan";
 
-    PrintInt(s1 = s2)
-    if(s1 = s2) {PrintInt("doesnt make sense...");}
+    PrintInt(s1 = s2);
+    if(s1 = s2) {PrintString("NOTLEGIT");}
     if((s1 + s2) = "matanodmatan") {PrintString("legiti");}
     if(s1 = "matan")   {PrintString("legito");}
-    if(s2 = "odmatap") {PrintString("NOT LEGIT");}
-    if(s2 = "odmata")  {PrintString("NOT LEGIT");}
-    if(s2 = "dmatan")  {PrintString("NOT LEGIT");}
-    if(s2 = "admatan")  {PrintString("NOT LEGIT");}
+    if(s2 = "odmatap") {PrintString("NOTLEGIT");}
+    if(s2 = "odmata")  {PrintString("NOTLEGIT");}
+    if(s2 = "dmatan")  {PrintString("NOTLEGIT");}
+    if(s2 = "admatan")  {PrintString("NOTLEGIT");}
 
     PrintString(s1 + s2 + s1);
 
 }
-*** 0 legiti legito matanodmatanmatan
+***0 legitilegitomatanodmatanmatan
 
 
 /// inc_in_a_class
@@ -76,7 +76,7 @@ class A {
     void inc() {i := i + 1;}
     void bar() {
         inc();
-        PrintInt(i)
+        PrintInt(i);
     }
 }
 
@@ -86,9 +86,9 @@ void main() {
     a.inc();
 
     A b := new A;
-    b.inc()
+    b.inc();
 
-    PrintInt(a.i);.
+    PrintInt(a.i);
     a.bar();
     PrintInt(a.i);
     PrintInt(b.i);
@@ -102,23 +102,23 @@ void main() {
 ***0 1 2 2 1 -1 2 3 0
 
 /// messing_around_with_vars_1
-String s := "global ";
+string s := "global";
 
 class A {
-    String s := "cfield ";
+    string s := "cfield";
     void foo() {
         PrintString(s);
     }
 }
 
-void foo(String s) {
+void foo(string s) {
     PrintString(s);
     s := "garbage";
 }
 
 void bar() {
     PrintString(s);
-    s := "changedGlobal ";
+    s := "changedGlobal";
 }
 
 void main() {
@@ -127,39 +127,40 @@ void main() {
     a.foo();
     if (1) {
         PrintString(s);
-        String s := "innerScope ";
+        string s := "innerScope";
         PrintString(s);
-        foo("arg ");
+        foo("arg");
         foo(s);
-        foo2();
     }
     foo(s);
     PrintString(s);
-    PrintString(a.s)
-    String s := "moving ";
+    PrintString(a.s);
+    string s := "moving";
     a.s := s;
-    a.foo()
+    a.foo();
     bar();
     bar();
     PrintString(s);
+
+    //global cfield global innerScope arg innerScope global global cfield moving global changedGlobal moving
 }
-***global cfield global innerScope arg innerScope global global cfield moving global changedGlobal moving
+***globalcfieldglobalinnerScopearginnerScopeglobalglobalcfieldmovingglobalchangedGlobalmoving
 
 /// array_printing
-IntArr int[];
+array IntArr = int[];
 
 void printArr(IntArr arr, int len) {
     int i := 0;
 
     while (i < len) {
+        PrintInt(arr[i]);
         i := i + 1;
-        printInt(i);
     }
 }
 
 void main() {
     int len := 1 + 2;
-    IntArr arr := new IntArr[len];
+    IntArr arr := new int[len];
     arr[0] := 5;
     arr[1] := 0;
     arr[2] := 4;
@@ -170,32 +171,11 @@ void main() {
 *** 5 0 4
 
 
-/// array_printing_non_init
-IntArr int[];
-
-void printArr(IntArr arr, int len) {
-    int i := 0;
-
-    while (i < len) {
-        i := i + 1;
-        printInt(i);
-    }
-}
-
-void main() {
-    IntArr arr = new IntArr[4];
-    arr[0] := 5;
-    printArr(arr, 4);
-    
-}
-
-*** 5 0 0 0 0
-
 /// Array_out_of_bound_1
-IntArr int[];
+array IntArr = int[];
 
 void main() {
-    IntArr arr = new IntArr[4];
+    IntArr arr := new int[4];
     arr[0] := 5;
     arr[5] := 1;
 }
@@ -204,10 +184,10 @@ void main() {
 
 
 /// Array_out_of_bound_2
-IntArr int[];
+array IntArr = int[];
 
 void main() {
-    IntArr arr = new IntArr[4];
+    IntArr arr := new int[4];
     arr[0] := 5;
     if(arr[-1] = 0 + 2) {
         return;
