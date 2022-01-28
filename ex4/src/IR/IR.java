@@ -52,10 +52,6 @@ public class IR
 
 	/**
 	 * Create mapping from virtual temporary registers (TEMP) to real MIPS registers.
-	 *
-	 * Note: By coloring each function separately, we assume that no function share a TEMP,
-	 * 		 hence there exist NO edge between TEMPs of different functions, and this implies that
-	 * 		 coloring one function does not affect the coloring of the other.
 	 */
 	public void createTemporariesMapping() throws ColoringException
 	{

@@ -23,7 +23,7 @@ import TYPES.*;
 /****************/
 public class SYMBOL_TABLE
 {
-	private int hashArraySize = 13;  // must be in sync with hash()
+	private int hashArraySize = 13;
 
 	/**********************************************/
 	/* The actual symbol table data structure ... */
@@ -37,9 +37,16 @@ public class SYMBOL_TABLE
 	/**************************************************************/
 	private int hash(String s)
 	{
-		char first_letter = s.toLowerCase().charAt(0);
-		int hash_letter = (first_letter - (int)('a')) / 2;
-		return (0 <= hash_letter && hash_letter < hashArraySize) ? hash_letter : 0;
+		// TODO hash based on first letter (meaning we'll have 'table' of length 26)
+		if (s.charAt(0) == 'l') {return 1;}
+		if (s.charAt(0) == 'm') {return 1;}
+		if (s.charAt(0) == 'r') {return 3;}
+		if (s.charAt(0) == 'i') {return 6;}
+		if (s.charAt(0) == 'd') {return 6;}
+		if (s.charAt(0) == 'k') {return 6;}
+		if (s.charAt(0) == 'f') {return 6;}
+		if (s.charAt(0) == 'S') {return 6;}
+		return 12;
 	}
 
 	/****************************************************************************/
