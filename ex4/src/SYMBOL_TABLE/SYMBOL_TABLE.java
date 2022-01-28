@@ -419,15 +419,6 @@ public class SYMBOL_TABLE
 					)
 			);
 
-			instance.enter(
-					"PrintTrace",
-					new TYPE_FUNCTION(
-							TYPE_VOID.getInstance(),
-							"PrintTrace",
-							new TYPE_LIST()
-					)
-			);
-
     }
 
 		return instance;
