@@ -39,10 +39,11 @@ def run_on_test_files():
         print("---- #" + str(i + 1) + " / " + str(len(test_files)) + " | Running: " + filename + " ----")
         result = subprocess.run(['java', '-jar', 'COMPILER', input_file, sem_output_file],
                                 capture_output=True, text=True)
-        assert result.stderr == '', "Got error while running: /n"+ result.stderr
-        with open(sem_output_file) as f:
-            assert f.read().strip() == "OK" , "Got semantic error. L syntax must be obeyed!"
         save_log(filename, result.stdout)
+        assert result.stderr == '', "Got error while running: \n"+ result.stderr
+        with open(sem_output_file) as f:
+            assert f.read().strip() == "OK" , "Got lexing/parsing/semantic error. L syntax must be obeyed!"
+
         os.rename(src=output_dir + "MIPS.txt", dst=mips_source_output_file)
 
         with open(mips_run_output_file, 'w') as f:
@@ -59,7 +60,7 @@ def simple_tester():
         print("---- #" + str(i + 1) + " / " + str(len(test_files)) + " | Checking: " + filename + " ----")
         input_file =  input_dir + filename                                             # input/test.txt
         output_file = output_dir + filename[:-4] + "_MIPS_OUTPUT.txt"                  # output/test_MIPS_OUTPUT.txt
-        expected_file = expected_output_dir + filename[:-4] + "_Expected_Output.txt"   # expected_output/test_Expected_Output.txt
+        expected_file = expected_output_dir + filename[:-4] + "_EXPECTED_OUTPUT.txt"   # expected_output/test_EXPECTED_OUTPUT.txt
         with open(output_file, 'r') as f1, open(expected_file, 'r') as f2:
             s1 = f1.read().strip().split('\n',maxsplit=5)[5:]  # split & slicing will remove mips' annoying prefix
             s2 = f2.read().strip().split('\n',maxsplit=5)[5:]
@@ -84,6 +85,7 @@ def save_log(_fname, _stdout):
         log_file = logs_dir + _fname[:-4] + "_log_run.txt"
         with open(log_file, "w") as f:
             f.write(str(_stdout))
+        print(f"[ Saved log to: {log_file} ]")
 
 
 
