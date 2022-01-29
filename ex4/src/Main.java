@@ -73,6 +73,10 @@ public class Main
 			{
 				System.out.println(e.getMessage());
 				file_writer.println(String.format("ERROR(%d)", e.lineNumber));
+
+				// We throw here another error, to ensure the compilation does not continue
+				file_writer.close();
+				AST.throw_error("Aborting Compilation Phase: Got semantic error during compilation");
 			}
 
 			/**********************/
