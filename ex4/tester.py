@@ -20,7 +20,8 @@ input_dir = "./input/"
 output_dir = "./output/"
 expected_output_dir = "./expected_output/"
 logs_dir = "./logs/"
-flag_save_logs = True
+flag_save_logs = True     # saves the stdout of each run to `logs_dir`
+comparison_only = False   # skips running the compiler and saving the outputs
 
 
 def list_test_files_by_dir():
@@ -91,14 +92,15 @@ def save_log(_fname, _stdout):
 
 
 if __name__ == '__main__':
-    # init dir to save logs
-    init_logs_dir()
-
     # lists test files located in input_dir
     list_test_files_by_dir()
 
-    # runs the compiler on all files
-    run_on_test_files()
+    if not comparison_only:
+        # init `dir to save logs
+        init_logs_dir()
+
+        # runs the compiler on all files
+        run_on_test_files()
 
     # validate the result from last step
     simple_tester()
