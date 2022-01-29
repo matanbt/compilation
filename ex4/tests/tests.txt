@@ -82,40 +82,40 @@ printInt(a.i = nil);
 
 /// func_dec_var_int
 void f(){
-int i := 4500;
-printInt(i);
+	int i := 4500;
+	printInt(i);
 }
 void main(){
-f();
+	f();
 }
 
 ***4500 
 
 /// func_dec_var_string
 void f(){
-string i := "234aa";
-printString(i);
+	string i := "234aa";
+	printString(i);
 }
 void main(){
-f();
+	f();
 }
 
 ***234aa
 
 /// field_access_1
 class A {
-int i := 5;
+	int i := 5;
 }
 class B extends A{
-void f(){
-i := 2;
-printInt(i);
-}
+	void f(){
+		i := 2;
+		printInt(i);
+	}
 }
 
 void main(){
-B b := new B;
-b.f();
+	B b := new B;
+	b.f();
 }
 
 ***2 
@@ -263,22 +263,28 @@ void main(){
 ***Invalid Pointer Dereference
 
 /// Access_Violation_!
-array IntArray = int[]; 
-IntArray A := new int[6]; 
-int i := A[18];
+void main(){
+	array IntArray = int[]; 
+	IntArray A := new int[6]; 
+	int i := A[18];
+}
 
 ***Access Violation
 
 /// Access_Violation_2
-array IntArray = int[]; 
-IntArray A := new int[6]; 
-A[18] := 89;
+void main(){
+	array IntArray = int[]; 
+	IntArray A := new int[6]; 
+	A[18] := 89;
+}
 
 ***Access Violation
 
 /// Access_Violation_3
-array IntArray = int[]; 
-IntArray A := new int[6]; 
-A[-1] := 89;
+void main(){
+	array IntArray = int[]; 
+	IntArray A := new int[6]; 
+	A[-1] := 89;
+}
 
 ***Access Violation
