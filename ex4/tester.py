@@ -69,7 +69,6 @@ def simple_tester():
 
             assert s1 == s2, "\n---> Test failed on: " + filename +\
                              "\n---> Got: " + s1 + "   Expected: " + s2 +\
-                             "\n---> Please check : " + logs_dir + filename[:-4] + "_log_run.txt" +\
                              "\n---> Or rerun : java -jar COMPILER " + input_file + " " + output_file
 
     print("\n============= SUCCESS - SIMPLE_TESTER ==============")
