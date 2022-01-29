@@ -95,13 +95,31 @@ public class MIPSGenerator {
         fileWriter.format("\tmove %s, $v0\n", dst.getRegisterName());
     }
 
-  public void mallocWords(TEMP dst, TEMP len) {
+  public void mallocWordsWithNullInit(TEMP dst, TEMP len) {
+        // (!) NOTICE: overrides $s6, $s7
         // dst = malloc(len * WORD_SIZE)
         fileWriter.format("\tli $v0, 9\n");
         fileWriter.format("\tmove $a0, %s\n", len.getRegisterName());
         fileWriter.format("\tmul $a0, $a0, %d\n", WORD_SIZE);
         fileWriter.format("\tsyscall\n");
         fileWriter.format("\tmove %s, $v0\n", dst.getRegisterName());
+
+        // init all words cells to null (0)
+        String curr_word_address = "$s6";
+        String next_addr_after_end = "$s7";  // the next address after the end of the new allocated word sequence
+        String loop_lbl = "Label_loop_mallocWordsWithNullInit";
+        String end_lbl = "Label_end_mallocWordsWithNullInit";
+
+        fileWriter.format("\tmove %s, %s\n", curr_word_address, dst.getRegisterName());
+        fileWriter.format("\tadd %s, $a0, %s\n", next_addr_after_end, dst.getRegisterName());
+
+        label(loop_lbl);
+        fileWriter.format("\tbeq %s, %s, %s\n", curr_word_address, next_addr_after_end, end_lbl);
+        fileWriter.format("\tsw $zero, 0(%s)", curr_word_address);
+        fileWriter.format("\taddi %s, %s, %d", curr_word_address, curr_word_address, WORD_SIZE);
+        jump(loop_lbl);
+
+        label(end_lbl);
     }
 
     /* ---------------------- Load & Stores ---------------------- */
