@@ -19,7 +19,7 @@ public class TYPE_FOR_SCOPE_BOUNDARIES extends TYPE
 
 
 	// the AST-node / Type representing to this scope (e.g. AST_DEC_FUNC / TYPE_FUNCTION)
-	public AST_Node scopeContextAST; // TODO-EX4 consider my necessity
+	public AST_Node scopeContextAST;
 	public TYPE scopeContextType; // could be null, e.g. WHILE Scopes
 
 	/****************/

@@ -85,7 +85,6 @@ public class AST_CFIELD extends AST_Node
 
 		/* Verify there is no method overloading / variable shadowing */
 		TYPE pre_defined_type = encompassingClass.findInClassAndSuperClasses(field_name);  // won't be null only if found in the supers classes,
-		// (TODO ?): could run findInSuperClasses() instead
 		if (pre_defined_type != null) {
 			/* Verify new declaration is overriding the previous one (has the same signature/type)
 			 * - If both are variables, their TYPE is the same java object

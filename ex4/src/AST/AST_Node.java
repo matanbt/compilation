@@ -64,7 +64,7 @@ public abstract class AST_Node
 			TYPE_CLASS type_class_of_scope = SYMBOL_TABLE.getInstance().findScopeClass();
 			if (type_class_of_scope == null) {
 				// this function call is not inside a class scope
-				type_func = SYMBOL_TABLE.getInstance().find(func);  // find func in the closest scope  TODO- (enhancement) change to type_func = SYMBOL_TABLE.findInGlobalScope(func);
+				type_func = SYMBOL_TABLE.getInstance().find(func);  // find func in the closest scope
 			}
 			else {
 				// this function call is inside a class scope
@@ -76,7 +76,7 @@ public abstract class AST_Node
 				}
 				if (type_func == null){
 					// search for func in the global scope
-					type_func = SYMBOL_TABLE.getInstance().find(func);  // TODO- (enhancement) change to type_func = SYMBOL_TABLE.findInGlobalScope(func);
+					type_func = SYMBOL_TABLE.getInstance().find(func);
 				}
 			}
 		}
@@ -145,8 +145,6 @@ public abstract class AST_Node
 			}
 			else {
 				/* there is an explicit class-object caller */
-				/* todo: I assume caller.IRme will provide me with the address of the object.
-				    this depends on new-exp implementation */
 				invokingClassObject = caller.IRme();
 			}
 

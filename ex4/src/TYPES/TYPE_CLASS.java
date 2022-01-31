@@ -20,9 +20,6 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 	/*********************************************************************/
 	/* Data structures to keep track of the class and its cfield  */
 	/*********************************************************************/
-	// TODO the following lists could also be of type `String`, for the moment i keep it
-	//      ASTs in case we'd need to extract more info
-
 	/* Lists all the method, includes those inherited / overridden
 	 * Will correspond to vtable in runtime. */
 	public final List<AST_DEC_FUNC> methods_list;
@@ -30,8 +27,6 @@ public class TYPE_CLASS extends TYPE implements I_SYMBOL_TYPE
 
 	/* Lists all the field, includes those inherited /overridden
 	 * Will correspond to the object-struct in runtime. */
-	// TODO - a note for shir: if you want to access to the initialized value of a field, you can access AST_DEC_VAR.exp
-	//                         (which by semantic assumption should be int / string / nil)
 	public final List<AST_DEC_VAR> fields_list;
 
 	public String vt_name;

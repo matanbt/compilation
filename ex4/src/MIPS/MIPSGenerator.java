@@ -46,6 +46,12 @@ public class MIPSGenerator {
     /***********************/
     private PrintWriter fileWriter;
 
+
+    /*
+     * In the following functions we assume we're writing to `.text` session, that is -
+     * every function that "opens" an `.data` section is responsible to close it as well.
+     */
+
     /* ---------------------- Allocations ---------------------- */
 
     public void allocate(String var_name) {
@@ -176,9 +182,6 @@ public class MIPSGenerator {
     }
   
   /* -------------- Stack access functions -------------- */
-
-    // TODO in the following functions I assume we're writing to `.text` session, that is -
-    //  every function that "opens" an `.data` section is responsible to close it as well.
 
     /* Pushing a register (e.g. "$v0", "$fp", "$t5"...) to the "top" of the stack */
     public void pushRegisterToStack(String register) {

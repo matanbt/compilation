@@ -39,9 +39,6 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		this.subscript = subscript;
 		this.lineNumber = lineNumber;
 
-		/* TODO: Check if this is necessary */
-//		this.arrPointer = this.var.IRme();
-//		this.subscriptIndex = this.subscript.IRme();
 	}
 
 	/*****************************************************/

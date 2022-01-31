@@ -37,7 +37,6 @@ public class SYMBOL_TABLE
 	/**************************************************************/
 	private int hash(String s)
 	{
-		// TODO hash based on first letter (meaning we'll have 'table' of length 26)
 		if (s.charAt(0) == 'l') {return 1;}
 		if (s.charAt(0) == 'm') {return 1;}
 		if (s.charAt(0) == 'r') {return 3;}

@@ -150,7 +150,7 @@ public class AST_EXP_BINOP extends AST_EXP
 			}
 
 			else if (op.equals("=")) {
-				ir.Add_IRcommand(new IRcommand_Binop_EQ_Strings(dst, left_t, right_t));  // TODO IRcommand_Binop_EQ_Strings
+				ir.Add_IRcommand(new IRcommand_Binop_EQ_Strings(dst, left_t, right_t));
 			}
 		}
 
