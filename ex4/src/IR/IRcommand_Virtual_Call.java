@@ -49,6 +49,7 @@ public class IRcommand_Virtual_Call extends IRcommand {
     public void MIPSme() {
         MIPSGenerator mips = MIPSGenerator.getInstance();
 
+        mips.beqz(classObject, MIPSGenerator.LABEL_STRING_INVALID_PTR_DREF);
         mips.functionCallerPrologue(argsTempList);
         mips.methodJumpAndLink(classObject, methodOffset);
         mips.functionCallerEpilogue(argsTempList.size(), rtnTemp);
