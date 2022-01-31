@@ -1,6 +1,7 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import TEMP.TEMP;
 import TYPES.TYPE;
 
 
@@ -57,5 +58,11 @@ public class AST_DEC_FUNC_ARG extends AST_Node
 
     public TYPE SemantMe() throws SemanticException {
         return argType.SemantMe();
+    }
+
+    public TEMP IRme() {
+        // no IR to FUNC_ARG, this is a semantic declaration
+        System.out.print("[DEBUG] Warning: unexpected call of AST_DEC_FUNC_ARG.IRme()\n");
+        return null;
     }
 }

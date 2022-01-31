@@ -1,6 +1,8 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import IR.*;
+import TEMP.TEMP;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
@@ -12,9 +14,9 @@ public class AST_DEC_VAR extends AST_DEC
     public AST_NEW_EXP new_exp;
 
     // ---- Semantic Properties ---
-    // non-null means var field of 'encompassingClass', and null means it's not in class scope
-    public TYPE_CLASS encompassingClass = null;
+    // non-null means var field of 'encompassingClass', and null means it's not a class's field (but can be inside a method)
     public TYPE varType = null;  // gets real value when calling getType
+    private IDVariable idVariable;  // idVariable is initialized in this.SemantMe()
 
     /******************/
     /* CONSTRUCTOR(S) */
@@ -100,7 +102,7 @@ public class AST_DEC_VAR extends AST_DEC
         if (new_exp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, new_exp.SerialNumber);
     }
 
-    // SemantMe Part 1: Analyze the var type by it's declared type
+    // SemantMe Part 1: Analyze the var type by its declared type
     private TYPE SemantMe_declaredType() throws SemanticException {
         TYPE semantic_type;
 
@@ -124,7 +126,12 @@ public class AST_DEC_VAR extends AST_DEC
               this.throw_error(String.format("variable %s already exists inside the scope\n", name));
             }
         }
-        // else - CField is being checked separately by AST_CFEILD
+        else {
+            // it's a CField
+            // annotation for IR
+            encompassingClass.addToFieldList(this);
+            // CField semantic check is on AST_CFIELD
+        }
 
         return semantic_type;
     }
@@ -133,7 +140,7 @@ public class AST_DEC_VAR extends AST_DEC
     // SemantMe Part 2: Check assignment (if exists) & update Symbol Table
     private void SemantMe_checkAssignment(TYPE semantic_type) throws SemanticException {
         /*
-        * semantic_type = instance type representing the type of var by it's type declaration
+        * semantic_type = instance type representing the type of var by its type declaration
         * e.g.: 'int x := "";'  --> semantic_type = TYPE_INT_INSTANCE
         * */
 
@@ -168,10 +175,26 @@ public class AST_DEC_VAR extends AST_DEC
                 this.throw_error("Assignment for variable declaration failed");
             }
         }
-        /***************************************************/
-        /* [2] Enter the Function Type to the Symbol Table */
-        /***************************************************/
-        SYMBOL_TABLE.getInstance().enter(name, semantic_type);
+        /*****************************************************************/
+        /* [2] Initiate idVariable & Enter the new var to the Symbol Table */
+        /*****************************************************************/
+        SYMBOL_TABLE symbol_table = SYMBOL_TABLE.getInstance();
+
+        /* Initiate this.idVariable */
+        if (encompassingClass != null) {
+            this.idVariable = new IDVariable(name, VarRole.CFIELD_VAR, encompassingClass);
+        }
+        else if (symbol_table.isGlobalScope()) {
+            this.idVariable = new IDVariable(name, VarRole.GLOBAL);
+        }
+        else {
+            // statement variable declaration
+            TYPE_FUNCTION type_func = symbol_table.findScopeFunc();
+            this.idVariable = new IDVariable(name, VarRole.LOCAL, type_func.funcASTNode.localsCount++);
+        }
+
+        /* Enter the new var to the Symbol Table */
+        symbol_table.enter(name, semantic_type, this.idVariable);
 
     }
 
@@ -192,12 +215,51 @@ public class AST_DEC_VAR extends AST_DEC
 
     public TEMP IRme()
     {
-        IR.getInstance().Add_IRcommand(new IRcommand_Allocate(name));
+        IR ir = IR.getInstance();
+        VarRole varRole = this.idVariable.mRole;
 
-        if (initialValue != null)
-        {
-            IR.getInstance().Add_IRcommand(new IRcommand_Store(name,initialValue.IRme()));
+        if (varRole == VarRole.GLOBAL) {
+            /* global var
+            *  assumption: if a global variable is initialized with value,
+            *  then the initial value is a constant (i.e., string, integer, nil)
+            *  --> this.exp instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL */
+            ir.Add_IRcommand(new IRcommand_Allocate_Global(this.name, this.exp));  // also deals with this.exp=null case
         }
+
+        else if (varRole == VarRole.LOCAL) {
+            /* statement variable declaration with/without assignment */
+
+            TEMP t_val_to_assign = null;
+            if (exp != null)
+                t_val_to_assign = this.exp.IRme();
+            else if (new_exp != null)
+                t_val_to_assign = this.new_exp.IRme();
+            else if (this.varType.canBeAssignedNil()) {
+                // In case there is no assignment, but a pointer was declared, we'll assign it `nil` by default
+                t_val_to_assign = AST_EXP_NIL.getTempWithNil();
+            }
+
+            // trigger store command only if there is a value to assign
+            if(t_val_to_assign != null)
+                ir.Add_IRcommand(new IRcommand_Store(this.idVariable, t_val_to_assign));
+        }
+
+        else if (varRole == VarRole.CFIELD_VAR) {
+            /* class's variable declaration
+             * assumption: if a field is initialized with value,
+             * then the initial value is a constant (i.e., string, integer, nil)
+             * --> this.exp instanceof AST_EXP_INT or AST_EXP_STRING or AST_EXP_NIL
+             *
+             * only need to handle AST_EXP_STRING case
+             * In every object allocation in the code-generation stage, the CFIELD value is fetched from TYPE_CLASS */
+            if (exp instanceof AST_EXP_STRING) {
+                ir.Add_IRcommand(new IRcommand_Allocate_Global_String(((AST_EXP_STRING) this.exp).value,
+                        this.encompassingClass.getStringFieldGlobalName(this.name)));
+            }
+        }
+
+        // if it's a statement variable declaration without assignment - do nothing
+
         return null;
     }
 

@@ -2,6 +2,7 @@ package AST;
 
 import EXCEPTIONS.SemanticException;
 import TYPES.TYPE;
+import TEMP.TEMP;
 
 public class AST_EXP_LIST extends AST_Node
 {
@@ -60,7 +61,8 @@ public class AST_EXP_LIST extends AST_Node
 
 	public TEMP IRme()
 	{
-		return head.IRme();
+		// this is never being called
+		return null;
 	}
 
 }

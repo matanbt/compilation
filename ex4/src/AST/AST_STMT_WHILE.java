@@ -5,6 +5,8 @@ import SYMBOL_TABLE.SYMBOL_TABLE;
 import TYPES.TYPE;
 import TYPES.TYPE_FOR_SCOPE_BOUNDARIES;
 import TYPES.TYPE_INT_INSTANCE;
+import TEMP.*;
+import IR.*;
 
 public class AST_STMT_WHILE extends AST_STMT
 {
@@ -92,15 +94,17 @@ public class AST_STMT_WHILE extends AST_STMT
 		/*******************************/
 		/* [1] Allocate 2 fresh labels */
 		/*******************************/
-		String label_end   = IRcommand.getFreshLabel("end");
-		String label_start = IRcommand.getFreshLabel("start");
+		String label_end   = IRcommand.getFreshLabel("WHILE_end");
+		String label_start = IRcommand.getFreshLabel("WHILE_start");
+		IRcommand start_ir = new IRcommand_Label(label_start);
+		IRcommand end_ir = new IRcommand_Label(label_end);
 
 		/*********************************/
 		/* [2] entry label for the while */
 		/*********************************/
 		IR.
 		getInstance().
-		Add_IRcommand(new IRcommand_Label(label_start));
+		Add_IRcommand(start_ir);
 
 		/********************/
 		/* [3] cond.IRme(); */
@@ -112,7 +116,7 @@ public class AST_STMT_WHILE extends AST_STMT
 		/******************************************/
 		IR.
 		getInstance().
-		Add_IRcommand(new IRcommand_Jump_If_Eq_To_Zero(cond_temp,label_end));
+		Add_IRcommand(new IRcommand_Jump_If_Eq_To_Zero(cond_temp,label_end, end_ir));
 
 		/*******************/
 		/* [5] body.IRme() */
@@ -124,14 +128,14 @@ public class AST_STMT_WHILE extends AST_STMT
 		/******************************/
 		IR.
 		getInstance().
-		Add_IRcommand(new IRcommand_Jump_Label(label_start));
+		Add_IRcommand(new IRcommand_Jump_Label(label_start, start_ir));
 
 		/**********************/
 		/* [7] Loop end label */
 		/**********************/
 		IR.
 		getInstance().
-		Add_IRcommand(new IRcommand_Label(label_end));
+		Add_IRcommand(end_ir);
 
 		/*******************/
 		/* [8] return null */

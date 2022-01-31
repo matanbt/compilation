@@ -1,16 +1,21 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
-import SYMBOL_TABLE.SYMBOL_TABLE;
+import IR.IR;
+import TEMP.TEMP;
 import TYPES.TYPE;
 import TYPES.TYPE_ARRAY_INSTANCE;
-import TYPES.TYPE_INT;
 import TYPES.TYPE_INT_INSTANCE;
+import TEMP.TEMP_FACTORY;
+import IR.*;
 
 public class AST_VAR_SUBSCRIPT extends AST_VAR
 {
 	public AST_VAR var;
 	public AST_EXP subscript;
+
+	private TEMP arrPointer;
+	private TEMP subscriptIndex;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -33,6 +38,10 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		this.var = var;
 		this.subscript = subscript;
 		this.lineNumber = lineNumber;
+
+		/* TODO: Check if this is necessary */
+//		this.arrPointer = this.var.IRme();
+//		this.subscriptIndex = this.subscript.IRme();
 	}
 
 	/*****************************************************/
@@ -94,4 +103,33 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		/* 4. Return type of array instance */
 		return ((TYPE_ARRAY_INSTANCE) var_type).getElementType().convertSymbolToInstance();
 	}
+
+
+	/* returns the right-value of the array element  */
+	public TEMP IRme() {
+		TEMP arrayPointer = this.var.IRme();
+		TEMP subscriptIndex = this.subscript.IRme();
+		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
+
+		IR.getInstance().Add_IRcommand(new IRcommand_Array_Get(dst, arrayPointer, subscriptIndex));
+
+		return dst;
+	}
+
+	/* performs a set on the array element (treating it as a left-value)  */
+	/* The statement is of sort: arrPointer[subscriptIndex] := src */
+	public void IRmeAsLeftValue(AST_EXP src) {
+		TEMP arrPointer = this.var.IRme();
+		TEMP subscriptIndex = this.subscript.IRme();
+		TEMP src_temp = src.IRme();
+		mIR.Add_IRcommand(new IRcommand_Array_Set(arrPointer, subscriptIndex, src_temp));
+	}
+
+	public void IRmeAsLeftValue(AST_NEW_EXP src) {
+		TEMP arrPointer = this.var.IRme();
+		TEMP subscriptIndex = this.subscript.IRme();
+		TEMP src_temp = src.IRme();
+		mIR.Add_IRcommand(new IRcommand_Array_Set(arrPointer, subscriptIndex, src_temp));
+	}
+
 }

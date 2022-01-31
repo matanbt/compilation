@@ -1,5 +1,7 @@
 package TYPES;
 
+import AST.AST_DEC_FUNC;
+
 public class TYPE_FUNCTION extends TYPE
 {
 	/***********************************/
@@ -15,16 +17,29 @@ public class TYPE_FUNCTION extends TYPE
   // ---- Fields updated during semantic analysis ----
 	// verify there exist a return (if needed)
 	public boolean isReturnExists;
+	// for a method it will point on the class it belongs to, otherwise null
+	public TYPE_CLASS encompassingClass;
+
+	public AST_DEC_FUNC funcASTNode;
 
 	/****************/
 	/* CTROR(S) ... */
 	/****************/
-	public TYPE_FUNCTION(TYPE rtnType,String name,TYPE_LIST args)
+	public TYPE_FUNCTION(TYPE rtnType,String name,TYPE_LIST args,
+						 AST_DEC_FUNC funcASTNode, TYPE_CLASS encompassingClass)
 	{
 		this.name = name;
 		this.rtnType = rtnType;
 		this.args = args;
+		this.funcASTNode = funcASTNode;
+		this.encompassingClass = encompassingClass;
+
 		this.isReturnExists = false;
+	}
+
+	public TYPE_FUNCTION(TYPE rtnType,String name,TYPE_LIST args) {
+		// This signature will be used only be built-ins function of L
+		this(rtnType, name, args, null, null);
 	}
 
 	public boolean equals(Object other) {

@@ -13,17 +13,28 @@ package IR;
 import TEMP.*;
 import MIPS.*;
 
-public class IRcommand_Binop_EQ_Integers extends IRcommand
+import java.util.HashSet;
+
+public class IRcommand_Binop_EQ extends IRcommand
 {
+	// dst = t1 == t2
 	public TEMP t1;
 	public TEMP t2;
 	public TEMP dst;
 
-	public IRcommand_Binop_EQ_Integers(TEMP dst,TEMP t1,TEMP t2)
+	public IRcommand_Binop_EQ(TEMP dst,TEMP t1,TEMP t2)
 	{
 		this.dst = dst;
 		this.t1 = t1;
 		this.t2 = t2;
+	}
+
+	public void updateInSet()
+	{
+		this.in_set = new HashSet<TEMP>(this.out_set);
+		this.in_set.remove(dst);
+		this.in_set.add(t1);
+		this.in_set.add(t2);
 	}
 	
 	/***************/
@@ -34,9 +45,9 @@ public class IRcommand_Binop_EQ_Integers extends IRcommand
 		/*******************************/
 		/* [1] Allocate 3 fresh labels */
 		/*******************************/
-		String label_end        = getFreshLabel("end");
-		String label_AssignOne  = getFreshLabel("AssignOne");
-		String label_AssignZero = getFreshLabel("AssignZero");
+		String label_end        = getFreshLabel("BINOP_EQ_end");
+		String label_AssignOne  = getFreshLabel("BINOP_EQ_AssignOne");
+		String label_AssignZero = getFreshLabel("BINOP_EQ_AssignZero");
 		
 		/******************************************/
 		/* [2] if (t1==t2) goto label_AssignOne;  */

@@ -2,6 +2,7 @@ package AST;
 
 import EXCEPTIONS.SemanticException;
 import SYMBOL_TABLE.SYMBOL_TABLE;
+import TEMP.TEMP;
 import TYPES.TYPE;
 import TYPES.TYPE_ARRAY_INSTANCE;
 
@@ -100,6 +101,12 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 		/*********************************************************/
 		/* [5] Return value is irrelevant for statements */
 		/*********************************************************/
+		return null;
+	}
+
+	public TEMP IRme()
+	{
+		var.IRmeAsLeftValue(new_exp);
 		return null;
 	}
 }

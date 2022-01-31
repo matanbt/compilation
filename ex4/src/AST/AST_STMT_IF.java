@@ -3,6 +3,8 @@ package AST;
 import EXCEPTIONS.SemanticException;
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import TEMP.*;
+import IR.*;
 
 public class AST_STMT_IF extends AST_STMT
 {
@@ -89,6 +91,20 @@ public class AST_STMT_IF extends AST_STMT
 		/*********************************************************/
 		/* [4] Return value is irrelevant for IF statements */
 		/*********************************************************/
+		return null;
+	}
+
+	public TEMP IRme()
+	{
+		TEMP cond_val = this.cond.IRme();
+		String end_label = IRcommand.getFreshLabel("IF_end_cond");
+		IRcommand end = new IRcommand_Label(end_label);
+		IRcommand ir_cond = new IRcommand_Jump_If_Eq_To_Zero(cond_val, end_label, end);
+
+		IR.getInstance().Add_IRcommand(ir_cond);
+		this.body.IRme();
+		IR.getInstance().Add_IRcommand(end);
+
 		return null;
 	}
 }

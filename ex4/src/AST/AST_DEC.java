@@ -1,6 +1,7 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import TEMP.TEMP;
 import TYPES.*;
 
 public abstract class AST_DEC extends AST_Node
@@ -23,4 +24,8 @@ public abstract class AST_DEC extends AST_Node
 		return null;
 	}
 
+	public TEMP IRme() {
+		System.out.println("[DEBUG] IRme called inside AST_DEC. Did you forget to override me?");
+		return null;
+	}
 }

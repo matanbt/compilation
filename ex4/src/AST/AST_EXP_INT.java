@@ -1,6 +1,10 @@
 package AST;
 
+import TEMP.*;
 import TYPES.*;
+import TEMP.TEMP;
+import TEMP.TEMP_FACTORY;
+import IR.*;
 
 public class AST_EXP_INT extends AST_EXP
 {

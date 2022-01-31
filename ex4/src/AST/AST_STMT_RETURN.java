@@ -1,7 +1,9 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import IR.IRcommand_Func_Return;
 import SYMBOL_TABLE.SYMBOL_TABLE;
+import TEMP.TEMP;
 import TYPES.*;
 
 public class AST_STMT_RETURN extends AST_STMT
@@ -84,5 +86,22 @@ public class AST_STMT_RETURN extends AST_STMT
 
 		return null; // no TYPE for return statement
 
+	}
+
+
+	@Override
+	public TEMP IRme() {
+		/* 1. Gets temporary of the returned expression, in case it's available */
+		TEMP rtnTemporary = null;
+		if (this.exp != null) {
+			rtnTemporary = this.exp.IRme();
+		}
+
+		/* 2. Return */
+		mIR.Add_IRcommand(new IRcommand_Func_Return(rtnTemporary, this.inFunc.name,
+				this.inFunc.funcASTNode.funcEpilogueLabel));
+
+		// no temporary created return statements
+		return null;
 	}
 }

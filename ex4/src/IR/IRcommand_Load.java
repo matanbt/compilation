@@ -10,25 +10,43 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+
 import TEMP.*;
 import MIPS.*;
 
-public class IRcommand_Load extends IRcommand
-{
-	TEMP dst;
-	String var_name;
-	
-	public IRcommand_Load(TEMP dst,String var_name)
-	{
-		this.dst      = dst;
-		this.var_name = var_name;
-	}
-	
-	/***************/
-	/* MIPS me !!! */
-	/***************/
-	public void MIPSme()
-	{
-		MIPSGenerator.getInstance().load(dst,var_name);
-	}
+public class IRcommand_Load extends IRcommand {
+    TEMP dst;
+    IDVariable var;
+
+    public IRcommand_Load(TEMP dst, IDVariable var) {
+        this.dst = dst;
+        this.var = var;
+    }
+
+    @Override
+    public void updateInSet() {
+        super.updateInSet();
+        this.in_set.remove(dst);
+    }
+
+    /***************/
+    /* MIPS me !!! */
+    /***************/
+    public void MIPSme() {
+        if (var.mRole == VarRole.GLOBAL) {
+            MIPSGenerator.getInstance().loadByVarName(dst, "global_" + var.mVarName);
+        }
+
+        else if (var.mRole == VarRole.LOCAL || var.mRole == VarRole.ARG) {
+            MIPSGenerator.getInstance().loadFromStack(dst, var.getOffset());
+        }
+
+        else if (var.mRole == VarRole.CFIELD_VAR) {
+            System.out.println("[DEBUG] IRcommand_Load shouldn't be called on CFIELD_VAR, use IRcommand_Field_get");
+        }
+
+        else {
+            System.out.println("[DEBUG] IRcommand_Load with unexpected var.mRole");
+        }
+    }
 }

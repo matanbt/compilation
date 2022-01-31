@@ -1,11 +1,17 @@
 package AST;
 
 import EXCEPTIONS.SemanticException;
+import IR.IR;
+import TEMP.TEMP;
 import TYPES.TYPE;
+import TYPES.TYPE_CLASS;
+import TEMP.TEMP_FACTORY;
+import IR.*;
 
 public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 {
 	public AST_TYPE nType;
+	private TYPE_CLASS type_class;  // = the class of this new instance. initialized in this.SemantMe()
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
@@ -61,12 +67,23 @@ public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 		}
 
 		/* 2. Check that type is indeed a class type */
-		if (!class_type.isClassSymbol())
+		if (! (class_type instanceof TYPE_CLASS))
 		{
 			this.throw_error("trying to create class instance from something that isn't a class type");
 		}
 
+		this.type_class = (TYPE_CLASS) class_type;
+
 		/* 3. Return type of class instance */
 		return class_type.convertSymbolToInstance();
+	}
+
+	public TEMP IRme()
+	{
+		/* new class instance initialization */
+		IR ir = IR.getInstance();
+		TEMP instance_ptr = TEMP_FACTORY.getInstance().getFreshTEMP();
+		ir.Add_IRcommand(new IRcommand_New_Class_Instance_Init(instance_ptr, this.type_class));
+		return instance_ptr;
 	}
 }
