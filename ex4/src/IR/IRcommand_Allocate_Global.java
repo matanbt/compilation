@@ -39,6 +39,7 @@ public class IRcommand_Allocate_Global extends IRcommand
         String full_var_name = String.format("global_%s", var_name); // Adding convention to global variable
 
         if (this.var_value_ast == null || this.var_value_ast instanceof AST_EXP_NIL) {
+            // also initialize uninitialized var to null (for uninitialized pointer handling)
             MIPSGenerator.getInstance().allocateWithIntVal(full_var_name, 0);
         }
 

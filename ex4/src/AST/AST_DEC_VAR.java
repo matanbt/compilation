@@ -226,15 +226,22 @@ public class AST_DEC_VAR extends AST_DEC
             ir.Add_IRcommand(new IRcommand_Allocate_Global(this.name, this.exp));  // also deals with this.exp=null case
         }
 
-        else if (varRole == VarRole.LOCAL && (exp != null || new_exp != null)) {
-            /* statement variable declaration with assignment */
+        else if (varRole == VarRole.LOCAL) {
+            /* statement variable declaration with/without assignment */
+
             TEMP t_val_to_assign = null;
             if (exp != null)
                 t_val_to_assign = this.exp.IRme();
-            if (new_exp != null)
+            else if (new_exp != null)
                 t_val_to_assign = this.new_exp.IRme();
+            else if (this.varType.canBeAssignedNil()) {
+                // In case there is no assignment, but a pointer was declared, we'll assign it `nil` by default
+                t_val_to_assign = AST_EXP_NIL.getTempWithNil();
+            }
 
-            ir.Add_IRcommand(new IRcommand_Store(this.idVariable, t_val_to_assign));
+            // trigger store command only if there is a value to assign
+            if(t_val_to_assign != null)
+                ir.Add_IRcommand(new IRcommand_Store(this.idVariable, t_val_to_assign));
         }
 
         else if (varRole == VarRole.CFIELD_VAR) {

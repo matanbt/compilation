@@ -49,6 +49,11 @@ public class AST_EXP_NIL extends AST_EXP
 
     public TEMP IRme()
     {
+        return getTempWithNil();
+    }
+
+    public static TEMP getTempWithNil() {
+        /* returns fresh TEMP with NIL pointer */
         TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
         IR.getInstance().Add_IRcommand(new IRcommandConstInt(t, 0));
         return t;

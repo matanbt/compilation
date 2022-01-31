@@ -41,7 +41,8 @@ public class IRcommand_New_Array extends IRcommand
 		TEMP temp_arrPointer = new SAVED(0);
 		// the array contains the length as its first item, so we need to allocate arrLen + 1 words
 		MIPSGenerator.getInstance().addi(arrLen, arrLen, 1);
-		MIPSGenerator.getInstance().mallocWords(temp_arrPointer, arrLen);
+		// initialize all array cells to null (for uninitialized pointer handling)
+		MIPSGenerator.getInstance().mallocWordsWithNullInit(temp_arrPointer, arrLen);
 		MIPSGenerator.getInstance().addi(arrLen, arrLen, -1);
 		// set first item of the array to be its length
 		MIPSGenerator.getInstance().storeToHeap(arrLen, temp_arrPointer, 0);
