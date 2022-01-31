@@ -17,10 +17,12 @@ public class Main
 		Symbol s;
 		AST_DEC_LIST AST;
 		FileReader file_reader;
-		PrintWriter file_writer;
-		String inputFilename = argv[0];
-		String outputFilename = argv[1];
-		
+		PrintWriter file_writer_status;
+
+		String inputFilename = argv[0];                          // input L code
+		String statusFilename = "./output/semantic_status.txt";  // semantic analysis status
+		String outputFilename = argv[1];                         // generated MIPS code output
+
 		try
 		{
 			/********************************/
@@ -31,8 +33,9 @@ public class Main
 			/********************************/
 			/* [2] Initialize a file writer */
 			/********************************/
-			file_writer = new PrintWriter(outputFilename);
-			
+			file_writer_status = new PrintWriter(statusFilename);
+			MIPSGenerator.outputFilename = outputFilename;
+
 			/******************************/
 			/* [3] Initialize a new lexer */
 			/******************************/
@@ -41,7 +44,7 @@ public class Main
 			/*******************************/
 			/* [4] Initialize a new parser */
 			/*******************************/
-			p = new Parser(l, file_writer);
+			p = new Parser(l, file_writer_status);
 
 			/***********************************/
 			/* [5] 3 ... 2 ... 1 ... Parse !!! */
@@ -56,8 +59,6 @@ public class Main
 			/**************************/
 			/* [7] Semant the AST ... */
 			/**************************/
-			// TODO: make sure the following code was migrated properly from ex3,
-			//       as we have new output requirements.
 			try
 			{
 				AST.SemantMe();
@@ -66,16 +67,16 @@ public class Main
 				if(!AST_DEC_FUNC.isFoundMain) {
 					AST.throw_error("L-program must contain a 'void main()` global function");
 				}
-				
-				file_writer.println("OK");
+
+				file_writer_status.println("OK");
 			}
 			catch (SemanticException e)
 			{
 				System.out.println(e.getMessage());
-				file_writer.println(String.format("ERROR(%d)", e.lineNumber));
+				file_writer_status.println(String.format("ERROR(%d)", e.lineNumber));
 
 				// We throw here another error, to ensure the compilation does not continue
-				file_writer.close();
+				file_writer_status.close();
 				AST.throw_error("Aborting Compilation Phase: Got semantic error during compilation");
 			}
 
@@ -107,7 +108,7 @@ public class Main
 			/**************************/
 			/* [13] Close output file */
 			/**************************/
-			file_writer.close();
+			file_writer_status.close();
     	}
 			     
 		catch (Exception e)

@@ -20,6 +20,7 @@ import TEMP.*;
 
 public class MIPSGenerator {
 
+    public static String outputFilename = null;  // path to output generated mips code
 
     /*******************************/
     /* Constants for our usage ... */
@@ -388,16 +389,11 @@ public class MIPSGenerator {
             instance = new MIPSGenerator();
 
             try {
-                /*********************************************************************************/
-                /* [1] Open the MIPS text file and write data section with error message strings */
-                /*********************************************************************************/
-                String dirname = "./output/";
-                String filename = String.format("MIPS.txt");
+                /***************************************/
+                /* [1] Open MIPS text file for writing */
+                /***************************************/
+                instance.fileWriter = new PrintWriter(MIPSGenerator.outputFilename);
 
-                /***************************************/
-                /* [2] Open MIPS text file for writing */
-                /***************************************/
-                instance.fileWriter = new PrintWriter(dirname + filename);
             } catch (Exception e) {
                 e.printStackTrace();
             }
