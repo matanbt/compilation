@@ -518,3 +518,123 @@ void main() {
 }
 
 *** Access Violation
+
+/// ptr_uninit_feild_call
+class A {
+	A a;
+	void f() {
+		return;
+	}
+}
+void main() {
+	A a := new A;
+	a.a.f();
+}
+
+***Invalid Pointer Dereference
+
+/// ptr_uninit_feild_field
+class A {
+	A a;
+	int i;
+	void f() {
+		return;
+	}
+}
+void main() {
+	A a := new A;
+	a.a.i := 2;
+}
+
+***Invalid Pointer Dereference
+
+/// ptr_uninit_global_field
+class A {
+	int i;
+	void f() {
+		return;
+	}
+}
+A a;
+void main() {
+	a.i := 2;
+}
+
+***Invalid Pointer Dereference
+
+/// ptr_uninit_global_call
+class A {
+	int i;
+	void f() {
+		return;
+	}
+}
+A a;
+void main() {
+	a.f();
+}
+
+***Invalid Pointer Dereference
+
+/// ptr_uninit_local_call
+class A {
+	int i;
+	void f() {
+		return;
+	}
+}
+void main() {
+	A a;
+	a.f();
+}
+
+***Invalid Pointer Dereference
+
+/// ptr_uninit_local_field
+class A {
+	int i;
+	void f() {
+		return;
+	}
+}
+void main() {
+	A a;
+	a.i := 1;
+}
+
+***Invalid Pointer Dereference
+
+/// ptr_uninit_arr_call
+class A {
+	int i;
+	void f() {
+		return;
+	}
+}
+
+array arrA = A[];
+
+void main() {
+	arrA arri := new A[13];
+	arri[0].f();
+}
+
+***Invalid Pointer Dereference
+
+/// ptr_uninit_arr_field
+class A {
+	int i;
+	void f() {
+		return;
+	}
+}
+
+array arrA = A[];
+
+void main() {
+	arrA arri := new A[13];
+	arri[0].i := 4;
+}
+
+***Invalid Pointer Dereference
+
