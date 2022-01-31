@@ -252,3 +252,294 @@ void main() {
 }
 
 *** Access Violation
+
+/// example_test
+void main() {
+    PrintInt(3);
+}
+
+*** 3
+
+/// binop_add_upper_bound_1
+int i := 32767;
+void main(){
+printInt(i);
+}
+
+***32767 
+
+/// binop_add_upper_bound_2
+int i := 32766;
+void main(){
+printInt(i + 5);
+}
+
+***32767 
+
+
+/// binop_sub_lower_bound_1
+int i := -32767;
+void main(){
+printInt(i - 5);
+}
+
+***-32767 
+
+/// binop_add_lower_bound_1
+int i := -32766;
+int j := -10;
+void main(){
+printInt(i + j);
+}
+
+***-32767 
+
+/// binop_add_1
+int i := -32767;
+void main(){
+printInt(i + 5);
+}
+
+***-32762 
+
+/// div_by_0_runtime_check
+int i:= 6; 
+void main(){
+	while (i+1) { 
+		int j := 8/i; 
+		i := i-1; 
+	}
+}
+
+***Division By Zero
+
+/// class_dec_var_int
+class A{
+	int i := 10;
+}
+void main(){
+A a := new A;
+printInt(a.i);
+}
+
+***10 
+
+/// class_dec_var_nil
+class A{
+	A i := nil;
+}
+void main(){
+A a := new A;
+printInt(a.i = nil);
+}
+
+***1 
+
+/// func_dec_var_int
+void f(){
+	int i := 4500;
+	printInt(i);
+}
+void main(){
+	f();
+}
+
+***4500 
+
+/// func_dec_var_string
+void f(){
+	string i := "234aa";
+	printString(i);
+}
+void main(){
+	f();
+}
+
+***234aa
+
+/// field_access_1
+class A {
+	int i := 5;
+}
+class B extends A{
+	void f(){
+		i := 2;
+		printInt(i);
+	}
+}
+
+void main(){
+	B b := new B;
+	b.f();
+}
+
+***2 
+
+/// field_access_2
+class A {
+int i := 5;
+}
+class B extends A{
+void f(){
+
+printInt(i);
+i := 2;
+printInt(i);
+}
+}
+void main(){
+B b := new B;
+b.f();
+}
+
+***5 2 
+
+/// field_access_3
+class A {
+	int i := 5;
+	void f(){
+		printInt(i);
+	}
+}
+class B extends A{
+	void f(){
+		printInt(i);
+		i := 11112;
+		printInt(i);
+	}
+}
+
+void main(){
+	A b := new B;
+	b.f();
+
+	A a := new A;
+	a.f();
+}
+
+***5 11112 5 
+
+/// field_access_4
+int i := 13;
+class A {
+	int i := 5;
+	void print(){
+		printInt(i);
+	}
+	void add() {
+		printInt(i);
+		i := i + 1;
+		printInt(i);
+		
+	}
+}
+class B extends A{
+	void f(){
+		printInt(i);
+		i := 11112;
+		printInt(i);
+	}
+}
+
+void main(){
+	A b := new B;
+	b.print();
+	b.add();
+	b.print();
+	b.f();
+}
+
+***5 5 6 6 6 11112 
+
+/// global_access_in_class
+int t := 6;
+class A {
+	int i := 5;
+	void print(){
+		printInt(i);
+	}
+	void add() {
+		printInt(i);
+		i := t + i;
+		printInt(i);
+		
+	}
+}
+void main(){
+	A a := new A;
+	a.print();
+	a.add();
+}
+
+***5 5 11
+
+/// field_access_outside_class
+string coco := "coooo";
+class A {
+	int coco;
+	void print(){
+			printInt(coco);
+	}
+}
+void main(){
+	A a := new A;
+	a.coco := 34;
+	a.print();
+}
+
+***34 
+
+/// field_access_uninitialized_instance
+class A {
+	int coco;
+	void print(){
+			printInt(coco);
+	}
+}
+void main(){
+	A a;
+	a.coco := 34;
+}
+
+***Invalid Pointer Dereference
+
+/// method_access_uninitialized_instance
+class A {
+	int coco := 4;
+	void print(){
+			printInt(coco);
+	}
+}
+void main(){
+	A a;
+	a.print();
+}
+
+***Invalid Pointer Dereference
+
+/// Access_Violation_!
+void main(){
+	array IntArray = int[]; 
+	IntArray A := new int[6]; 
+	int i := A[18];
+}
+
+***Access Violation
+
+/// Access_Violation_2
+void main(){
+	array IntArray = int[]; 
+	IntArray A := new int[6]; 
+	A[18] := 89;
+}
+
+***Access Violation
+
+/// Access_Violation_3
+void main(){
+	array IntArray = int[]; 
+	IntArray A := new int[6]; 
+	A[-1] := 89;
+}
+
+***Access Violation

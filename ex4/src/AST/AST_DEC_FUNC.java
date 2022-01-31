@@ -177,10 +177,9 @@ public class AST_DEC_FUNC extends AST_DEC
 		/***************************/
 		TYPE_LIST list_argTypes = result_SemantMe.args;
 		int i = 0;
-		if (this.encompassingClass != null) {
-			// a method will have `this` as first argument
-			i = 1;
-		}
+		// In methods we'll have `this` as the first argument, this affect the calculated offset.
+		int is_this_as_first_arg = this.encompassingClass != null ? 1 : 0;
+
 		for (AST_DEC_FUNC_ARG_LIST it = argList; it  != null; it = it.next, i++)
 		{
 			// find the TYPE of each
@@ -190,17 +189,16 @@ public class AST_DEC_FUNC extends AST_DEC
 			// each argument is also a local variable in the function scope
 			// must be done AFTER creating the function scope
 			SYMBOL_TABLE.getInstance().enter(arg.argName, argType,
-					new IDVariable(arg.argName, VarRole.ARG, i));
+					new IDVariable(arg.argName, VarRole.ARG, i + is_this_as_first_arg));
 		}
 
 		// gets the amount of arguments
-		this.argsCount = list_argTypes.size() + (this.encompassingClass != null ? 1 : 0);
+		this.argsCount = list_argTypes.size() + is_this_as_first_arg;
 
 		/*******************/
 		/* [3] Semant Body */
 		/*******************/
 		this.localsCount = 0; // locals will be count by body.semantMe()
-		// TODO this reasonably assumes each STMT_VAR_DEC invokes this.localsCount++ (and only these statements do)
 
 		body.SemantMe();
 

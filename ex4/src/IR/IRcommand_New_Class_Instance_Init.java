@@ -47,7 +47,8 @@ public class IRcommand_New_Class_Instance_Init extends IRcommand
 
 		/* Allocate memory for the new object */
 		mips.li(size_of_instance, class_of_instance.fields_list.size() + 1); // +1 for the vtable
-		mips.mallocWords(dst, size_of_instance);
+		// initialize all fields to null (for uninitialized pointer handling)
+		mips.mallocWordsWithNullInit(dst, size_of_instance);
 
 		/* set first word to be the address of the vtable */
 		mips.loadAddressByName(vt_address, class_of_instance.vt_name);
