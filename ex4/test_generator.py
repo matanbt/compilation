@@ -7,6 +7,7 @@ TEST_GENERATOR_FILE_PATHS_LIST = [
     "./tests/matan_tests_1.txt",
     "./tests/matan_tests_2.txt",
     "./tests/omer_tests_v2.txt"
+    "./tests/matan_tests_3.txt"
 ]
 TEST_INPUT_DIR = "./input"
 TEST_OUTPUT_DIR = "./expected_output"
