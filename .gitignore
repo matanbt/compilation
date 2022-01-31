@@ -57,3 +57,7 @@ ex4/input/*.txt
 ex4/output/*.txt
 ex4/expected_output/*.txt
 ex4/logs
+ex4/src/Lexer.java
+ex4/src/Parser.java
+ex4/src/TokenNames.java
+ex4/COMPILER
