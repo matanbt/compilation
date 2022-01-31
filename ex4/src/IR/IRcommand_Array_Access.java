@@ -24,6 +24,8 @@ public abstract class IRcommand_Array_Access extends IRcommand
 
 		MIPSGenerator mips = MIPSGenerator.getInstance();
 
+		mips.beqz(arrPointer, MIPSGenerator.LABEL_STRING_INVALID_PTR_DREF);
+
 		/* Runtime check - out of bound array access */
 		// Case (1): subscriptIndex < 0
 		mips.bltz(subscriptIndex, MIPSGenerator.LABEL_STRING_ACCESS_VIOLATION);

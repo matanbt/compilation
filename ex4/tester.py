@@ -38,14 +38,14 @@ def run_on_test_files():
         mips_run_output_file = output_dir + filename[:-4] + "_MIPS_OUTPUT.txt"      # output/test_MIPS_OUTPUT.txt
 
         print("---- #" + str(i + 1) + " / " + str(len(test_files)) + " | Running: " + filename + " ----")
-        result = subprocess.run(['java', '-jar', 'COMPILER', input_file, sem_output_file],
+        result = subprocess.run(['java', '-jar', 'COMPILER', input_file, mips_source_output_file],
                                 capture_output=True, text=True)
         save_log(filename, result.stdout)
         assert result.stderr == '', "Got error while running: \n"+ result.stderr
+
+        os.rename(src=output_dir + "semantic_status.txt", dst=sem_output_file)
         with open(sem_output_file) as f:
             assert f.read().strip() == "OK" , "Got lexing/parsing/semantic error. L syntax must be obeyed!"
-
-        os.rename(src=output_dir + "MIPS.txt", dst=mips_source_output_file)
 
         with open(mips_run_output_file, 'w') as f:
             result = subprocess.run(['spim', '-f', mips_source_output_file],
