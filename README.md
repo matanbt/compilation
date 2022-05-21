@@ -5,7 +5,7 @@ Building a compiler from scratch, as final project for Compilation course.
 - The compiler compile and run the made up language *L* (which is somwhere between C and Java).
 - The implementation was done mainly on Java, and the generated code is for MIPS architecture.
 
-## How does the compiler works?
+## How does the compiler work?
 - Our compiler performs: 
   - **Lexical Analysis:** Using `jlex` (Added in ex1).
   - **Syntax Analysis:** Using `cup` (added in ex2).
@@ -35,5 +35,5 @@ In the following steps we'll demonstrate compiling and running the *L* source fi
 4. **Enjoy** your code output in `code_output.txt`. You've just brought *L* to life!
 
 ## Files
-- The directories `ex{1,2,3}` are intermediate version of `ex4`, which contain the final project.
+- The directories `ex{1,2,3}` are intermediate versions of `ex4`, which contains the final project.
 
